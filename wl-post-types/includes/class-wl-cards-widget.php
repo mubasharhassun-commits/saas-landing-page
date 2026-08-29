@@ -208,6 +208,14 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
 		) );
 
+		$this->add_control( 'show_title', array(
+			'label'        => __( 'Show Title on Image', 'waterslaw' ),
+			'type'         => \Elementor\Controls_Manager::SWITCHER,
+			'return_value' => 'yes',
+			'default'      => 'yes',
+			'description'  => __( 'Turn OFF for image-only cards with no text.', 'waterslaw' ),
+		) );
+
 		$this->add_control( 'overlay_color', array(
 			'label'     => __( 'Overlay (normal, bottom)', 'waterslaw' ),
 			'type'      => \Elementor\Controls_Manager::COLOR,
@@ -271,12 +279,14 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'type'      => \Elementor\Controls_Manager::COLOR,
 			'default'   => '#ffffff',
 			'selectors' => array( '{{WRAPPER}} .wl-cards' => '--wl-title: {{VALUE}};' ),
+			'condition' => array( 'show_title' => 'yes' ),
 		) );
 
 		$this->add_group_control( \Elementor\Group_Control_Typography::get_type(), array(
-			'name'     => 'title_typo',
-			'label'    => __( 'Title Typography', 'waterslaw' ),
-			'selector' => '{{WRAPPER}} .wl-card-title',
+			'name'      => 'title_typo',
+			'label'     => __( 'Title Typography', 'waterslaw' ),
+			'selector'  => '{{WRAPPER}} .wl-card-title',
+			'condition' => array( 'show_title' => 'yes' ),
 		) );
 
 		$this->end_controls_section();
@@ -308,7 +318,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'return_value' => 'yes',
 			'default'      => '',
 			'description'  => __( 'On hover, hide the title so only the button shows.', 'waterslaw' ),
-			'condition'    => array( 'show_button' => 'yes' ),
+			'condition'    => array( 'show_button' => 'yes', 'show_title' => 'yes' ),
 		) );
 
 		$this->add_control( 'btn_heading', array(
@@ -411,6 +421,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 		$pause  = ( 'yes' === ( $s['pause_hover'] ?? 'yes' ) ) ? 'paused' : 'running';
 		$hidet  = ( 'yes' === ( $s['hide_title_hover'] ?? '' ) ) ? ' wl-hide-title' : '';
 		$linked = ( 'yes' === ( $s['link_cards'] ?? 'yes' ) );
+		$showt  = ( 'yes' === ( $s['show_title'] ?? 'yes' ) );
 
 		$q = new WP_Query( array(
 			'post_type'      => $type,
@@ -436,7 +447,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			$q->the_post();
 			$img  = get_the_post_thumbnail_url( get_the_ID(), 'large' );
 			$open = $linked
-				? '<a class="wl-card" href="' . esc_url( get_permalink() ) . '">'
+				? '<a class="wl-card" href="' . esc_url( waterslaw_get_card_link( get_the_ID() ) ) . '">'
 				: '<div class="wl-card wl-card-static">';
 			?>
 			<?php echo $open; // phpcs:ignore WordPress.Security.EscapingOutput -- URL escaped above ?>
@@ -448,7 +459,9 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 					<?php if ( '' !== $btn ) : ?>
 						<span class="wl-card-btn"><?php echo esc_html( $btn ); ?></span>
 					<?php endif; ?>
-					<h3 class="wl-card-title"><?php the_title(); ?></h3>
+					<?php if ( $showt ) : ?>
+						<h3 class="wl-card-title"><?php the_title(); ?></h3>
+					<?php endif; ?>
 				</div>
 			<?php echo $linked ? '</a>' : '</div>'; ?>
 			<?php
