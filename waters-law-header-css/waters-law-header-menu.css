@@ -1,0 +1,377 @@
+/* ==========================================================================
+   Waters Law — header burger menu (off-canvas drawer from the RIGHT)
+   Paste into: Elementor > Site Settings > Custom CSS
+               (or Appearance > Customize > Additional CSS)
+
+   CHANGES IN THIS VERSION
+   -----------------------
+   FIX A  The close (X) button no longer has menu text scrolling over/under it
+          in a messy way. An opaque, fixed top bar now sits inside the drawer
+          behind the X. The bar never moves; drawer rows scroll underneath it
+          and disappear cleanly behind it.
+   FIX B  Sub-menus (Practice Areas etc.) are CLOSED by default on responsive
+          and only open when the arrow / parent item is clicked.
+   FIX C  The drawer itself is guaranteed closed until the toggle is active
+          (the old `display:block` + `background:#fff` rules were forcing it
+          visible / white at <=1298px).
+
+   PLUS  Click anywhere outside the drawer (or press Esc) to close it — that
+          one needs the companion snippet waters-law-header-menu.js, because
+          CSS has no way to react to a click on the backdrop.
+
+   Nothing outside the header menu is touched.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   0. ORIGINAL SITE QUERIES (kept as-is, except the two lines noted)
+   ========================================================================== */
+
+@media screen and (min-width: 1300px) and (max-width: 1400px) {
+    .elementor-426 .elementor-element.elementor-element-b07d287 .elementor-nav-menu .elementor-item {
+        font-size: 17px;
+        padding: 10px;
+    }
+}
+
+@media (max-width: 1300px) {
+    .header_button {
+        display: none;
+    }
+}
+
+/* 1299px and below */
+@media (max-width: 1299px) {
+
+    /* Hide main horizontal menu */
+    .elementor-nav-menu--layout-horizontal {
+        display: none !important;
+    }
+
+    /* Show hamburger toggle */
+    .elementor-nav-menu--dropdown-tablet .elementor-menu-toggle {
+        display: flex !important;
+    }
+}
+
+@media (max-width: 1298px) {
+
+    /* FIX C: only the TOGGLE is forced visible here.
+       The old rule also did `.elementor-nav-menu--dropdown { display: block; }`
+       which forced the drawer/dropdown open by default. Removed.            */
+    .elementor-nav-menu--dropdown-tablet .elementor-menu-toggle {
+        display: block;
+    }
+
+    /* FIX C: the old `background:#fff` + `margin:20px 0 0` on the active
+       dropdown were fighting the drawer (white flash + shifted panel).
+       Both removed — the drawer styling below owns these.                    */
+}
+
+
+/* ==========================================================================
+   1. DRAWER VARIABLES
+   ========================================================================== */
+
+#header_menu {
+  --wl-w:      350px;    /* drawer width                                     */
+  --wl-top:    92px;     /* height of the clear strip that holds the X       */
+  --wl-barh:   var(--wl-top);  /* actual bar height (admin bar adds to it)   */
+  --wl-bg:     #13181e;  /* drawer background                                */
+  --wl-sub:    #565D75;  /* sub-menu background                              */
+  --wl-line:   #2A2F43;  /* row divider                                      */
+  --wl-text:   #FFFFFF;
+  --wl-hover:  #82afb5;  /* row hover background                             */
+  --wl-accent: #e3d2be;  /* active / hover bar                               */
+  --wl-ease:   cubic-bezier(.22,.61,.36,1);
+  --wl-speed:  .4s;
+
+  position: relative;
+}
+
+/* The WP admin bar (logged-in users only) pushes the burger down but not the
+   fixed drawer — grow the top strip by the same amount so the X keeps its
+   clear space and rows still start below it.                                */
+body.admin-bar #header_menu { --wl-barh: calc(var(--wl-top) + 32px); }
+@media (max-width: 782px) {   /* WP's own admin-bar breakpoint: 46px tall    */
+  body.admin-bar #header_menu { --wl-barh: calc(var(--wl-top) + 46px); }
+}
+
+
+/* ==========================================================================
+   2. LIFT THE FIXED HEADER'S STACKING CONTEXT WHILE THE DRAWER IS OPEN
+   ========================================================================== */
+
+header > .elementor-element:has(#header_menu .elementor-menu-toggle.elementor-active) {
+  z-index: 100000 !important;
+}
+
+
+/* ==========================================================================
+   3. THE DRAWER — full-height panel docked to the right of the VIEWPORT
+   -------------------------------------------------------------------------
+   !important is required throughout: Elementor's "stretch" script writes
+   top / width / left as inline styles and recalculates them on resize.
+   ========================================================================== */
+
+#header_menu .elementor-nav-menu--dropdown.elementor-nav-menu__container {
+  position: fixed !important;
+  top:    0 !important;
+  right:  0 !important;
+  left:   auto !important;
+  bottom: 0 !important;
+  margin: 0 !important;
+  height: auto !important;          /* top:0 -> bottom:0 stretch beats 100vh */
+  width:      min(var(--wl-w), 88vw) !important;
+  max-width:  var(--wl-w) !important;
+  max-height: none !important;      /* kill Elementor's reveal animation     */
+
+  background:  var(--wl-bg) !important;
+  box-shadow:  -14px 0 44px rgba(0,0,0,.45);
+  overflow-y:  auto;
+  overscroll-behavior: contain;
+  z-index: 9997;                    /* below the top bar (9998) and X (9999) */
+
+  /* --- closed state (FIX C: hard-closed, cannot be forced open) --- */
+  animation:      none !important;
+  display:        block !important; /* visibility, not display, does the work*/
+  transform:      translateX(100%) !important;
+  visibility:     hidden !important;
+  pointer-events: none !important;
+  transition: transform  var(--wl-speed) var(--wl-ease),
+              visibility 0s linear var(--wl-speed);
+}
+
+/* --- open state: ONLY when the toggle is actually active ----------------- */
+#header_menu .elementor-menu-toggle.elementor-active + .elementor-nav-menu--dropdown.elementor-nav-menu__container,
+#header_menu .elementor-menu-toggle[aria-expanded="true"] + .elementor-nav-menu--dropdown.elementor-nav-menu__container,
+#header_menu:has(.elementor-menu-toggle.elementor-active) .elementor-nav-menu--dropdown.elementor-nav-menu__container {
+  transform:      translateX(0) !important;
+  visibility:     visible !important;
+  pointer-events: auto !important;
+  transition: transform  var(--wl-speed) var(--wl-ease),
+              visibility 0s;
+}
+
+
+/* ==========================================================================
+   4. DIMMED BACKDROP OVER THE PAGE
+   -------------------------------------------------------------------------
+   Clicking this backdrop closes the drawer — that part needs the companion
+   snippet waters-law-header-menu.js (CSS cannot listen for a click).
+   ========================================================================== */
+
+#header_menu::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(10,13,22,.55);
+  z-index: 9995;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--wl-speed) ease;
+}
+#header_menu:has(.elementor-menu-toggle.elementor-active)::before {
+  opacity: 1;
+  pointer-events: auto;             /* blocks page clicks                    */
+}
+
+
+/* ==========================================================================
+   5. FIX A — THE FIXED TOP BAR BEHIND THE X
+   -------------------------------------------------------------------------
+   This is an opaque strip pinned to the top of the drawer. It is fixed to the
+   viewport (not inside the scroller), so it NEVER moves while the menu is
+   scrolled, and menu rows slide out of sight behind it instead of running
+   across the X. It sits above the drawer (9997) and below the X (9999).
+   ========================================================================== */
+
+#header_menu::after {
+  content: "";
+  position: fixed;
+  top:   0;
+  right: 0;
+  width:     min(var(--wl-w), 88vw);
+  max-width: var(--wl-w);
+  height: var(--wl-barh);
+  background: var(--wl-bg);
+  border-bottom: 1px solid var(--wl-line);
+  z-index: 9998;
+  pointer-events: none;             /* the X underneath stays clickable      */
+  transform: translateX(100%);      /* slides in together with the drawer    */
+  transition: transform var(--wl-speed) var(--wl-ease);
+}
+#header_menu:has(.elementor-menu-toggle.elementor-active)::after {
+  transform: translateX(0);
+}
+
+
+/* ==========================================================================
+   6. THE BURGER / X — always on top, never scrolls
+   ========================================================================== */
+
+#header_menu .elementor-menu-toggle {
+  position: relative;
+  z-index: 9999;                    /* above the bar and the drawer          */
+}
+#header_menu .elementor-menu-toggle.elementor-active,
+#header_menu .elementor-menu-toggle.elementor-active svg {
+  color: var(--wl-text) !important;
+  fill:  var(--wl-text) !important;
+}
+
+
+/* ==========================================================================
+   7. LIST SHELL
+   ========================================================================== */
+
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu {
+  background: transparent !important;
+  margin:  0 !important;
+  /* start below the fixed top bar so nothing is hidden on first paint       */
+  padding: calc(var(--wl-barh) + 10px) 0 32px !important;
+  min-height: 100%;
+}
+
+
+/* ==========================================================================
+   8. TOP-LEVEL ROWS
+   ========================================================================== */
+
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu > li {
+  border: 0 !important;
+}
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu > li > a.elementor-item {
+  display:        block;
+  font-family:    "Poppins", sans-serif;
+  font-size:      16px;
+  font-weight:    500;
+  line-height:    1.5;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color:          var(--wl-text) !important;
+  background:     transparent !important;
+  padding:        16px 20px !important;
+  border-bottom:  1px solid var(--wl-line) !important;
+  border-left:    3px solid transparent;
+  transition: background .2s ease, border-color .2s ease, padding-left .2s ease;
+}
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu > li:first-child > a.elementor-item {
+  border-top: 1px solid var(--wl-line) !important;
+}
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu > li > a.elementor-item:hover,
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu > li > a.elementor-item:focus,
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu > li > a.elementor-item.highlighted {
+  background:        var(--wl-hover) !important;
+  border-left-color: var(--wl-accent);
+  padding-left:      24px !important;
+}
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu > li > a.elementor-item.elementor-item-active {
+  background:        var(--wl-hover) !important;
+  border-left-color: var(--wl-accent);
+  color:             var(--wl-text) !important;
+}
+
+
+/* ==========================================================================
+   9. FIX B — SUB-MENUS CLOSED BY DEFAULT, OPEN ON CLICK
+   -------------------------------------------------------------------------
+   Elementor's SmartMenus writes an inline `display:block` on a sub-menu when
+   its arrow is clicked. An inline style always beats a stylesheet rule, so
+   `display:none` WITHOUT !important gives us exactly the behaviour asked for:
+   collapsed on load, expanded on click, collapsed again on second click.
+   Do NOT add !important here or the sub-menu will never open.
+   ========================================================================== */
+
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu ul.sub-menu {
+  display: none;                    /* <-- closed by default (no !important) */
+  max-height: none !important;      /* kill any leftover reveal animation    */
+  animation: none !important;
+  position: static !important;      /* never float over the page as a flyout */
+  width: auto !important;
+  background: var(--wl-sub) !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Belt-and-braces: anything Elementor/SmartMenus marks as open stays open.  */
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li[aria-expanded="true"] > ul.sub-menu,
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu ul.sub-menu[aria-expanded="true"],
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu ul.sub-menu.sm-open {
+  display: block;
+}
+
+#header_menu .elementor-nav-menu--dropdown ul.sub-menu a.elementor-sub-item {
+  display:        block;
+  font-size:      14px;
+  font-weight:    400;
+  text-transform: none;
+  letter-spacing: normal;
+  color:          var(--wl-text) !important;
+  background:     transparent !important;
+  padding:        12px 20px 12px 34px !important;
+  border-bottom:  1px solid rgba(255,255,255,.2) !important;
+  transition:     background .2s ease;
+}
+#header_menu .elementor-nav-menu--dropdown ul.sub-menu > li:last-child > a.elementor-sub-item {
+  border-bottom: 0 !important;
+}
+#header_menu .elementor-nav-menu--dropdown ul.sub-menu a.elementor-sub-item:hover,
+#header_menu .elementor-nav-menu--dropdown ul.sub-menu a.elementor-sub-item.elementor-item-active {
+  background: rgba(255,255,255,.10) !important;
+}
+
+/* The arrow is the open/close control — make it an easy tap target.         */
+#header_menu .elementor-nav-menu--dropdown .sub-arrow {
+  color: var(--wl-text) !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+  margin: -10px -8px -10px 6px !important;
+  cursor: pointer;
+  transition: transform .2s ease;
+}
+#header_menu .elementor-nav-menu--dropdown li[aria-expanded="true"] > a > .sub-arrow,
+#header_menu .elementor-nav-menu--dropdown a[aria-expanded="true"] > .sub-arrow {
+  transform: rotate(180deg);
+}
+
+
+/* ==========================================================================
+   10. SCROLLBAR
+   ========================================================================== */
+
+#header_menu .elementor-nav-menu--dropdown::-webkit-scrollbar { width: 6px; }
+#header_menu .elementor-nav-menu--dropdown::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.22);
+  border-radius: 3px;
+}
+
+
+/* ==========================================================================
+   11. SMALL SCREENS
+   ========================================================================== */
+
+@media (max-width: 767px) {
+  #header_menu { --wl-w: 320px; --wl-top: 88px; }
+  #header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu > li > a.elementor-item {
+    font-size: 15px;
+    padding:   14px 18px !important;
+  }
+  #header_menu .elementor-nav-menu--dropdown ul.sub-menu a.elementor-sub-item {
+    padding: 11px 18px 11px 32px !important;
+  }
+}
+
+
+/* ==========================================================================
+   12. RESPECT REDUCED-MOTION
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  #header_menu .elementor-nav-menu--dropdown.elementor-nav-menu__container,
+  #header_menu::before,
+  #header_menu::after { transition-duration: .01ms !important; }
+}
