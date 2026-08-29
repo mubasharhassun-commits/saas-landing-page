@@ -401,7 +401,8 @@ class WL_News_Widget extends \Elementor\Widget_Base {
 					<?php
 					$GLOBALS['post'] = $p; // phpcs:ignore
 					setup_postdata( $p );
-					$timg = get_the_post_thumbnail_url( $p->ID, 'medium' );
+					// 'large', not 'medium' (300px): these thumbs go full width below 1300px.
+					$timg = get_the_post_thumbnail_url( $p->ID, 'large' );
 					$link = get_permalink( $p->ID );
 					?>
 					<div class="wl-news-item">

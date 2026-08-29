@@ -3,7 +3,7 @@
  * Plugin Name:       WL Post Types (Waters Law)
  * Plugin URI:        https://waterslaw.com
  * Description:        Registers Vessels & Cases custom post types and adds a native Elementor widget ("WL Cards") to display them as a responsive grid or continuous auto-scrolling slider with hover overlay + slide-up title + Read More button. Works on FREE Elementor.
- * Version:           2.5.0
+ * Version:           2.6.0
  * Author:            Waters Law Dev
  * Text Domain:       waterslaw
  * License:           GPL-2.0-or-later
@@ -176,10 +176,20 @@ function waterslaw_inline_css() {
 
 	/* ================= WL NEWS ================= */
 	.wl-news{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:stretch;--wl-accent:#7a9a98;--wl-news-title:#1a2b3c}
-	/* Tablet & down: stack featured + list full width */
-	@media(max-width:1024px){.wl-news{grid-template-columns:1fr;gap:26px}}
-	/* Mobile: also stack each list item (thumb on top) */
-	@media(max-width:767px){.wl-news{gap:22px}.wl-news-item{flex-direction:column}.wl-news-thumb{flex-basis:auto;width:100%;height:180px}}
+	/* Laptop & down: full width — featured on top, list below, each item stacked with a full-width thumb.
+	   !important beats the desktop thumb width/height emitted by Elementor, whose small
+	   side-by-side sizing would otherwise leak into the stacked layout, where flex-basis
+	   sets height rather than width. */
+	@media(max-width:1300px){
+		.wl-news{grid-template-columns:1fr;gap:26px}
+		.wl-news-item{flex-direction:column}
+		.wl-news-thumb{flex:0 0 auto!important;width:100%!important;height:clamp(180px,28vw,280px)!important}
+	}
+	/* Mobile: shorter thumbs so a full-width image does not dominate the screen */
+	@media(max-width:767px){
+		.wl-news{gap:22px}
+		.wl-news-thumb{height:clamp(170px,45vw,240px)!important}
+	}
 	.wl-news-featured{position:relative;display:flex;align-items:flex-end;min-height:340px;border-radius:4px;overflow:hidden;text-decoration:none;background-size:cover;background-position:center}
 	.wl-news-featured-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.75) 0%,rgba(0,0,0,.1) 60%,transparent 100%)}
 	.wl-news-featured-body{position:relative;z-index:2;padding:24px}
