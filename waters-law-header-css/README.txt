@@ -1,24 +1,19 @@
 Waters Law — header burger menu fix
 ===================================
 
-FILES
------
-1. waters-law-header-menu.css   → your complete, corrected CSS (replaces the
-                                  whole block you were using, including the
-                                  1300px / 1299px / 1298px media queries).
-2. waters-law-header-menu.js    → small snippet that closes the drawer when
-                                  you click outside it or press Esc.
+FILE
+----
+waters-law-header-menu.css   → your complete, corrected CSS (replaces the
+                               whole block you were using, including the
+                               1300px / 1299px / 1298px media queries).
+
+CSS only. No JavaScript, no snippets, nothing else to install.
 
 WHERE TO PASTE
 --------------
-CSS : Elementor > Site Settings > Custom CSS
-      (or Appearance > Customize > Additional CSS)
-      Replace your existing block entirely with this file's contents.
-
-JS  : Elementor > Custom Code > Add New
-        Location: Body - End
-      Paste the file contents as-is (the <script> tags are included).
-      Alternative: a Custom HTML widget in the footer template.
+Elementor > Site Settings > Custom CSS
+(or Appearance > Customize > Additional CSS)
+Replace your existing block entirely with this file's contents.
 
 WHAT WAS FIXED
 --------------
@@ -47,12 +42,15 @@ WHAT WAS FIXED
    The drawer's closed state is now hard-locked (transform + visibility +
    pointer-events, all !important) and only the active toggle opens it.
 
-4. CLICK OUTSIDE / ESC TO CLOSE — the JS file.
-   CSS cannot detect a click on the backdrop, so this is the one piece that
-   needs a snippet. It doesn't re-implement anything: it just triggers
-   Elementor's own toggle, so all classes and aria states stay correct.
-   Clicks on the burger, inside the drawer, and on the WP admin bar are
-   ignored.
+CLOSING THE DRAWER
+------------------
+The X button closes it. Clicking the dark backdrop does NOT close it — that
+needs JavaScript, and this build is CSS only by request.
+
+The backdrop still blocks clicks on the page behind the drawer (unchanged
+from your original CSS, section 4: `pointer-events: auto`). If you would
+rather the page stay clickable while the menu is open, change that one line
+to `pointer-events: none`.
 
 Nothing outside the header menu (#header_menu) is touched — other sections,
 layouts and the desktop header are unchanged.

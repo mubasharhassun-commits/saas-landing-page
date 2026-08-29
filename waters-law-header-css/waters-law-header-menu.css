@@ -15,11 +15,7 @@
           (the old `display:block` + `background:#fff` rules were forcing it
           visible / white at <=1298px).
 
-   PLUS  Click anywhere outside the drawer (or press Esc) to close it — that
-          one needs the companion snippet waters-law-header-menu.js, because
-          CSS has no way to react to a click on the backdrop.
-
-   Nothing outside the header menu is touched.
+   Nothing outside the header menu is touched. CSS only — no JavaScript.
    ========================================================================== */
 
 
@@ -156,9 +152,6 @@ header > .elementor-element:has(#header_menu .elementor-menu-toggle.elementor-ac
 
 /* ==========================================================================
    4. DIMMED BACKDROP OVER THE PAGE
-   -------------------------------------------------------------------------
-   Clicking this backdrop closes the drawer — that part needs the companion
-   snippet waters-law-header-menu.js (CSS cannot listen for a click).
    ========================================================================== */
 
 #header_menu::before {
