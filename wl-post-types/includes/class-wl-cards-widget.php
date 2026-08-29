@@ -45,19 +45,60 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 		) );
 
 		$this->add_control( 'post_type', array(
-			'label'   => __( 'Source', 'waterslaw' ),
-			'type'    => \Elementor\Controls_Manager::SELECT,
-			'default' => 'vessels',
-			'options' => array(
-				'vessels' => __( 'Vessels', 'waterslaw' ),
-				'cases'   => __( 'Cases', 'waterslaw' ),
+			'label'       => __( 'Source', 'waterslaw' ),
+			'type'        => \Elementor\Controls_Manager::SELECT,
+			'default'     => 'vessels',
+			'options'     => array(
+				'vessels' => __( 'Vessels (post type)', 'waterslaw' ),
+				'cases'   => __( 'Cases (post type)', 'waterslaw' ),
+				'manual'  => __( 'Custom Cards (build them here)', 'waterslaw' ),
 			),
+			'description' => __( 'Choose Custom Cards to add your own images, text and page links below \u2014 no posts needed.', 'waterslaw' ),
+		) );
+
+		$repeater = new \Elementor\Repeater();
+
+		$repeater->add_control( 'item_image', array(
+			'label'   => __( 'Image', 'waterslaw' ),
+			'type'    => \Elementor\Controls_Manager::MEDIA,
+			'default' => array( 'url' => \Elementor\Utils::get_placeholder_image_src() ),
+		) );
+
+		$repeater->add_control( 'item_text', array(
+			'label'       => __( 'Text on Image', 'waterslaw' ),
+			'type'        => \Elementor\Controls_Manager::TEXT,
+			'label_block' => true,
+			'default'     => '',
+			'description' => __( 'Leave blank for an image-only card.', 'waterslaw' ),
+		) );
+
+		$repeater->add_control( 'item_link', array(
+			'label'       => __( 'Link', 'waterslaw' ),
+			'type'        => \Elementor\Controls_Manager::URL,
+			'label_block' => true,
+			'placeholder' => 'https://waterslaw.com/your-page/',
+			'default'     => array( 'url' => '' ),
+			'description' => __( 'The page this card opens. Leave blank to make this card non-clickable.', 'waterslaw' ),
+		) );
+
+		$this->add_control( 'items', array(
+			'label'       => __( 'Cards', 'waterslaw' ),
+			'type'        => \Elementor\Controls_Manager::REPEATER,
+			'fields'      => $repeater->get_controls(),
+			'title_field' => '{{{ item_text || \'Card\' }}}',
+			'default'     => array(
+				array( 'item_text' => '' ),
+				array( 'item_text' => '' ),
+				array( 'item_text' => '' ),
+			),
+			'condition'   => array( 'post_type' => 'manual' ),
 		) );
 
 		$this->add_control( 'count', array(
-			'label'   => __( 'Number of Items (-1 = all)', 'waterslaw' ),
-			'type'    => \Elementor\Controls_Manager::NUMBER,
-			'default' => -1,
+			'label'     => __( 'Number of Items (-1 = all)', 'waterslaw' ),
+			'type'      => \Elementor\Controls_Manager::NUMBER,
+			'default'   => -1,
+			'condition' => array( 'post_type!' => 'manual' ),
 		) );
 
 		$this->add_control( 'orderby', array(
@@ -70,13 +111,15 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 				'title'           => __( 'Title', 'waterslaw' ),
 				'rand'            => __( 'Random', 'waterslaw' ),
 			),
+			'condition' => array( 'post_type!' => 'manual' ),
 		) );
 
 		$this->add_control( 'order', array(
-			'label'   => __( 'Order', 'waterslaw' ),
-			'type'    => \Elementor\Controls_Manager::SELECT,
-			'default' => 'ASC',
-			'options' => array( 'ASC' => 'ASC', 'DESC' => 'DESC' ),
+			'label'     => __( 'Order', 'waterslaw' ),
+			'type'      => \Elementor\Controls_Manager::SELECT,
+			'default'   => 'ASC',
+			'options'   => array( 'ASC' => 'ASC', 'DESC' => 'DESC' ),
+			'condition' => array( 'post_type!' => 'manual' ),
 		) );
 
 		$this->end_controls_section();
@@ -99,12 +142,12 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 		) );
 
 		$this->add_control( 'link_cards', array(
-			'label'        => __( 'Link Cards to Single Post', 'waterslaw' ),
+			'label'        => __( 'Make Cards Clickable', 'waterslaw' ),
 			'type'         => \Elementor\Controls_Manager::SWITCHER,
 			'return_value' => 'yes',
 			'default'      => 'yes',
 			'separator'    => 'before',
-			'description'  => __( 'Turn OFF to make the cards non-clickable, so visitors are not sent to a single Vessel page.', 'waterslaw' ),
+			'description'  => __( 'Turn OFF so no card links anywhere. Custom Cards use the Link set on each card.', 'waterslaw' ),
 		) );
 
 		/* Responsive columns: desktop 4 / laptop / tablet 2 / mobile 1 */
@@ -397,9 +440,102 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 	/* ---------------------------------------------------------
 	 * RENDER
 	 * ------------------------------------------------------- */
+
+	/**
+	 * One card. An empty $href renders a non-clickable card.
+	 */
+	private function card_html( $img, $text, $href, $btn, $attrs = '' ) {
+		$open  = ( '' !== $href )
+			? '<a class="wl-card" href="' . esc_url( $href ) . '"' . $attrs . '>'
+			: '<div class="wl-card wl-card-static">';
+		$close = ( '' !== $href ) ? '</a>' : '</div>';
+
+		$out  = $open;
+		$out .= '<div class="wl-card-img" style="background-image:url(\'' . esc_url( $img ) . '\');">';
+		$out .= '<div class="wl-card-ov wl-ov-normal"></div>';
+		$out .= '<div class="wl-card-ov wl-ov-normal-img"></div>';
+		$out .= '<div class="wl-card-ov wl-ov-hover"></div>';
+		$out .= '<div class="wl-card-ov wl-ov-hover-img"></div>';
+		if ( '' !== $btn ) {
+			$out .= '<span class="wl-card-btn">' . esc_html( $btn ) . '</span>';
+		}
+		if ( '' !== $text ) {
+			$out .= '<h3 class="wl-card-title">' . esc_html( $text ) . '</h3>';
+		}
+		$out .= '</div>' . $close;
+
+		return $out;
+	}
+
+	/**
+	 * Cards built by hand in the widget panel.
+	 */
+	private function manual_cards( $s, $btn, $linked ) {
+		$items = ! empty( $s['items'] ) && is_array( $s['items'] ) ? $s['items'] : array();
+		$out   = '';
+
+		foreach ( $items as $item ) {
+			$img  = ! empty( $item['item_image']['url'] ) ? $item['item_image']['url'] : '';
+			$text = trim( (string) ( $item['item_text'] ?? '' ) );
+			$href = $linked && ! empty( $item['item_link']['url'] ) ? $item['item_link']['url'] : '';
+
+			$attrs = '';
+			if ( '' !== $href ) {
+				$rel = array();
+				if ( ! empty( $item['item_link']['is_external'] ) ) {
+					$attrs .= ' target="_blank"';
+					$rel[]  = 'noopener';
+				}
+				if ( ! empty( $item['item_link']['nofollow'] ) ) {
+					$rel[] = 'nofollow';
+				}
+				if ( $rel ) {
+					$attrs .= ' rel="' . esc_attr( implode( ' ', $rel ) ) . '"';
+				}
+			}
+
+			$out .= $this->card_html( $img, $text, $href, $btn, $attrs );
+		}
+
+		return $out;
+	}
+
+	/**
+	 * Cards pulled from the Vessels / Cases post types.
+	 */
+	private function post_cards( $s, $type, $btn, $linked ) {
+		$q = new WP_Query( array(
+			'post_type'      => $type,
+			'posts_per_page' => (int) ( $s['count'] ?? -1 ),
+			'orderby'        => $s['orderby'] ?? 'menu_order date',
+			'order'          => $s['order'] ?? 'ASC',
+			'no_found_rows'  => true,
+		) );
+
+		if ( ! $q->have_posts() ) {
+			return '';
+		}
+
+		$out = '';
+		while ( $q->have_posts() ) {
+			$q->the_post();
+			$id   = get_the_ID();
+			$out .= $this->card_html(
+				(string) get_the_post_thumbnail_url( $id, 'large' ),
+				waterslaw_get_card_text( $id ),
+				$linked ? waterslaw_get_card_link( $id ) : '',
+				$btn
+			);
+		}
+		wp_reset_postdata();
+
+		return $out;
+	}
+
 	protected function render() {
 		$s      = $this->get_settings_for_display();
-		$type   = in_array( $s['post_type'], array( 'vessels', 'cases' ), true ) ? $s['post_type'] : 'vessels';
+		$source = $s['post_type'] ?? 'vessels';
+		$source = in_array( $source, array( 'vessels', 'cases', 'manual' ), true ) ? $source : 'vessels';
 		$layout = ( 'carousel' === $s['layout'] ) ? 'carousel' : 'grid';
 		$cols   = max( 1, (int) ( $s['columns'] ?? 4 ) );
 		$cols_l = max( 0, (int) ( $s['columns_laptop'] ?? 0 ) );
@@ -412,15 +548,11 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 		$hidet  = ( 'yes' === ( $s['hide_title_hover'] ?? '' ) ) ? ' wl-hide-title' : '';
 		$linked = ( 'yes' === ( $s['link_cards'] ?? 'yes' ) );
 
-		$q = new WP_Query( array(
-			'post_type'      => $type,
-			'posts_per_page' => (int) ( $s['count'] ?? -1 ),
-			'orderby'        => $s['orderby'] ?? 'menu_order date',
-			'order'          => $s['order'] ?? 'ASC',
-			'no_found_rows'  => true,
-		) );
+		$cards = ( 'manual' === $source )
+			? $this->manual_cards( $s, $btn, $linked )
+			: $this->post_cards( $s, $source, $btn, $linked );
 
-		if ( ! $q->have_posts() ) {
+		if ( '' === $cards ) {
 			echo '<p>' . esc_html__( 'No items found. Add some first.', 'waterslaw' ) . '</p>';
 			return;
 		}
@@ -429,48 +561,19 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'--wl-cols:%d;--wl-cols-l:%d;--wl-cols-t:%d;--wl-cols-m:%d;--wl-duration:%ds;--wl-pause:%s;',
 			$cols, $cols_l, $cols_t, $cols_m, $dur, esc_attr( $pause )
 		);
-
-		/* Build the card markup once (reused, and duplicated for the slider). */
-		ob_start();
-		while ( $q->have_posts() ) :
-			$q->the_post();
-			$img  = get_the_post_thumbnail_url( get_the_ID(), 'large' );
-			$text = waterslaw_get_card_text( get_the_ID() );
-			$open = $linked
-				? '<a class="wl-card" href="' . esc_url( waterslaw_get_card_link( get_the_ID() ) ) . '">'
-				: '<div class="wl-card wl-card-static">';
-			?>
-			<?php echo $open; // phpcs:ignore WordPress.Security.EscapingOutput -- URL escaped above ?>
-				<div class="wl-card-img" style="background-image:url('<?php echo esc_url( $img ); ?>');">
-					<div class="wl-card-ov wl-ov-normal"></div>
-					<div class="wl-card-ov wl-ov-normal-img"></div>
-					<div class="wl-card-ov wl-ov-hover"></div>
-					<div class="wl-card-ov wl-ov-hover-img"></div>
-					<?php if ( '' !== $btn ) : ?>
-						<span class="wl-card-btn"><?php echo esc_html( $btn ); ?></span>
-					<?php endif; ?>
-					<?php if ( '' !== $text ) : ?>
-						<h3 class="wl-card-title"><?php echo esc_html( $text ); ?></h3>
-					<?php endif; ?>
-				</div>
-			<?php echo $linked ? '</a>' : '</div>'; ?>
-			<?php
-		endwhile;
-		wp_reset_postdata();
-		$cards = ob_get_clean();
 		?>
 		<div class="wl-cards <?php echo esc_attr( $layout . $hidet ); ?>" style="<?php echo esc_attr( $style ); ?>">
 			<?php if ( 'carousel' === $layout ) : ?>
 				<div class="wl-marquee-wrap">
 					<div class="wl-marquee">
 						<?php
-						echo $cards; // first set
+						echo $cards; // phpcs:ignore WordPress.Security.EscapingOutput -- escaped in card_html()
 						echo $cards; // duplicate set for a seamless loop
 						?>
 					</div>
 				</div>
 			<?php else : ?>
-				<div class="wl-grid"><?php echo $cards; ?></div>
+				<div class="wl-grid"><?php echo $cards; // phpcs:ignore WordPress.Security.EscapingOutput -- escaped in card_html() ?></div>
 			<?php endif; ?>
 		</div>
 		<?php

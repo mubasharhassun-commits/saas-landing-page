@@ -3,7 +3,7 @@
  * Plugin Name:       WL Post Types (Waters Law)
  * Plugin URI:        https://waterslaw.com
  * Description:        Registers Vessels & Cases custom post types and adds a native Elementor widget ("WL Cards") to display them as a responsive grid or continuous auto-scrolling slider with hover overlay + slide-up title + Read More button. Works on FREE Elementor.
- * Version:           2.4.0
+ * Version:           2.5.0
  * Author:            Waters Law Dev
  * Text Domain:       waterslaw
  * License:           GPL-2.0-or-later
