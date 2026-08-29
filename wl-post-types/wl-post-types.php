@@ -137,7 +137,7 @@ add_action( 'elementor/preview/enqueue_scripts', 'waterslaw_assets' );
 function waterslaw_inline_css() {
 	return '
 	.wl-cards{position:relative;width:100%;--active-cols:var(--wl-cols,4)}
-	@media(max-width:1366px){.wl-cards{--active-cols:var(--wl-cols-l,var(--wl-cols,4))}}
+	@media(max-width:1300px){.wl-cards{--active-cols:var(--wl-cols-l,var(--wl-cols,4))}}
 	@media(max-width:1024px){.wl-cards{--active-cols:var(--wl-cols-t,2)}}
 	@media(max-width:767px){.wl-cards{--active-cols:var(--wl-cols-m,1)}}
 

@@ -122,7 +122,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'min'         => 1,
 			'max'         => 12,
 			'default'     => '',
-			'description' => __( 'Applies at 1366px and below. Leave empty to use the Desktop count.', 'waterslaw' ),
+			'description' => __( 'Applies at 1300px and below. Leave empty to use the Desktop count.', 'waterslaw' ),
 		) );
 
 		$this->add_control( 'columns_tablet', array(
