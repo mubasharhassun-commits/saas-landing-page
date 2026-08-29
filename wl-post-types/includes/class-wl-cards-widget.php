@@ -53,7 +53,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 				'cases'   => __( 'Cases (post type)', 'waterslaw' ),
 				'manual'  => __( 'Custom Cards (build them here)', 'waterslaw' ),
 			),
-			'description' => __( 'Choose Custom Cards to add your own images, text and page links below \u2014 no posts needed.', 'waterslaw' ),
+			'description' => __( 'Choose Custom Cards to add your own images, text and page links below — no posts needed.', 'waterslaw' ),
 		) );
 
 		$repeater = new \Elementor\Repeater();
@@ -160,7 +160,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 		) );
 
 		$this->add_control( 'columns_laptop', array(
-			'label'       => __( 'Columns \u2014 Laptop', 'waterslaw' ),
+			'label'       => __( 'Columns — Laptop', 'waterslaw' ),
 			'type'        => \Elementor\Controls_Manager::NUMBER,
 			'min'         => 1,
 			'max'         => 12,
