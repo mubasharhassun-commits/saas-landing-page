@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Generated deliverable bundles (rebuild with: zip -j waters-law-header-css/waters-law-header-menu.zip waters-law-header-css/*.css waters-law-header-css/*.js waters-law-header-css/README.txt)
+waters-law-header-css/*.zip
