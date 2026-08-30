@@ -12,9 +12,17 @@
 
 	var FOCUSABLE = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
 
-	/* Popup styling lives on the grid element so each Elementor widget can have
-	   its own. These are copied onto the shared modal when it opens. */
+	/* The modal is re-parented to <body>, so it inherits nothing from the grid.
+	   Every token the popup renders with is copied across on open, which is what
+	   makes the popup match the card it came from. */
 	var STYLE_VARS = [
+		'--tm-accent',
+		'--tm-text-color',
+		'--tm-role-color',
+		'--tm-star-color',
+		'--tm-star-empty-color',
+		'--tm-star-size',
+		'--tm-avatar-size',
 		'--tm-modal-max-width',
 		'--tm-modal-bg',
 		'--tm-modal-overlay',
