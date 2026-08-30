@@ -35,7 +35,7 @@ Family Law, Criminal Law). Delete any you do not need — they are not recreated
 | Client name | The **title** field at the top |
 | Full testimonial | The main **editor** |
 | Short testimonial | The **Excerpt** panel |
-| Client image / logo | **Featured image** |
+| Client image / logo | **Client Image** in Testimonial Details (or Featured image) |
 | Display order | **Order**, under Page Attributes |
 | Rating, position, company, source, date, featured | The **Testimonial Details** box |
 
@@ -48,8 +48,16 @@ never truncated.
 
 ### Adding the image
 
-Use **Featured image** in the sidebar. The image is cropped square and shown as
-a circle. Roughly 120×120px or larger gives a sharp result on retina screens.
+Use **Client Image** in the Testimonial Details box - click *Select Image* and
+pick from the media library. Each testimonial has its own. The image is cropped
+square and shown as a circle.
+
+The plugin looks for an image in this order, using the first it finds:
+
+1. **Client Image** on the testimonial
+2. Its **Featured image**
+3. The widget's **Default Client Image**
+4. A circle with the client's initial Roughly 120×120px or larger gives a sharp result on retina screens.
 A testimonial with no image falls back to the widget's **Default Client Image**
 if one is set, and to a lettered circle otherwise, so the layout never breaks.
 

@@ -52,3 +52,35 @@
 }
 
 .tm-field .description { margin-top: 2px; }
+
+/* Client Image picker */
+
+.tm-image-field .tm-image-preview {
+	margin: 6px 0;
+}
+
+.tm-image-field .tm-image-preview img {
+	display: block;
+	width: 84px;
+	height: 84px;
+	object-fit: cover;
+	border-radius: 50%;
+	border: 1px solid #dcdcde;
+}
+
+.tm-image-actions {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 6px 0 4px;
+}
+
+/* Remove is pointless with nothing selected. */
+.tm-image-field:not(.has-image) .tm-image-remove {
+	display: none;
+}
+
+.tm-image-field .tm-image-remove {
+	color: #b32d2e;
+	cursor: pointer;
+}

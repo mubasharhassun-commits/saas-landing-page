@@ -203,10 +203,33 @@ class TM_Renderer {
 	}
 
 	/**
-	 * Circular client image. Falls back to the widget default image when one is
-	 * set, and to a lettered circle otherwise, so the layout always holds.
+	 * Circular client image, in priority order:
+	 *   1. the Client Image chosen on the testimonial itself
+	 *   2. its Featured image
+	 *   3. the widget's Default Client Image
+	 *   4. a lettered circle, so the layout always holds
 	 */
 	private static function avatar( $post, $name, $args = array() ) {
+		$image_id = (int) get_post_meta( $post->ID, '_tm_image_id', true );
+
+		if ( $image_id ) {
+			$html = wp_get_attachment_image(
+				$image_id,
+				'tm_avatar',
+				false,
+				array(
+					'class'   => 'tm-avatar',
+					'alt'     => '',
+					'loading' => 'lazy',
+				)
+			);
+
+			// Empty when the attachment has since been deleted; fall through.
+			if ( $html ) {
+				return $html;
+			}
+		}
+
 		if ( has_post_thumbnail( $post ) ) {
 			return get_the_post_thumbnail(
 				$post,

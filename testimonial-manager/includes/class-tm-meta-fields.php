@@ -29,6 +29,7 @@ class TM_Meta_Fields {
 	 */
 	public static function schema() {
 		return array(
+			'_tm_image_id' => array( __CLASS__, 'sanitize_attachment_id' ),
 			'_tm_rating'   => array( __CLASS__, 'sanitize_rating' ),
 			'_tm_position' => 'sanitize_text_field',
 			'_tm_company'  => 'sanitize_text_field',
@@ -40,6 +41,19 @@ class TM_Meta_Fields {
 
 	public static function meta_keys() {
 		return array_keys( self::schema() );
+	}
+
+	/**
+	 * An attachment ID, or '' so the meta row is removed rather than storing 0.
+	 */
+	public static function sanitize_attachment_id( $value ) {
+		$id = absint( $value );
+
+		if ( ! $id || 'attachment' !== get_post_type( $id ) ) {
+			return '';
+		}
+
+		return (string) $id;
 	}
 
 	public static function sanitize_rating( $value ) {
@@ -84,6 +98,7 @@ class TM_Meta_Fields {
 	 */
 	public static function get( $post_id ) {
 		return array(
+			'image_id' => (int) get_post_meta( $post_id, '_tm_image_id', true ),
 			'rating'   => self::get_rating( $post_id ),
 			'position' => (string) get_post_meta( $post_id, '_tm_position', true ),
 			'company'  => (string) get_post_meta( $post_id, '_tm_company', true ),
@@ -112,12 +127,41 @@ class TM_Meta_Fields {
 			return;
 		}
 		wp_enqueue_style( 'tm-admin', TM_URL . 'admin/css/testimonial-manager-admin.css', array(), TM_VERSION );
+
+		// Needed for the Client Image picker.
+		wp_enqueue_media();
+		wp_enqueue_script( 'tm-admin', TM_URL . 'admin/js/testimonial-manager-admin.js', array(), TM_VERSION, true );
 	}
 
 	public static function render_meta_box( $post ) {
 		wp_nonce_field( 'tm_save_meta', self::NONCE );
 		$data = self::get( $post->ID );
 		?>
+		<div class="tm-field tm-image-field<?php echo $data['image_id'] ? ' has-image' : ''; ?>" id="tm-image-field"
+		     data-title="<?php esc_attr_e( 'Select Client Image', 'testimonial-manager' ); ?>"
+		     data-button="<?php esc_attr_e( 'Use this image', 'testimonial-manager' ); ?>">
+			<strong><?php esc_html_e( 'Client Image', 'testimonial-manager' ); ?></strong>
+
+			<div class="tm-image-preview">
+				<?php
+				if ( $data['image_id'] ) {
+					echo wp_get_attachment_image( $data['image_id'], 'thumbnail' );
+				}
+				?>
+			</div>
+
+			<input type="hidden" id="tm_image_id" name="tm_image_id" value="<?php echo esc_attr( $data['image_id'] ); ?>" />
+
+			<p class="tm-image-actions">
+				<button type="button" class="button tm-image-select"><?php esc_html_e( 'Select Image', 'testimonial-manager' ); ?></button>
+				<button type="button" class="button-link tm-image-remove"><?php esc_html_e( 'Remove', 'testimonial-manager' ); ?></button>
+			</p>
+
+			<p class="description">
+				<?php esc_html_e( 'The circular image for this testimonial. Leave empty to use the Featured image instead.', 'testimonial-manager' ); ?>
+			</p>
+		</div>
+
 		<fieldset class="tm-field tm-rating-field">
 			<legend><strong><?php esc_html_e( 'Rating', 'testimonial-manager' ); ?></strong></legend>
 			<div class="tm-stars-picker">
@@ -200,6 +244,7 @@ class TM_Meta_Fields {
 		}
 
 		$input = array(
+			'_tm_image_id' => isset( $_POST['tm_image_id'] ) ? wp_unslash( $_POST['tm_image_id'] ) : '',
 			'_tm_rating'   => isset( $_POST['tm_rating'] ) ? wp_unslash( $_POST['tm_rating'] ) : 5,
 			'_tm_position' => isset( $_POST['tm_position'] ) ? wp_unslash( $_POST['tm_position'] ) : '',
 			'_tm_company'  => isset( $_POST['tm_company'] ) ? wp_unslash( $_POST['tm_company'] ) : '',
