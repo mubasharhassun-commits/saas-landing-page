@@ -93,7 +93,7 @@ class TM_Renderer {
 
 		$out .= '<div class="tm-person">';
 		if ( $args['show_image'] ) {
-			$out .= self::avatar( $post, $name );
+			$out .= self::avatar( $post, $name, $args );
 		}
 		$out .= '<div class="tm-person-text">';
 		$out .= '<' . $tag . ' class="tm-name">' . esc_html( $name ) . '</' . $tag . '>';
@@ -135,7 +135,7 @@ class TM_Renderer {
 
 		$out .= '<div class="tm-person">';
 		if ( $args['show_image'] ) {
-			$out .= self::avatar( $post, $name );
+			$out .= self::avatar( $post, $name, $args );
 		}
 		$out .= '<div class="tm-person-text"><span class="tm-name">' . esc_html( $name ) . '</span>';
 
@@ -203,10 +203,10 @@ class TM_Renderer {
 	}
 
 	/**
-	 * Circular client image, or a lettered fallback so the layout holds when a
-	 * testimonial has no picture.
+	 * Circular client image. Falls back to the widget default image when one is
+	 * set, and to a lettered circle otherwise, so the layout always holds.
 	 */
-	private static function avatar( $post, $name ) {
+	private static function avatar( $post, $name, $args = array() ) {
 		if ( has_post_thumbnail( $post ) ) {
 			return get_the_post_thumbnail(
 				$post,
@@ -216,6 +216,13 @@ class TM_Renderer {
 					'loading' => 'lazy',
 					'alt'     => '',
 				)
+			);
+		}
+
+		if ( ! empty( $args['fallback_image'] ) ) {
+			return sprintf(
+				'<img class="tm-avatar" src="%s" alt="" loading="lazy" />',
+				esc_url( $args['fallback_image'] )
 			);
 		}
 

@@ -50,8 +50,8 @@ never truncated.
 
 Use **Featured image** in the sidebar. The image is cropped square and shown as
 a circle. Roughly 120×120px or larger gives a sharp result on retina screens.
-A testimonial with no image falls back to a lettered circle, so the layout
-never breaks.
+A testimonial with no image falls back to the widget's **Default Client Image**
+if one is set, and to a lettered circle otherwise, so the layout never breaks.
 
 ### Rating
 
@@ -110,7 +110,7 @@ client name and position/company, plus text alignment.
 padding.
 
 **Style → Popup** — max width, background, overlay colour, text colour and
-size, radius, padding, close button colours.
+size, radius, padding, close button position, size and colours.
 
 ### A note on popup styling
 
@@ -152,6 +152,7 @@ With attributes:
 | `show_position` | `true` | `true`, `false` |
 | `show_button` | `true` | `true`, `false` |
 | `button_text` | `READ FULL REVIEW` | Any text |
+| `fallback_image` | *(empty)* | URL used when a testimonial has no Featured image |
 | `title_tag` | `h3` | `h2`–`h6`, `div`, `p` |
 | `class` | *(empty)* | Extra CSS class on the grid |
 

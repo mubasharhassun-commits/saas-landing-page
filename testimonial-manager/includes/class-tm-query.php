@@ -36,6 +36,7 @@ class TM_Query {
 			'show_position'  => true,
 			'show_button'    => true,
 			'button_text'    => '',
+			'fallback_image' => '',
 			'title_tag'      => 'h3',
 			'class'          => '',
 		);
@@ -76,6 +77,7 @@ class TM_Query {
 			$args[ $flag ] = self::to_bool( $args[ $flag ] );
 		}
 
+		$args['fallback_image'] = esc_url_raw( (string) $args['fallback_image'] );
 		$args['category']    = sanitize_text_field( (string) $args['category'] );
 		$args['button_text'] = sanitize_text_field( (string) $args['button_text'] );
 		$args['class']       = sanitize_html_class( (string) $args['class'] );

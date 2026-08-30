@@ -261,6 +261,17 @@ class TM_Widget_Grid extends \Elementor\Widget_Base {
 		);
 
 		$this->add_control(
+			'fallback_image',
+			array(
+				'label'       => __( 'Default Client Image', 'testimonial-manager' ),
+				'type'        => \Elementor\Controls_Manager::MEDIA,
+				'default'     => array( 'url' => '' ),
+				'description' => __( 'Used for any testimonial with no Featured image of its own, in place of the initial letter. A firm logo works well here.', 'testimonial-manager' ),
+				'condition'   => array( 'show_image' => 'yes' ),
+			)
+		);
+
+		$this->add_control(
 			'excerpt_words',
 			array(
 				'label'       => __( 'Short Text Length (words)', 'testimonial-manager' ),
@@ -787,6 +798,39 @@ class TM_Widget_Grid extends \Elementor\Widget_Base {
 		);
 
 		$this->add_control(
+			'popup_close_position',
+			array(
+				'label'                => __( 'Close Button Position', 'testimonial-manager' ),
+				'type'                 => \Elementor\Controls_Manager::SELECT,
+				'default'              => 'top-right',
+				'separator'            => 'before',
+				'options'              => array(
+					'top-right'  => __( 'Top Right (inside)', 'testimonial-manager' ),
+					'top-center' => __( 'Top Center (on the edge)', 'testimonial-manager' ),
+					'top-left'   => __( 'Top Left (inside)', 'testimonial-manager' ),
+				),
+				'selectors_dictionary' => array(
+					'top-right'  => '--tm-close-top:12px;--tm-close-right:12px;--tm-close-left:auto;--tm-close-transform:none;',
+					'top-center' => '--tm-close-top:0px;--tm-close-right:auto;--tm-close-left:50%;--tm-close-transform:translate(-50%,-50%);',
+					'top-left'   => '--tm-close-top:12px;--tm-close-right:auto;--tm-close-left:12px;--tm-close-transform:none;',
+				),
+				'selectors'            => array( '{{WRAPPER}} .tm-grid' => '{{VALUE}}' ),
+			)
+		);
+
+		$this->add_control(
+			'popup_close_size',
+			array(
+				'label'      => __( 'Close Button Size', 'testimonial-manager' ),
+				'type'       => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => array( 'px' ),
+				'range'      => array( 'px' => array( 'min' => 26, 'max' => 72 ) ),
+				'default'    => array( 'unit' => 'px', 'size' => 40 ),
+				'selectors'  => array( '{{WRAPPER}} .tm-grid' => '--tm-close-size: {{SIZE}}px;' ),
+			)
+		);
+
+		$this->add_control(
 			'popup_close_bg',
 			array(
 				'label'     => __( 'Close Button Background', 'testimonial-manager' ),
@@ -836,6 +880,7 @@ class TM_Widget_Grid extends \Elementor\Widget_Base {
 				'show_position'  => $s['show_position'],
 				'show_button'    => $s['show_button'],
 				'button_text'    => $s['button_text'],
+				'fallback_image' => isset( $s['fallback_image']['url'] ) ? $s['fallback_image']['url'] : '',
 				'title_tag'      => $s['title_tag'],
 			)
 		);

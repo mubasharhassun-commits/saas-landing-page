@@ -24,6 +24,11 @@
 		'--tm-modal-padding',
 		'--tm-modal-close-bg',
 		'--tm-modal-close-color',
+		'--tm-close-top',
+		'--tm-close-right',
+		'--tm-close-left',
+		'--tm-close-transform',
+		'--tm-close-size',
 		'--tm-name-color'
 	];
 

@@ -184,17 +184,28 @@
 	transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
 
-.tm-btn:hover,
-.tm-btn:focus-visible {
+/* Every interactive state is pinned to the plugin's own colours. Themes
+   commonly style button:focus and button:active, and :focus-visible does not
+   match a mouse click, so a clicked button would otherwise keep the theme
+   colour after the popup closed. */
+.tm-grid .tm-card .tm-btn:hover,
+.tm-grid .tm-card .tm-btn:focus,
+.tm-grid .tm-card .tm-btn:focus-visible,
+.tm-grid .tm-card .tm-btn:active {
 	background: var(--tm-btn-bg-hover);
 	color: var(--tm-btn-color-hover);
 	border-color: var(--tm-btn-border-hover);
 }
 
-.tm-btn:focus-visible,
+.tm-grid .tm-card .tm-btn:focus-visible,
 .tm-modal-close:focus-visible {
-	outline: 3px solid currentColor;
+	outline: 3px solid var(--tm-btn-bg, #7a9a98);
 	outline-offset: 2px;
+}
+
+/* Keyboard focus stays visible; a mouse click does not leave a ring behind. */
+.tm-grid .tm-card .tm-btn:focus:not(:focus-visible) {
+	outline: none;
 }
 
 /* ---------- Modal ---------- */
@@ -243,14 +254,17 @@
 
 .tm-modal-dialog:focus { outline: none; }
 
-/* Circular close button straddling the top edge of the dialog. */
+/* Position comes from custom properties so the widget can offer a choice
+   between the corner and the overlapping style. */
 .tm-modal-close {
 	position: absolute;
-	top: 0;
-	left: 50%;
-	width: 44px;
-	height: 44px;
-	transform: translate(-50%, -50%);
+	top: var(--tm-close-top, 12px);
+	right: var(--tm-close-right, 12px);
+	left: var(--tm-close-left, auto);
+	width: var(--tm-close-size, 40px);
+	height: var(--tm-close-size, 40px);
+	transform: var(--tm-close-transform, none);
+	z-index: 2;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -263,9 +277,12 @@
 }
 
 .tm-modal-close svg {
-	width: 20px;
-	height: 20px;
+	width: 45%;
+	height: 45%;
 }
+
+/* Keep the stars and text clear of a corner-positioned close button. */
+.tm-modal-body { padding-right: 34px; }
 
 .tm-modal-body .tm-stars { margin-bottom: 20px; }
 
@@ -310,6 +327,7 @@ body.tm-modal-open { overflow: hidden; }
 @media (max-width: 767px) {
 	.tm-modal { padding: 44px 14px 14px; }
 	.tm-modal-dialog { padding: 26px 20px; }
+	.tm-modal-body { padding-right: 26px; }
 	.tm-excerpt { text-align: left; hyphens: manual; }
 }
 
