@@ -401,7 +401,10 @@ header > .elementor-element:has(#header_menu .elementor-menu-toggle.elementor-ac
 #header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a.elementor-item-active > span.sub-arrow svg *,
 #header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a:hover > span.sub-arrow,
 #header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a:hover > span.sub-arrow svg,
-#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a:hover > span.sub-arrow svg * {
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a:hover > span.sub-arrow svg *,
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a:focus > span.sub-arrow,
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a:focus > span.sub-arrow svg,
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a:focus > span.sub-arrow svg * {
   fill:  var(--wl-bg, #13181e) !important;
   color: var(--wl-bg, #13181e) !important;
 }
