@@ -1,19 +1,24 @@
 Waters Law — header burger menu fix
 ===================================
 
-FILE
-----
+FILES
+-----
 waters-law-header-menu.css   → your complete, corrected CSS (replaces the
                                whole block you were using, including the
                                1300px / 1299px / 1298px media queries).
-
-CSS only. No JavaScript, no snippets, nothing else to install.
+waters-law-submenu-click.js  → OPTIONAL. Makes sub-menus open on click
+                               instead of hover. See item 6 below for why
+                               this one cannot be done in CSS.
 
 WHERE TO PASTE
 --------------
-Elementor > Site Settings > Custom CSS
-(or Appearance > Customize > Additional CSS)
-Replace your existing block entirely with this file's contents.
+CSS : Elementor > Site Settings > Custom CSS
+      (or Appearance > Customize > Additional CSS)
+      Replace your existing block entirely with this file's contents.
+
+JS  : Elementor > Custom Code > Add New, Location: "Body - End"
+      Paste as-is, the <script> tags are included.
+      Skip this file if you want zero JavaScript — see item 6.
 
 WHAT WAS FIXED
 --------------
@@ -47,18 +52,39 @@ WHAT WAS FIXED
    first menu row's border-top, so you saw two stacked lines. The bar's border
    is gone; the row's border-top is the single divider now.
 
-5. PARENT ROW NAVIGATING INSTEAD OF CLOSING — section 9 of the CSS.
-   "CASES WE HANDLE" is a real link. SmartMenus swallows the FIRST click to
-   open the sub-menu, then lets the SECOND click through as a normal link —
-   which is why trying to close it loaded the Cases We Handle page and
-   reloaded everything.
-   Fix: .sub-arrow is SmartMenus' own toggle control and it cancels the link
-   on every click, so it is now stretched across the whole row. Every click on
-   the row hits the toggle: open, close, open, close, no navigation.
-   Trade-off: the parent's own page is no longer reachable by tapping that row
-   in the drawer (keyboard Tab + Enter still follows it). If you want it
-   reachable, add it as the first sub-item in Appearance > Menus, e.g.
-   "All Cases We Handle" above "Maritime Negligence Claims".
+5. ARROW = TOGGLE, TEXT = LINK — section 9 of the CSS.
+   The arrow now has its own click target: the right-hand 64px of the row in
+   the mobile drawer, and an enlarged (but layout-neutral) box on desktop.
+   The text is left alone as a plain link.
+
+6. CLICK INSTEAD OF HOVER — waters-law-submenu-click.js.
+   This is the one piece CSS cannot do, and it is worth knowing why before
+   you decide whether to paste it.
+
+   Elementor runs these menus with a library called SmartMenus. SmartMenus
+   is what opens a sub-menu when you hover on desktop, and what makes the
+   FIRST tap on a mobile parent link open the sub-menu rather than follow the
+   link (that is the "it redirects to Cases We Handle" behaviour). Both are
+   JavaScript. A stylesheet can move the arrow, resize it, colour it — it has
+   no way to cancel a JS hover handler or redefine what a click does.
+
+   The snippet flips a single SmartMenus option, noMouseOver = true. It adds
+   no handlers of its own and does not replace the menu. Result:
+     - hover opens nothing, desktop or mobile
+     - the arrow opens and closes the sub-menu on click
+     - the text goes to its page on the first click, desktop and mobile
+     - clicking elsewhere closes an open sub-menu
+
+   IF YOU SKIP THE SNIPPET: the arrow still toggles and the CSS still works,
+   but desktop sub-menus keep opening on hover, and the first tap on a mobile
+   parent still opens instead of navigating.
+
+   CSS-ONLY ALTERNATIVE for mobile, if you want no JavaScript at all: in
+   section 9, change the arrow's `width: 64px !important;` to
+   `width: auto !important; left: 0 !important;`. That stretches the arrow
+   across the whole row, so every tap toggles and nothing navigates — which is
+   what the previous version did. The row then stops linking to its own page,
+   and desktop hover is unaffected either way.
 
 CLOSING THE DRAWER
 ------------------
