@@ -82,6 +82,17 @@ WHAT WAS FIXED
    on desktop), because the anchor's padding used to run past the little
    arrow, so clicks aimed beside it landed on the link.
 
+   ARROW POSITION AND COLOUR: the arrow is pinned to the right-hand edge of
+   its row (position:absolute; right:0) in a 56 x 56 box, and both the SVG and
+   its <path> are filled white explicitly, because Elementor's inherited
+   colour was leaving it dark.
+
+   HOW TO CHECK THE RIGHT VERSION IS LIVE: open DevTools, select the
+   span.sub-arrow, and look at its computed width. 56px means this file is
+   active. If the arrow sits next to the text instead of at the row's right
+   edge, the browser is still running an older copy of the CSS — re-paste the
+   file, then purge the WP Engine cache and hard-reload (Ctrl+Shift+R).
+
    ARROW SIZE: Elementor ships the caret at 1em (16 x 16). It is now set to
    fill the 56 x 56 box. Because the caret's viewBox is 320x512 — tall and
    narrow — it scales to the 56px height and lands about 35px wide, centred,

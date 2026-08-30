@@ -340,39 +340,48 @@ header > .elementor-element:has(#header_menu .elementor-menu-toggle.elementor-ac
    No JavaScript. Nothing about hover-vs-click is touched.
    -------------------------------------------------------------------------- */
 
-/* --- mobile drawer: arrow target = right end of the row, text untouched --- */
-#header_menu .elementor-nav-menu--dropdown a:has(> .sub-arrow) {
-  position: relative;
+/* --- mobile drawer: arrow parked at the right edge, white, 56 x 56 -------
+   Selectors here are deliberately long (id + list + li + a + span.sub-arrow).
+   That out-specifies any older copy of these rules still sitting in your
+   Custom CSS box, so the arrow lands correctly no matter which block comes
+   last in the file.                                                        */
+
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a {
+  position: relative;                    /* the arrow anchors to this row   */
 }
-#header_menu .elementor-nav-menu--dropdown a > .sub-arrow {
-  position: absolute !important;
-  top:    0 !important;
-  right:  0 !important;
-  bottom: 0 !important;
-  left:   auto !important;
-  width:  56px !important;               /* square target, 56 x row height   */
-  height: auto !important;
-  margin:  0 !important;
-  padding: 0 !important;                 /* the icon fills the box now       */
-  display: flex !important;
-  align-items:     center;
-  justify-content: center;
-  color: var(--wl-text) !important;
+
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a > span.sub-arrow {
+  position:  absolute !important;
+  top:       0 !important;
+  right:     0 !important;               /* <-- hard right edge of the row  */
+  bottom:    0 !important;
+  left:      auto !important;
+  width:     56px !important;
+  min-width: 56px !important;            /* beats the old min-width:40px    */
+  height:    auto !important;
+  margin:    0 !important;
+  padding:   0 !important;
+  display:         flex !important;
+  align-items:     center !important;
+  justify-content: center !important;
+  color:      var(--wl-text, #fff) !important;
   background: transparent !important;
   cursor: pointer;
 }
 
-/* Elementor ships the caret at 1em (16 x 16) via
-   `.elementor-nav-menu .sub-arrow .e-font-icon-svg { width:1em; height:1em }`.
-   Override it so the icon fills the 56 x 56 box.
-   The caret's viewBox is 320x512 (tall and narrow) and preserveAspectRatio
-   defaults to "meet", so the glyph scales to the 56px height and ends up
-   about 35px wide, centred — it will read as a noticeably bigger arrow.
-   Want it in between? Change both values below, e.g. 28px.                  */
-#header_menu .elementor-nav-menu--dropdown .sub-arrow svg,
-#header_menu .elementor-nav-menu--dropdown .sub-arrow .e-font-icon-svg {
+/* Icon: fills the box, and painted white.
+   Elementor sizes it at 1em (16 x 16) and colours it by inheritance, which
+   was leaving a small dark caret — set both explicitly. The caret's viewBox
+   is 320x512, so at 56px tall the glyph draws about 35px wide, centred.
+   Want it smaller? Change the two 56px values below (28px is a good middle). */
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a > span.sub-arrow > svg {
   width:  56px !important;
   height: 56px !important;
+}
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a > span.sub-arrow svg,
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a > span.sub-arrow svg * {
+  fill:  var(--wl-text, #fff) !important;
+  color: var(--wl-text, #fff) !important;
 }
 
 /* --- desktop horizontal menu: bigger arrow hit area, zero layout shift ---- */
