@@ -42,6 +42,24 @@ WHAT WAS FIXED
    The drawer's closed state is now hard-locked (transform + visibility +
    pointer-events, all !important) and only the active toggle opens it.
 
+4. TWO BORDER LINES UNDER THE X — section 5 of the CSS.
+   The fixed top bar had its own border-bottom, sitting about 10px above the
+   first menu row's border-top, so you saw two stacked lines. The bar's border
+   is gone; the row's border-top is the single divider now.
+
+5. PARENT ROW NAVIGATING INSTEAD OF CLOSING — section 9 of the CSS.
+   "CASES WE HANDLE" is a real link. SmartMenus swallows the FIRST click to
+   open the sub-menu, then lets the SECOND click through as a normal link —
+   which is why trying to close it loaded the Cases We Handle page and
+   reloaded everything.
+   Fix: .sub-arrow is SmartMenus' own toggle control and it cancels the link
+   on every click, so it is now stretched across the whole row. Every click on
+   the row hits the toggle: open, close, open, close, no navigation.
+   Trade-off: the parent's own page is no longer reachable by tapping that row
+   in the drawer (keyboard Tab + Enter still follows it). If you want it
+   reachable, add it as the first sub-item in Appearance > Menus, e.g.
+   "All Cases We Handle" above "Maritime Negligence Claims".
+
 CLOSING THE DRAWER
 ------------------
 The X button closes it. Clicking the dark backdrop does NOT close it — that

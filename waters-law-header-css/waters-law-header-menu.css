@@ -14,6 +14,10 @@
    FIX C  The drawer itself is guaranteed closed until the toggle is active
           (the old `display:block` + `background:#fff` rules were forcing it
           visible / white at <=1298px).
+   FIX D  Removed the doubled line under the X — the top bar's border-bottom
+          sat ~10px above the first row's border-top, reading as two borders.
+   FIX E  Clicking a parent row ("CASES WE HANDLE") now opens AND closes its
+          sub-menu. It used to navigate to that page on the second click.
 
    Nothing outside the header menu is touched. CSS only — no JavaScript.
    ========================================================================== */
@@ -188,7 +192,8 @@ header > .elementor-element:has(#header_menu .elementor-menu-toggle.elementor-ac
   max-width: var(--wl-w);
   height: var(--wl-barh);
   background: var(--wl-bg);
-  border-bottom: 1px solid var(--wl-line);
+  /* FIX D: no border here. It sat ~10px above the first row's border-top and
+     read as two stacked lines. The row's own border-top is the only one now. */
   z-index: 9998;
   pointer-events: none;             /* the X underneath stays clickable      */
   transform: translateX(100%);      /* slides in together with the drawer    */
@@ -314,22 +319,46 @@ header > .elementor-element:has(#header_menu .elementor-menu-toggle.elementor-ac
   background: rgba(255,255,255,.10) !important;
 }
 
-/* The arrow is the open/close control — make it an easy tap target.         */
-#header_menu .elementor-nav-menu--dropdown .sub-arrow {
+/* --------------------------------------------------------------------------
+   FIX E — clicking a parent row toggles it instead of navigating away
+   --------------------------------------------------------------------------
+   THE BUG: a parent item like "CASES WE HANDLE" is a real link. SmartMenus
+   swallows the FIRST click on it to open the sub-menu, then lets the SECOND
+   click through as a normal link — so trying to close the sub-menu loaded the
+   Cases We Handle page and reloaded everything.
+
+   THE FIX: the .sub-arrow span is SmartMenus' own toggle control, and it
+   cancels the link on every click. Stretching that span across the whole row
+   means every click on the row hits the toggle, never the anchor. Open, close,
+   open, close — no navigation, no reload. Pure CSS, no JS.
+
+   TRADE-OFF: the parent's own page is no longer reachable by tapping the row
+   in the drawer (keyboard Tab + Enter still follows it). If you want that page
+   reachable, add it as the first sub-item in Appearance > Menus, e.g. an
+   "All Cases We Handle" link above "Maritime Negligence Claims".
+   -------------------------------------------------------------------------- */
+
+#header_menu .elementor-nav-menu--dropdown a:has(> .sub-arrow) {
+  position: relative;
+}
+#header_menu .elementor-nav-menu--dropdown a > .sub-arrow {
+  position: absolute !important;
+  inset:    0 !important;                /* covers the entire row            */
+  width:    auto !important;
+  height:   auto !important;
+  margin:   0 !important;
+  padding:  0 20px 0 0 !important;       /* keeps the icon at the right edge */
+  display:  flex !important;
+  align-items:     center;
+  justify-content: flex-end;
   color: var(--wl-text) !important;
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  min-width: 40px;
-  min-height: 40px;
-  margin: -10px -8px -10px 6px !important;
+  background: transparent !important;
   cursor: pointer;
-  transition: transform .2s ease;
 }
-#header_menu .elementor-nav-menu--dropdown li[aria-expanded="true"] > a > .sub-arrow,
-#header_menu .elementor-nav-menu--dropdown a[aria-expanded="true"] > .sub-arrow {
-  transform: rotate(180deg);
-}
+
+/* No rotate rule here on purpose: Elementor already swaps the icon between
+   its down and up state (v / ^), and rotating a full-row box would fling the
+   icon over to the left-hand side.                                          */
 
 
 /* ==========================================================================
