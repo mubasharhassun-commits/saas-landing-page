@@ -329,10 +329,13 @@ header > .elementor-element:has(#header_menu .elementor-menu-toggle.elementor-ac
      desktop     -> sub-menu opens on hover, as before
      responsive  -> sub-menu opens on click, as before
 
-   The only change is WHERE that control lives. The arrow now owns a real
-   click target of its own, and the "CASES WE HANDLE" text is left as a plain
-   link to its own page. Previously the anchor's padding extended past the
-   little arrow, so clicks aimed at the arrow landed on the link instead.
+   Two things make that work:
+     1. the arrow owns a real click target of its own (the anchor's padding
+        used to extend past the little arrow, so clicks aimed at the arrow
+        landed on the link instead);
+     2. the SVG icon inside the arrow is made transparent to pointer events —
+        see the long note further down. This is what was still sending the
+        second click to /cases-we-handle/.
 
    No JavaScript. Nothing about hover-vs-click is touched.
    -------------------------------------------------------------------------- */
@@ -366,6 +369,35 @@ header > .elementor-element:has(#header_menu .elementor-menu-toggle.elementor-ac
   cursor:  pointer;
   padding: 10px 8px !important;
   margin:  -10px -8px !important;
+}
+
+/* --------------------------------------------------------------------------
+   THE ACTUAL CAUSE OF "second click reloads the page"
+   --------------------------------------------------------------------------
+   Elementor renders the submenu indicator as an inline SVG INSIDE the arrow:
+
+       <span class="sub-arrow"><svg class="e-font-icon-svg e-fas-caret-down">
+
+   SmartMenus decides what a click on a parent item means by testing the
+   event target against the arrow itself — roughly `$(e.target).is('.sub-arrow')`.
+   Click the visible icon and e.target is the <svg>, NOT the span, so that
+   test fails and SmartMenus falls through to "follow the link".
+
+   That is why the behaviour looked so odd: the FIRST click opened the
+   sub-menu (SmartMenus always opens a collapsed one, whatever was clicked),
+   and the SECOND click — the one that has to pass the arrow test to collapse
+   it — hit the SVG, failed the test, and loaded /cases-we-handle/.
+
+   Fix: make the icon transparent to pointer events. The click then resolves
+   to the .sub-arrow span, the test passes, and the sub-menu collapses.
+   The icon still renders exactly as before — pointer-events only affects
+   hit-testing, never painting.
+   -------------------------------------------------------------------------- */
+
+#header_menu .elementor-nav-menu--dropdown .sub-arrow *,
+.elementor-nav-menu--main .sub-arrow * {
+  pointer-events: none !important;   /* svg, path, <i> — none of them are the
+                                        click target any more                */
 }
 
 /* ==========================================================================

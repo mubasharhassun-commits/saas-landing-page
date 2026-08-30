@@ -57,18 +57,35 @@ WHAT WAS FIXED
    is cancelled by an equal negative margin, so the header bar does not move
    a pixel). The "CASES WE HANDLE" text is a plain link to its own page.
 
-   Why it used to misfire: the anchor's padding ran past the little arrow, so
-   clicks aimed just beside the arrow landed on the link instead of the
-   toggle. The arrow now owns that space.
+   WHY THE SECOND CLICK USED TO RELOAD THE PAGE
+   Elementor renders the submenu indicator as an inline SVG inside the arrow:
 
-   ONE THING TO KNOW ON REAL TOUCH DEVICES: SmartMenus (the library Elementor
-   runs these menus with) has a built-in touch rule — the first tap on a
-   parent LINK opens its sub-menu, the second tap follows the link. That is
-   Elementor's stock behaviour and it is untouched here, per your request.
-   Tapping the ARROW is unaffected: it toggles, every time, first tap.
-   If you ever want the text to navigate on the very first tap instead, that
-   needs a JavaScript snippet — it is a SmartMenus handler, not something a
-   stylesheet can reach.
+       <span class="sub-arrow"><svg class="e-font-icon-svg e-fas-caret-down">
+
+   SmartMenus works out what a click on a parent item means by testing the
+   event target against the arrow itself (roughly `$(e.target).is('.sub-arrow')`).
+   Click the visible icon and e.target is the <svg>, not the span, so the test
+   fails and SmartMenus falls through to "follow the link".
+
+   That produced exactly the behaviour you saw: the FIRST click opened the
+   sub-menu (SmartMenus opens a collapsed one whatever was clicked), and the
+   SECOND click — the one that must pass the arrow test in order to collapse
+   it — landed on the SVG, failed, and loaded /cases-we-handle/.
+
+   The fix is one rule: `.sub-arrow * { pointer-events: none }`. The icon is
+   no longer a hit-test target, so the click resolves to the .sub-arrow span,
+   the test passes, and the sub-menu collapses. pointer-events affects hit
+   testing only — the icon still paints exactly as before.
+
+   A second, smaller part of the same fix: the arrow now has a real click
+   target (the right-hand 64px of the drawer row, an enlarged box on desktop),
+   because the anchor's padding used to run past the little arrow, so clicks
+   aimed beside it landed on the link.
+
+   ONE THING TO KNOW ON REAL TOUCH DEVICES: SmartMenus has a built-in touch
+   rule — the first tap on a parent LINK opens its sub-menu, the second tap
+   follows the link. That is Elementor's stock behaviour and is untouched
+   here, per your request. Tapping the ARROW is unaffected: it toggles.
 
 CLOSING THE DRAWER
 ------------------
