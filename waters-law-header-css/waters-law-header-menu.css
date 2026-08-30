@@ -350,16 +350,29 @@ header > .elementor-element:has(#header_menu .elementor-menu-toggle.elementor-ac
   right:  0 !important;
   bottom: 0 !important;
   left:   auto !important;
-  width:  64px !important;               /* tap target, text stays clickable */
+  width:  56px !important;               /* square target, 56 x row height   */
   height: auto !important;
   margin:  0 !important;
-  padding: 0 18px 0 0 !important;
+  padding: 0 !important;                 /* the icon fills the box now       */
   display: flex !important;
   align-items:     center;
-  justify-content: flex-end;
+  justify-content: center;
   color: var(--wl-text) !important;
   background: transparent !important;
   cursor: pointer;
+}
+
+/* Elementor ships the caret at 1em (16 x 16) via
+   `.elementor-nav-menu .sub-arrow .e-font-icon-svg { width:1em; height:1em }`.
+   Override it so the icon fills the 56 x 56 box.
+   The caret's viewBox is 320x512 (tall and narrow) and preserveAspectRatio
+   defaults to "meet", so the glyph scales to the 56px height and ends up
+   about 35px wide, centred — it will read as a noticeably bigger arrow.
+   Want it in between? Change both values below, e.g. 28px.                  */
+#header_menu .elementor-nav-menu--dropdown .sub-arrow svg,
+#header_menu .elementor-nav-menu--dropdown .sub-arrow .e-font-icon-svg {
+  width:  56px !important;
+  height: 56px !important;
 }
 
 /* --- desktop horizontal menu: bigger arrow hit area, zero layout shift ---- */

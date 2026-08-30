@@ -78,9 +78,16 @@ WHAT WAS FIXED
    testing only — the icon still paints exactly as before.
 
    A second, smaller part of the same fix: the arrow now has a real click
-   target (the right-hand 64px of the drawer row, an enlarged box on desktop),
-   because the anchor's padding used to run past the little arrow, so clicks
-   aimed beside it landed on the link.
+   target (a 56 x 56 box at the right end of the drawer row, an enlarged box
+   on desktop), because the anchor's padding used to run past the little
+   arrow, so clicks aimed beside it landed on the link.
+
+   ARROW SIZE: Elementor ships the caret at 1em (16 x 16). It is now set to
+   fill the 56 x 56 box. Because the caret's viewBox is 320x512 — tall and
+   narrow — it scales to the 56px height and lands about 35px wide, centred,
+   so it reads as a much bigger arrow than before. If that is too big, change
+   BOTH values in that rule (search for "56px !important") to something like
+   28px. The box stays 56 x 56 either way, so the click target is unaffected.
 
    ONE THING TO KNOW ON REAL TOUCH DEVICES: SmartMenus has a built-in touch
    rule — the first tap on a parent LINK opens its sub-menu, the second tap
