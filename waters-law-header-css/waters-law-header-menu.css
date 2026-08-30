@@ -16,13 +16,13 @@
           visible / white at <=1298px).
    FIX D  Removed the doubled line under the X — the top bar's border-bottom
           sat ~10px above the first row's border-top, reading as two borders.
-   FIX E  The ARROW is the open/close control and the TEXT is a plain link,
-          desktop and mobile alike. The arrow gets a proper click target here;
-          the "click not hover" half needs waters-law-submenu-click.js (see
-          the README — SmartMenus, not CSS, decides what a click does).
+   FIX E  The ARROW is the open/close control and the TEXT is a plain link to
+          its own page. Elementor's own hover-on-desktop / click-on-responsive
+          behaviour is left exactly as it ships.
 
    Nothing outside the header menu is touched, except one small rule that
    enlarges the desktop sub-menu arrow's click area with no layout shift.
+   CSS only — no JavaScript.
    ========================================================================== */
 
 
@@ -323,26 +323,18 @@ header > .elementor-element:has(#header_menu .elementor-menu-toggle.elementor-ac
 }
 
 /* --------------------------------------------------------------------------
-   FIX E (REVISED) — the ARROW is the toggle, the TEXT is the link
+   FIX E — the ARROW is the open/close control, the TEXT is the link
    --------------------------------------------------------------------------
-   Requested behaviour, desktop and mobile alike:
-     * click the text  ("CASES WE HANDLE")  -> go to that page
-     * click the arrow ( v / ^ )            -> open / close the sub-menu
-     * no opening on hover
+   Elementor's own behaviour is kept exactly as it ships:
+     desktop     -> sub-menu opens on hover, as before
+     responsive  -> sub-menu opens on click, as before
 
-   WHAT THIS CSS DOES: gives the arrow its own generous click target on the
-   right-hand end of the row, without covering the text. The text stays a
-   normal link.
+   The only change is WHERE that control lives. The arrow now owns a real
+   click target of its own, and the "CASES WE HANDLE" text is left as a plain
+   link to its own page. Previously the anchor's padding extended past the
+   little arrow, so clicks aimed at the arrow landed on the link instead.
 
-   WHAT THIS CSS CANNOT DO: change what a click DOES. Which click opens a
-   sub-menu — and whether hover opens one at all — is decided by SmartMenus,
-   the JavaScript library Elementor uses to run this menu. No stylesheet can
-   cancel a JS-driven hover. That half lives in the companion snippet
-   waters-law-submenu-click.js (one line of config, see README).
-
-   Without that snippet: the arrow still toggles, but hover still opens the
-   desktop menu, and the first tap on the mobile text opens instead of
-   navigating. With it: exactly the behaviour listed above.
+   No JavaScript. Nothing about hover-vs-click is touched.
    -------------------------------------------------------------------------- */
 
 /* --- mobile drawer: arrow target = right end of the row, text untouched --- */

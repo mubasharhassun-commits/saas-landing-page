@@ -1,24 +1,19 @@
 Waters Law — header burger menu fix
 ===================================
 
-FILES
------
+FILE
+----
 waters-law-header-menu.css   → your complete, corrected CSS (replaces the
                                whole block you were using, including the
                                1300px / 1299px / 1298px media queries).
-waters-law-submenu-click.js  → OPTIONAL. Makes sub-menus open on click
-                               instead of hover. See item 6 below for why
-                               this one cannot be done in CSS.
+
+CSS only. No JavaScript, no snippets, nothing else to install.
 
 WHERE TO PASTE
 --------------
-CSS : Elementor > Site Settings > Custom CSS
-      (or Appearance > Customize > Additional CSS)
-      Replace your existing block entirely with this file's contents.
-
-JS  : Elementor > Custom Code > Add New, Location: "Body - End"
-      Paste as-is, the <script> tags are included.
-      Skip this file if you want zero JavaScript — see item 6.
+Elementor > Site Settings > Custom CSS
+(or Appearance > Customize > Additional CSS)
+Replace your existing block entirely with this file's contents.
 
 WHAT WAS FIXED
 --------------
@@ -53,38 +48,27 @@ WHAT WAS FIXED
    is gone; the row's border-top is the single divider now.
 
 5. ARROW = TOGGLE, TEXT = LINK — section 9 of the CSS.
-   The arrow now has its own click target: the right-hand 64px of the row in
-   the mobile drawer, and an enlarged (but layout-neutral) box on desktop.
-   The text is left alone as a plain link.
+   Elementor's own behaviour is kept exactly as it ships:
+     desktop     -> sub-menu opens on hover, as before
+     responsive  -> sub-menu opens on click, as before
+   The only thing that changed is where the control lives. The arrow now has
+   a real click target of its own — the right-hand 64px of the row in the
+   mobile drawer, and an enlarged box on desktop (the padding that grows it
+   is cancelled by an equal negative margin, so the header bar does not move
+   a pixel). The "CASES WE HANDLE" text is a plain link to its own page.
 
-6. CLICK INSTEAD OF HOVER — waters-law-submenu-click.js.
-   This is the one piece CSS cannot do, and it is worth knowing why before
-   you decide whether to paste it.
+   Why it used to misfire: the anchor's padding ran past the little arrow, so
+   clicks aimed just beside the arrow landed on the link instead of the
+   toggle. The arrow now owns that space.
 
-   Elementor runs these menus with a library called SmartMenus. SmartMenus
-   is what opens a sub-menu when you hover on desktop, and what makes the
-   FIRST tap on a mobile parent link open the sub-menu rather than follow the
-   link (that is the "it redirects to Cases We Handle" behaviour). Both are
-   JavaScript. A stylesheet can move the arrow, resize it, colour it — it has
-   no way to cancel a JS hover handler or redefine what a click does.
-
-   The snippet flips a single SmartMenus option, noMouseOver = true. It adds
-   no handlers of its own and does not replace the menu. Result:
-     - hover opens nothing, desktop or mobile
-     - the arrow opens and closes the sub-menu on click
-     - the text goes to its page on the first click, desktop and mobile
-     - clicking elsewhere closes an open sub-menu
-
-   IF YOU SKIP THE SNIPPET: the arrow still toggles and the CSS still works,
-   but desktop sub-menus keep opening on hover, and the first tap on a mobile
-   parent still opens instead of navigating.
-
-   CSS-ONLY ALTERNATIVE for mobile, if you want no JavaScript at all: in
-   section 9, change the arrow's `width: 64px !important;` to
-   `width: auto !important; left: 0 !important;`. That stretches the arrow
-   across the whole row, so every tap toggles and nothing navigates — which is
-   what the previous version did. The row then stops linking to its own page,
-   and desktop hover is unaffected either way.
+   ONE THING TO KNOW ON REAL TOUCH DEVICES: SmartMenus (the library Elementor
+   runs these menus with) has a built-in touch rule — the first tap on a
+   parent LINK opens its sub-menu, the second tap follows the link. That is
+   Elementor's stock behaviour and it is untouched here, per your request.
+   Tapping the ARROW is unaffected: it toggles, every time, first tap.
+   If you ever want the text to navigate on the very first tap instead, that
+   needs a JavaScript snippet — it is a SmartMenus handler, not something a
+   stylesheet can reach.
 
 CLOSING THE DRAWER
 ------------------
