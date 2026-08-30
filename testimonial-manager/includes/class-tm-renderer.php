@@ -42,8 +42,9 @@ class TM_Renderer {
 		self::$needs_modal = true;
 
 		$style = sprintf(
-			'--tm-cols:%d;--tm-cols-t:%d;--tm-cols-m:%d;--tm-gap:%dpx;',
+			'--tm-cols:%d;--tm-cols-l:%d;--tm-cols-t:%d;--tm-cols-m:%d;--tm-gap:%dpx;',
 			$args['columns'],
+			$args['columns_laptop'],
 			$args['columns_tablet'],
 			$args['columns_mobile'],
 			$args['gap']

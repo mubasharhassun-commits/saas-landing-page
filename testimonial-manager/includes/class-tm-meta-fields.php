@@ -121,7 +121,16 @@ class TM_Meta_Fields {
 		<fieldset class="tm-field tm-rating-field">
 			<legend><strong><?php esc_html_e( 'Rating', 'testimonial-manager' ); ?></strong></legend>
 			<div class="tm-stars-picker">
-				<?php for ( $i = 1; $i <= 5; $i++ ) : ?>
+				<?php
+				/*
+				 * Emitted 5 down to 1 on purpose. The picker is laid out with
+				 * flex-direction:row-reverse so 1 sits on the left, and the fill
+				 * rule is "input:checked ~ label", which only reaches labels that
+				 * come LATER in the DOM. Counting down is what makes checking N
+				 * light up exactly the N leftmost stars.
+				 */
+				?>
+				<?php for ( $i = 5; $i >= 1; $i-- ) : ?>
 					<input type="radio" id="tm_rating_<?php echo (int) $i; ?>" name="tm_rating"
 					       value="<?php echo (int) $i; ?>" <?php checked( $data['rating'], $i ); ?> />
 					<label for="tm_rating_<?php echo (int) $i; ?>">

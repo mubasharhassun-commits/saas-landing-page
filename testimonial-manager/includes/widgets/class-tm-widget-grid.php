@@ -175,6 +175,18 @@ class TM_Widget_Grid extends \Elementor\Widget_Base {
 		);
 
 		$this->add_control(
+			'columns_laptop',
+			array(
+				'label'       => __( 'Columns - Laptop', 'testimonial-manager' ),
+				'type'        => \Elementor\Controls_Manager::NUMBER,
+				'min'         => 1,
+				'max'         => 6,
+				'default'     => '',
+				'description' => __( 'Applies at 1300px and below. Leave empty to use the Desktop count.', 'testimonial-manager' ),
+			)
+		);
+
+		$this->add_control(
 			'columns_tablet',
 			array(
 				'label'   => __( 'Columns - Tablet', 'testimonial-manager' ),
@@ -813,6 +825,7 @@ class TM_Widget_Grid extends \Elementor\Widget_Base {
 				'category'       => $s['category'],
 				'featured'       => $s['featured'],
 				'columns'        => $s['columns'],
+				'columns_laptop' => $s['columns_laptop'],
 				'columns_tablet' => $s['columns_tablet'],
 				'columns_mobile' => $s['columns_mobile'],
 				'gap'            => isset( $s['gap']['size'] ) ? $s['gap']['size'] : 24,

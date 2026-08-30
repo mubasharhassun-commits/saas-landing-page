@@ -83,7 +83,18 @@ Search for **Testimonials Grid** in the Elementor panel, under the
 **Content → Query** — number of testimonials, order by (display order, date,
 client name, rating, random), order, category, featured only.
 
-**Content → Layout** — columns for desktop / tablet / mobile, card spacing.
+**Content → Layout** — columns for desktop / laptop / tablet / mobile, card
+spacing. Laptop applies at 1300px and below; leave it empty to use the desktop
+count.
+
+### Breakpoints
+
+| Screen | Applies at | Falls back to |
+|---|---|---|
+| Desktop | above 1300px | — |
+| Laptop | 1300px and below | Desktop, when left empty |
+| Tablet | 1024px and below | — |
+| Mobile | 767px and below | — |
 
 **Content → Display** — show or hide the rating, client image, position,
 company and button; button text; short text length; the heading tag used for
@@ -126,6 +137,7 @@ With attributes:
 |---|---|---|
 | `count` | `6` | Any number. `-1` shows all |
 | `columns` | `3` | 1–6 |
+| `columns_laptop` | *(inherits desktop)* | 1–6, applies at 1300px and below |
 | `columns_tablet` | `2` | 1–6 |
 | `columns_mobile` | `1` | 1–6 |
 | `gap` | `24` | Spacing between cards, in px |

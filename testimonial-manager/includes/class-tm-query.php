@@ -25,6 +25,7 @@ class TM_Query {
 			'featured'       => false,
 			'category'       => '',
 			'columns'        => 3,
+			'columns_laptop' => 0,
 			'columns_tablet' => 2,
 			'columns_mobile' => 1,
 			'gap'            => 24,
@@ -49,6 +50,14 @@ class TM_Query {
 		$args['count']          = (int) $args['count'];
 		$args['columns']        = max( 1, min( 6, (int) $args['columns'] ) );
 		$args['columns_tablet'] = max( 1, min( 6, (int) $args['columns_tablet'] ) );
+
+		// Left empty, the laptop count inherits desktop, so existing grids are
+		// unchanged until a number is entered.
+		$args['columns_laptop'] = max( 0, min( 6, (int) $args['columns_laptop'] ) );
+		if ( $args['columns_laptop'] < 1 ) {
+			$args['columns_laptop'] = $args['columns'];
+		}
+
 		$args['columns_mobile'] = max( 1, min( 6, (int) $args['columns_mobile'] ) );
 		$args['gap']            = max( 0, (int) $args['gap'] );
 		$args['excerpt_words']  = max( 5, min( 200, (int) $args['excerpt_words'] ) );

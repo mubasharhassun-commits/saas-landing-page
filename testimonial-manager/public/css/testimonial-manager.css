@@ -43,6 +43,11 @@
 	gap: var(--tm-gap);
 }
 
+/* Laptop first, so the tablet and mobile rules below still override it. */
+@media (max-width: 1300px) {
+	.tm-grid { --tm-active-cols: var(--tm-cols-l, var(--tm-cols)); }
+}
+
 @media (max-width: 1024px) {
 	.tm-grid { --tm-active-cols: var(--tm-cols-t); }
 }
@@ -135,13 +140,21 @@
 	gap: 2px;
 }
 
-.tm-name {
+.tm-grid .tm-card .tm-name,
+.tm-modal .tm-modal-body .tm-name {
 	margin: 0;
 	padding: 0;
 	color: var(--tm-name-color);
 	font-size: 17px;
 	font-weight: 500;
 	line-height: 1.3;
+	letter-spacing: normal;
+	text-transform: none;
+}
+
+.tm-grid .tm-card .tm-name::before,
+.tm-grid .tm-card .tm-name::after {
+	content: none;
 }
 
 .tm-role {
@@ -273,8 +286,6 @@
 
 .tm-modal-body .tm-name {
 	color: var(--tm-name-color, #1f2d3a);
-	font-size: 17px;
-	font-weight: 500;
 }
 
 /* Set by the script while the modal is open. */
