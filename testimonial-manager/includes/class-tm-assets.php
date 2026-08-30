@@ -16,11 +16,20 @@ class TM_Assets {
 	const SCRIPT = 'testimonial-manager';
 
 	public static function init() {
+		// Registered in every context the widget can be asked about its
+		// dependencies, including the Elementor editor, which is an admin
+		// screen where wp_enqueue_scripts never runs.
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register' ) );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register' ) );
+		add_action( 'elementor/editor/before_enqueue_scripts', array( __CLASS__, 'register' ) );
 		add_action( 'elementor/preview/enqueue_scripts', array( __CLASS__, 'enqueue' ) );
 	}
 
 	public static function register() {
+		if ( wp_style_is( self::STYLE, 'registered' ) ) {
+			return;
+		}
+
 		wp_register_style(
 			self::STYLE,
 			TM_URL . 'public/css/testimonial-manager.css',
