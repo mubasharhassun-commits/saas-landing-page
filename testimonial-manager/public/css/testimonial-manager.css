@@ -11,7 +11,8 @@
    popup stars ended up black. The script copies the grid's own values over
    these defaults when a card opens the popup. */
 .tm-grid,
-.tm-modal {
+.tm-modal,
+.tm-slider {
 	--tm-accent: #7a9a98;
 
 	--tm-text-color: #33383d;
@@ -373,4 +374,185 @@ body.tm-modal-open { overflow: hidden; }
 	clip: rect(0 0 0 0);
 	white-space: nowrap;
 	border: 0;
+}
+
+
+/* =========================================================
+ * SLIDER
+ * ========================================================= */
+
+.tm-slider {
+	--tm-slider-bg: rgba(18, 26, 32, 0.72);
+	--tm-slider-color: #ffffff;
+	--tm-slider-padding: 44px;
+	--tm-slider-radius: 0px;
+	--tm-slider-min-height: 0px;
+	--tm-slider-quote-size: 19px;
+	--tm-slider-nav-color: #ffffff;
+	--tm-slider-nav-bg: rgba(255, 255, 255, 0.14);
+	--tm-slider-dot: rgba(255, 255, 255, 0.4);
+	--tm-slider-dot-active: var(--tm-accent);
+
+	/* The panel sits over a banner image, so white is the working default. */
+	--tm-name-color: #ffffff;
+	--tm-role-color: rgba(255, 255, 255, 0.75);
+
+	position: relative;
+	background: var(--tm-slider-bg);
+	border-radius: var(--tm-slider-radius);
+	color: var(--tm-slider-color);
+}
+
+.tm-slider-viewport {
+	overflow: hidden;
+	padding: var(--tm-slider-padding);
+	min-height: var(--tm-slider-min-height);
+}
+
+/* Every slide occupies the same grid cell, so the track is as tall as the
+   longest testimonial and swapping slides never changes the layout. */
+.tm-slides {
+	display: grid;
+	align-items: start;
+}
+
+.tm-slide {
+	grid-area: 1 / 1;
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.5s ease, transform 0.5s ease;
+	pointer-events: none;
+}
+
+.tm-slide.is-active {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+}
+
+.tm-effect-slide .tm-slide { transform: translateX(28px); }
+.tm-effect-slide .tm-slide.is-active { transform: none; }
+
+.tm-slide .tm-stars { margin-bottom: 20px; }
+
+.tm-slide-quote {
+	margin: 0 0 26px;
+	padding: 0;
+	border: 0;
+	quotes: none;
+	color: inherit;
+	font-style: italic;
+	font-size: var(--tm-slider-quote-size);
+	line-height: 1.6;
+}
+
+.tm-slide-quote p { margin: 0; }
+
+.tm-slide .tm-person {
+	margin-top: 0;
+	padding-top: 0;
+}
+
+.tm-slider .tm-name {
+	color: var(--tm-name-color);
+	font-size: 18px;
+	font-weight: 500;
+	line-height: 1.3;
+}
+
+.tm-slider .tm-role {
+	color: var(--tm-role-color);
+	font-size: 13px;
+}
+
+/* ---------- Navigation ---------- */
+
+/* Forced for the same reason as the popup close button: themes style <button>
+   with their own min-width and padding, and a 50% radius on a box that is not
+   square draws an ellipse rather than a circle. */
+.tm-slider .tm-slider-nav {
+	position: absolute !important;
+	top: 50% !important;
+	transform: translateY(-50%) !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	width: 38px !important;
+	height: 38px !important;
+	min-width: 0 !important;
+	min-height: 0 !important;
+	max-width: none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	background: var(--tm-slider-nav-bg) !important;
+	background-image: none !important;
+	color: var(--tm-slider-nav-color) !important;
+	border: 0 !important;
+	border-radius: 50% !important;
+	box-shadow: none !important;
+	line-height: 1 !important;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.tm-slider-prev { left: 10px !important; right: auto !important; }
+.tm-slider-next { right: 10px !important; left: auto !important; }
+
+.tm-slider.tm-has-arrows .tm-slider-viewport {
+	padding-left: calc(var(--tm-slider-padding) + 40px);
+	padding-right: calc(var(--tm-slider-padding) + 40px);
+}
+
+.tm-slider-nav svg { width: 20px; height: 20px; }
+
+.tm-slider .tm-slider-nav:hover { background: var(--tm-accent) !important; }
+
+.tm-slider-dots {
+	display: flex;
+	justify-content: center;
+	gap: 8px;
+	padding: 0 0 18px;
+}
+
+.tm-slider .tm-slider-dot {
+	display: block !important;
+	width: 9px !important;
+	height: 9px !important;
+	min-width: 0 !important;
+	min-height: 0 !important;
+	max-width: none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	background: var(--tm-slider-dot) !important;
+	background-image: none !important;
+	border: 0 !important;
+	border-radius: 50% !important;
+	box-shadow: none !important;
+	font-size: 0 !important;
+	line-height: 0 !important;
+	cursor: pointer;
+	transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.tm-slider .tm-slider-dot.is-active {
+	background: var(--tm-slider-dot-active) !important;
+	transform: scale(1.25);
+}
+
+.tm-slider-nav:focus-visible,
+.tm-slider-dot:focus-visible {
+	outline: 2px solid var(--tm-slider-color);
+	outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.tm-slide,
+	.tm-slider-nav,
+	.tm-slider-dot { transition: none; }
+	.tm-effect-slide .tm-slide { transform: none; }
+}
+
+@media (max-width: 767px) {
+	.tm-slider { --tm-slider-padding: 26px 20px; --tm-slider-quote-size: 16px; }
+	.tm-slider-nav { display: none; }
 }

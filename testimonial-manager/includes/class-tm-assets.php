@@ -14,6 +14,7 @@ class TM_Assets {
 
 	const STYLE  = 'testimonial-manager';
 	const SCRIPT = 'testimonial-manager';
+	const SLIDER = 'testimonial-manager-slider';
 
 	public static function init() {
 		// Registered in every context the widget can be asked about its
@@ -44,6 +45,25 @@ class TM_Assets {
 			TM_VERSION,
 			true
 		);
+
+		wp_register_script(
+			self::SLIDER,
+			TM_URL . 'public/js/testimonial-manager-slider.js',
+			array(),
+			TM_VERSION,
+			true
+		);
+	}
+
+	/**
+	 * Only pages with a slider on them pay for the slider script.
+	 */
+	public static function enqueue_slider() {
+		if ( ! wp_script_is( self::SLIDER, 'registered' ) ) {
+			self::register();
+		}
+
+		wp_enqueue_script( self::SLIDER );
 	}
 
 	/**

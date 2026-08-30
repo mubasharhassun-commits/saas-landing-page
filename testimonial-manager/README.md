@@ -129,6 +129,42 @@ page can each style their own popup.
 
 ---
 
+## Testimonials Slider (banner)
+
+A second widget, **Testimonials Slider**, shows one testimonial at a time on a
+translucent panel - built for a banner or hero area. It defaults to *Date
+Published* / *Newest First*, so the latest testimonial leads and the rest follow.
+
+**Content → Query** - number of slides, order by, order, category, featured only.
+
+**Content → Slider** - autoplay speed in milliseconds (0 turns it off),
+transition (fade or slide), pause on hover, arrows, dots.
+
+**Content → Display** - rating, client image, position, company, full text or a
+word limit, default client image.
+
+**Style** - panel background, radius, padding, minimum height, client image
+size, star colour and size, testimonial and client name colour and typography,
+arrow and dot colours.
+
+Behaviour:
+
+- Autoplay pauses on hover, while focus is inside it, and when the browser tab
+  is hidden.
+- Arrow keys move between slides; arrows, dots, swipe and keyboard all work.
+- Slides are stacked in one grid cell, so the panel is as tall as the longest
+  testimonial and nothing below it shifts as slides change.
+- Autoplay does not run at all under `prefers-reduced-motion`.
+
+Shortcode form:
+
+```
+[testimonials_slider count="5" autoplay="6000" effect="fade" dots="true"]
+```
+
+It takes the same attributes as `[testimonials]` plus `autoplay`, `effect`
+(`fade` or `slide`), `arrows`, `dots`, `pause_hover` and `full_text`.
+
 ## Shortcode
 
 ```

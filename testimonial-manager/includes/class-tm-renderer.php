@@ -74,6 +74,161 @@ class TM_Renderer {
 	}
 
 	/**
+	 * Render a slider. Returns HTML; never echoes.
+	 *
+	 * Slides are stacked in a single grid cell so the track is always as tall as
+	 * the longest testimonial and nothing jumps as slides change.
+	 */
+	public static function slider( $args = array() ) {
+		$args  = TM_Query::normalize( $args );
+		$query = TM_Query::get( $args );
+
+		if ( ! $query->have_posts() ) {
+			wp_reset_postdata();
+			return '';
+		}
+
+		TM_Assets::enqueue();
+		TM_Assets::enqueue_slider();
+
+		$slides = array();
+
+		while ( $query->have_posts() ) {
+			$query->the_post();
+			$slides[] = get_post();
+		}
+		wp_reset_postdata();
+
+		$total = count( $slides );
+		$uid   = wp_unique_id( 'tm-slider-' );
+
+		$classes = 'tm-slider tm-effect-' . $args['effect'];
+
+		// Lets the stylesheet reserve room so arrows never sit over the text.
+		if ( $args['arrows'] && count( $slides ) > 1 ) {
+			$classes .= ' tm-has-arrows';
+		}
+		if ( '' !== $args['class'] ) {
+			$classes .= ' ' . $args['class'];
+		}
+
+		$out = sprintf(
+			'<div class="%1$s" id="%2$s" data-autoplay="%3$d" data-pause-hover="%4$s">',
+			esc_attr( $classes ),
+			esc_attr( $uid ),
+			(int) $args['autoplay'],
+			$args['pause_hover'] ? '1' : '0'
+		);
+
+		$out .= sprintf(
+			'<div class="tm-slider-viewport" aria-roledescription="carousel" aria-label="%s">',
+			esc_attr__( 'Client testimonials', 'testimonial-manager' )
+		);
+		$out .= '<div class="tm-slides">';
+
+		foreach ( $slides as $i => $post ) {
+			$out .= self::slide( $post, $args, $i, $total );
+		}
+
+		$out .= '</div></div>';
+
+		if ( $args['arrows'] && $total > 1 ) {
+			$out .= sprintf(
+				'<button type="button" class="tm-slider-nav tm-slider-prev" data-tm-prev aria-controls="%1$s" aria-label="%2$s">%3$s</button>',
+				esc_attr( $uid ),
+				esc_attr__( 'Previous testimonial', 'testimonial-manager' ),
+				self::chevron( 'left' )
+			);
+			$out .= sprintf(
+				'<button type="button" class="tm-slider-nav tm-slider-next" data-tm-next aria-controls="%1$s" aria-label="%2$s">%3$s</button>',
+				esc_attr( $uid ),
+				esc_attr__( 'Next testimonial', 'testimonial-manager' ),
+				self::chevron( 'right' )
+			);
+		}
+
+		if ( $args['dots'] && $total > 1 ) {
+			$out .= '<div class="tm-slider-dots">';
+			for ( $i = 0; $i < $total; $i++ ) {
+				$out .= sprintf(
+					'<button type="button" class="tm-slider-dot%1$s" data-tm-goto="%2$d" aria-label="%3$s"%4$s></button>',
+					0 === $i ? ' is-active' : '',
+					$i,
+					esc_attr(
+						sprintf(
+							/* translators: 1: slide number, 2: total slides. */
+							__( 'Show testimonial %1$d of %2$d', 'testimonial-manager' ),
+							$i + 1,
+							$total
+						)
+					),
+					0 === $i ? ' aria-current="true"' : ''
+				);
+			}
+			$out .= '</div>';
+		}
+
+		$out .= '</div>';
+
+		return $out;
+	}
+
+	/**
+	 * One slide. Only the first is exposed to assistive tech until the script
+	 * takes over, so a no-JS reader is not handed every testimonial at once.
+	 */
+	private static function slide( $post, $args, $index, $total ) {
+		$meta = TM_Meta_Fields::get( $post->ID );
+		$name = get_the_title( $post );
+
+		$text = $args['full_text']
+			? wp_strip_all_tags( strip_shortcodes( $post->post_content ) )
+			: self::short_text( $post, $args['excerpt_words'] );
+
+		$out = sprintf(
+			'<div class="tm-slide%1$s" role="group" aria-roledescription="%2$s" aria-label="%3$s"%4$s>',
+			0 === $index ? ' is-active' : '',
+			esc_attr__( 'slide', 'testimonial-manager' ),
+			esc_attr(
+				sprintf(
+					/* translators: 1: slide number, 2: total slides. */
+					__( '%1$d of %2$d', 'testimonial-manager' ),
+					$index + 1,
+					$total
+				)
+			),
+			0 === $index ? '' : ' aria-hidden="true"'
+		);
+
+		if ( $args['show_rating'] ) {
+			$out .= self::stars( $meta['rating'] );
+		}
+
+		$out .= '<blockquote class="tm-slide-quote"><p>' . esc_html( $text ) . '</p></blockquote>';
+
+		$out .= '<div class="tm-person">';
+		if ( $args['show_image'] ) {
+			$out .= self::avatar( $post, $name, $args );
+		}
+		$out .= '<div class="tm-person-text"><span class="tm-name">' . esc_html( $name ) . '</span>';
+
+		$sub = self::subtitle( $meta, $args );
+		if ( '' !== $sub ) {
+			$out .= '<span class="tm-role">' . esc_html( $sub ) . '</span>';
+		}
+		$out .= '</div></div></div>';
+
+		return $out;
+	}
+
+	private static function chevron( $dir ) {
+		$path = ( 'left' === $dir ) ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7';
+
+		return '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">'
+			. '<path d="' . $path . '" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+	}
+
+	/**
 	 * A single testimonial card, plus the inert template holding its full text.
 	 */
 	private static function card( $post, $args ) {

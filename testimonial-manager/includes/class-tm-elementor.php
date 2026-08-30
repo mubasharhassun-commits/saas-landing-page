@@ -57,18 +57,6 @@ class TM_Elementor {
 			return;
 		}
 
-		$file = TM_PATH . 'includes/widgets/class-tm-widget-grid.php';
-
-		if ( ! file_exists( $file ) ) {
-			return;
-		}
-
-		require_once $file;
-
-		if ( ! class_exists( 'TM_Widget_Grid' ) ) {
-			return;
-		}
-
 		if ( ! $widgets_manager && class_exists( 'Elementor\Plugin' ) ) {
 			$widgets_manager = \Elementor\Plugin::instance()->widgets_manager;
 		}
@@ -77,14 +65,31 @@ class TM_Elementor {
 			return;
 		}
 
-		$widget = new TM_Widget_Grid();
+		$widgets = array(
+			'TM_Widget_Grid'   => 'includes/widgets/class-tm-widget-grid.php',
+			'TM_Widget_Slider' => 'includes/widgets/class-tm-widget-slider.php',
+		);
 
-		if ( method_exists( $widgets_manager, 'register' ) ) {
-			$widgets_manager->register( $widget );
-		} elseif ( method_exists( $widgets_manager, 'register_widget_type' ) ) {
-			$widgets_manager->register_widget_type( $widget );
-		} else {
-			return;
+		foreach ( $widgets as $class => $relative ) {
+			$file = TM_PATH . $relative;
+
+			if ( ! file_exists( $file ) ) {
+				continue;
+			}
+
+			require_once $file;
+
+			if ( ! class_exists( $class ) ) {
+				continue;
+			}
+
+			$widget = new $class();
+
+			if ( method_exists( $widgets_manager, 'register' ) ) {
+				$widgets_manager->register( $widget );
+			} elseif ( method_exists( $widgets_manager, 'register_widget_type' ) ) {
+				$widgets_manager->register_widget_type( $widget );
+			}
 		}
 
 		self::$registered = true;

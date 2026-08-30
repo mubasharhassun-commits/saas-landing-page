@@ -39,6 +39,14 @@ class TM_Query {
 			'fallback_image' => '',
 			'title_tag'      => 'h3',
 			'class'          => '',
+
+			/* Slider only. */
+			'autoplay'       => 6000,
+			'effect'         => 'fade',
+			'arrows'         => true,
+			'dots'           => true,
+			'pause_hover'    => true,
+			'full_text'      => false,
 		);
 	}
 
@@ -73,7 +81,17 @@ class TM_Query {
 			? $args['title_tag']
 			: 'h3';
 
-		foreach ( array( 'featured', 'show_rating', 'show_image', 'show_company', 'show_position', 'show_button' ) as $flag ) {
+		// 0 disables autoplay; anything else is clamped to a sane dwell time.
+		$args['autoplay'] = (int) $args['autoplay'];
+		if ( $args['autoplay'] > 0 ) {
+			$args['autoplay'] = max( 1500, min( 30000, $args['autoplay'] ) );
+		} else {
+			$args['autoplay'] = 0;
+		}
+
+		$args['effect'] = ( 'slide' === $args['effect'] ) ? 'slide' : 'fade';
+
+		foreach ( array( 'featured', 'show_rating', 'show_image', 'show_company', 'show_position', 'show_button', 'arrows', 'dots', 'pause_hover', 'full_text' ) as $flag ) {
 			$args[ $flag ] = self::to_bool( $args[ $flag ] );
 		}
 
