@@ -1,0 +1,317 @@
+/**
+ * Testimonial Manager - front end.
+ *
+ * Everything themeable is a custom property on .tm-grid, so the Elementor
+ * widget can restyle a grid by setting variables rather than fighting
+ * selector specificity.
+ */
+
+.tm-grid {
+	--tm-accent: #7a9a98;
+
+	--tm-cols: 3;
+	--tm-cols-t: 2;
+	--tm-cols-m: 1;
+	--tm-gap: 24px;
+
+	--tm-card-bg: #ffffff;
+	--tm-card-border-color: #a9c6c4;
+	--tm-card-border-width: 1px;
+	--tm-card-radius: 2px;
+
+	--tm-text-color: #33383d;
+	--tm-name-color: #1f2d3a;
+	--tm-role-color: #7b8792;
+
+	--tm-star-color: var(--tm-accent);
+	--tm-star-empty-color: #d8e3e2;
+	--tm-star-size: 17px;
+
+	--tm-avatar-size: 44px;
+
+	--tm-btn-bg: var(--tm-accent);
+	--tm-btn-color: #ffffff;
+	--tm-btn-border-color: var(--tm-accent);
+	--tm-btn-bg-hover: #658b88;
+	--tm-btn-color-hover: #ffffff;
+	--tm-btn-border-hover: #658b88;
+	--tm-btn-border-width: 1px;
+	--tm-btn-radius: 2px;
+
+	display: grid;
+	grid-template-columns: repeat(var(--tm-active-cols, var(--tm-cols)), minmax(0, 1fr));
+	gap: var(--tm-gap);
+}
+
+@media (max-width: 1024px) {
+	.tm-grid { --tm-active-cols: var(--tm-cols-t); }
+}
+
+@media (max-width: 767px) {
+	.tm-grid { --tm-active-cols: var(--tm-cols-m); }
+}
+
+/* ---------- Card ---------- */
+
+.tm-card {
+	display: flex;
+	flex-direction: column;
+	padding: 26px;
+	background: var(--tm-card-bg);
+	border: var(--tm-card-border-width) solid var(--tm-card-border-color);
+	border-radius: var(--tm-card-radius);
+}
+
+.tm-quote { margin: 0; }
+
+.tm-excerpt {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	quotes: none;
+	color: var(--tm-text-color);
+	font-style: italic;
+	font-size: 15px;
+	line-height: 1.62;
+	text-align: justify;
+	hyphens: auto;
+}
+
+.tm-excerpt p { margin: 0; }
+
+/* ---------- Stars ---------- */
+
+.tm-stars {
+	display: flex;
+	gap: 3px;
+	margin-bottom: 18px;
+}
+
+.tm-star {
+	width: var(--tm-star-size);
+	height: var(--tm-star-size);
+	flex: 0 0 auto;
+	fill: var(--tm-star-empty-color);
+}
+
+.tm-star.is-on { fill: var(--tm-star-color); }
+
+/* ---------- Client ---------- */
+
+/* margin-top:auto pushes the client block and button to the bottom, so cards
+   with different amounts of text still line their buttons up. */
+.tm-person {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	margin-top: auto;
+	padding-top: 26px;
+}
+
+.tm-avatar {
+	width: var(--tm-avatar-size);
+	height: var(--tm-avatar-size);
+	flex: 0 0 auto;
+	border-radius: 50%;
+	object-fit: cover;
+	display: block;
+}
+
+.tm-avatar-fallback {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--tm-accent);
+	color: #fff;
+	font-size: calc(var(--tm-avatar-size) * 0.42);
+	font-weight: 600;
+	line-height: 1;
+}
+
+.tm-person-text {
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.tm-name {
+	margin: 0;
+	padding: 0;
+	color: var(--tm-name-color);
+	font-size: 17px;
+	font-weight: 500;
+	line-height: 1.3;
+}
+
+.tm-role {
+	color: var(--tm-role-color);
+	font-size: 13px;
+	line-height: 1.35;
+}
+
+/* ---------- Button ---------- */
+
+.tm-btn {
+	display: block;
+	width: 100%;
+	margin-top: 22px;
+	padding: 14px 18px;
+	background: var(--tm-btn-bg);
+	color: var(--tm-btn-color);
+	border: var(--tm-btn-border-width) solid var(--tm-btn-border-color);
+	border-radius: var(--tm-btn-radius);
+	font-family: inherit;
+	font-size: 14px;
+	font-weight: 500;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	text-align: center;
+	cursor: pointer;
+	transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.tm-btn:hover,
+.tm-btn:focus-visible {
+	background: var(--tm-btn-bg-hover);
+	color: var(--tm-btn-color-hover);
+	border-color: var(--tm-btn-border-hover);
+}
+
+.tm-btn:focus-visible,
+.tm-modal-close:focus-visible {
+	outline: 3px solid currentColor;
+	outline-offset: 2px;
+}
+
+/* ---------- Modal ---------- */
+
+.tm-modal {
+	--tm-modal-max-width: 840px;
+	--tm-modal-bg: #ffffff;
+	--tm-modal-overlay: rgba(20, 30, 38, 0.72);
+	--tm-modal-text-color: #33383d;
+	--tm-modal-font-size: 16px;
+	--tm-modal-radius: 2px;
+	--tm-modal-padding: 38px;
+	--tm-modal-close-bg: #7a9a98;
+	--tm-modal-close-color: #ffffff;
+
+	position: fixed;
+	inset: 0;
+	z-index: 999999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 48px 20px 20px;
+}
+
+.tm-modal[hidden] { display: none; }
+
+.tm-modal-overlay {
+	position: absolute;
+	inset: 0;
+	background: var(--tm-modal-overlay);
+	animation: tm-fade 0.2s ease;
+}
+
+.tm-modal-dialog {
+	position: relative;
+	width: 100%;
+	max-width: var(--tm-modal-max-width);
+	max-height: calc(100vh - 68px);
+	overflow-y: auto;
+	padding: var(--tm-modal-padding);
+	background: var(--tm-modal-bg);
+	border-radius: var(--tm-modal-radius);
+	color: var(--tm-modal-text-color);
+	animation: tm-rise 0.22s ease;
+}
+
+.tm-modal-dialog:focus { outline: none; }
+
+/* Circular close button straddling the top edge of the dialog. */
+.tm-modal-close {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	width: 44px;
+	height: 44px;
+	transform: translate(-50%, -50%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	background: var(--tm-modal-close-bg);
+	color: var(--tm-modal-close-color);
+	border: 0;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+.tm-modal-close svg {
+	width: 20px;
+	height: 20px;
+}
+
+.tm-modal-body .tm-stars { margin-bottom: 20px; }
+
+.tm-modal-quote {
+	color: inherit;
+	font-style: italic;
+	font-size: var(--tm-modal-font-size);
+	line-height: 1.7;
+}
+
+.tm-modal-quote p { margin: 0 0 1em; }
+.tm-modal-quote p:last-child { margin-bottom: 0; }
+
+.tm-modal-body .tm-person {
+	margin-top: 26px;
+	padding-top: 0;
+}
+
+.tm-modal-body .tm-name {
+	color: var(--tm-name-color, #1f2d3a);
+	font-size: 17px;
+	font-weight: 500;
+}
+
+/* Set by the script while the modal is open. */
+body.tm-modal-open { overflow: hidden; }
+
+@keyframes tm-fade {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+@keyframes tm-rise {
+	from { opacity: 0; transform: translateY(12px); }
+	to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.tm-modal-overlay,
+	.tm-modal-dialog { animation: none; }
+	.tm-btn { transition: none; }
+}
+
+@media (max-width: 767px) {
+	.tm-modal { padding: 44px 14px 14px; }
+	.tm-modal-dialog { padding: 26px 20px; }
+	.tm-excerpt { text-align: left; hyphens: manual; }
+}
+
+/* Only used when the theme does not already provide it. */
+.tm-grid .screen-reader-text,
+.tm-modal .screen-reader-text {
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+	border: 0;
+}

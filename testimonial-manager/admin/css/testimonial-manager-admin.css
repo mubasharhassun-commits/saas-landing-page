@@ -1,0 +1,54 @@
+/**
+ * Testimonial Manager - admin.
+ *
+ * The rating picker is five real radio inputs, visually hidden and labelled
+ * with stars, so it is keyboard and screen-reader operable for free.
+ */
+
+.tm-field { margin: 0 0 14px; }
+
+.tm-field label { display: block; margin-bottom: 4px; }
+
+.tm-rating-field legend { margin-bottom: 4px; }
+
+.tm-stars-picker {
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: flex-end;
+	gap: 2px;
+}
+
+.tm-stars-picker input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	border: 0;
+}
+
+.tm-stars-picker label {
+	margin: 0;
+	color: #d3d8dc;
+	font-size: 26px;
+	line-height: 1;
+	cursor: pointer;
+	transition: color 0.12s ease;
+}
+
+/* Reversed flex order means "this star and every earlier one" is a sibling
+   selector away, which gives the usual fill-to-here behaviour. */
+.tm-stars-picker input:checked ~ label,
+.tm-stars-picker label:hover,
+.tm-stars-picker label:hover ~ label {
+	color: #f0a52a;
+}
+
+.tm-stars-picker input:focus-visible + label {
+	outline: 2px solid #2271b1;
+	outline-offset: 2px;
+}
+
+.tm-field .description { margin-top: 2px; }
