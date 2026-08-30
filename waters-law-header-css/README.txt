@@ -95,11 +95,19 @@ WHAT WAS FIXED
    dark on the dark row — both states are now set explicitly on the svg and
    its children.
 
-   HOW TO CHECK THE RIGHT VERSION IS LIVE: open DevTools, select the
-   span.sub-arrow, and look at its computed width. 56px means this file is
-   active. If the arrow sits next to the text instead of at the row's right
-   edge, the browser is still running an older copy of the CSS — re-paste the
-   file, then purge the WP Engine cache and hard-reload (Ctrl+Shift+R).
+   HOW TO CHECK THE RIGHT VERSION IS LIVE
+   In DevTools, select the <path> inside the caret and read Computed > fill:
+     rgb(255, 255, 255) on a dark row  -> this file is live
+     rgb(0, 0, 0)                      -> an older copy is still being served
+   A second tell: select span.sub-arrow and read its computed width. 56px is
+   this file; ~40px or 69px is an older one.
+
+   If an older copy is live, a browser hard-reload is usually not enough on
+   WP Engine, because the whole PAGE is cached server-side and the CSS is
+   inlined in it. Do all three:
+     1. re-paste the file and save
+     2. WP Engine > Cache > Purge all caches
+     3. Elementor > Tools > Regenerate CSS & Data, then Ctrl+Shift+R
 
    ARROW SIZE: Elementor ships the caret at 1em (16 x 16). It is now set to
    fill the 56 x 56 box. Because the caret's viewBox is 320x512 — tall and

@@ -378,7 +378,18 @@ header > .elementor-element:has(#header_menu .elementor-menu-toggle.elementor-ac
   width:  56px !important;
   height: 56px !important;
 }
-/* DEFAULT (row is dark) -> white caret                                      */
+/* DEFAULT (row is dark) -> white caret.
+   Two rules for the same thing on purpose: the short one below matches even
+   if the markup chain differs (a menu without ul.elementor-nav-menu, a
+   sticky-header clone, etc). Both are out-specified by the dark-state block
+   further down, so the teal-row behaviour is unaffected.                    */
+#header_menu .elementor-nav-menu--dropdown .sub-arrow,
+#header_menu .elementor-nav-menu--dropdown .sub-arrow svg,
+#header_menu .elementor-nav-menu--dropdown .sub-arrow svg * {
+  fill:  var(--wl-text, #fff) !important;
+  color: var(--wl-text, #fff) !important;
+}
+
 #header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a > span.sub-arrow,
 #header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a > span.sub-arrow svg,
 #header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a > span.sub-arrow svg * {
