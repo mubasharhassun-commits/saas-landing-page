@@ -82,10 +82,18 @@ WHAT WAS FIXED
    on desktop), because the anchor's padding used to run past the little
    arrow, so clicks aimed beside it landed on the link.
 
-   ARROW POSITION AND COLOUR: the arrow is pinned to the right-hand edge of
-   its row (position:absolute; right:0) in a 56 x 56 box, and both the SVG and
-   its <path> are filled white explicitly, because Elementor's inherited
-   colour was leaving it dark.
+   ARROW POSITION: pinned to the right-hand edge of its row
+   (position:absolute; right:0) in a 56 x 56 box.
+
+   ARROW COLOUR — TWO STATES, because the row changes colour underneath it:
+     closed row (dark #13181e)        -> white caret
+     open / hovered / current-page row
+     (teal #82afb5, set in section 8) -> near-black caret (#13181e)
+   SmartMenus puts .highlighted and aria-expanded="true" on the parent link
+   while its sub-menu is open, so those are what the dark state keys off.
+   Elementor colours the icon by inheritance, which is why it was coming out
+   dark on the dark row — both states are now set explicitly on the svg and
+   its children.
 
    HOW TO CHECK THE RIGHT VERSION IS LIVE: open DevTools, select the
    span.sub-arrow, and look at its computed width. 56px means this file is

@@ -378,10 +378,32 @@ header > .elementor-element:has(#header_menu .elementor-menu-toggle.elementor-ac
   width:  56px !important;
   height: 56px !important;
 }
+/* DEFAULT (row is dark) -> white caret                                      */
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a > span.sub-arrow,
 #header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a > span.sub-arrow svg,
 #header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a > span.sub-arrow svg * {
   fill:  var(--wl-text, #fff) !important;
   color: var(--wl-text, #fff) !important;
+}
+
+/* OPEN / HOVERED / CURRENT-PAGE row (background turns teal) -> dark caret.
+   SmartMenus puts .highlighted and aria-expanded="true" on the parent link
+   while its sub-menu is open, and section 8 turns that row teal — a white
+   caret would wash out on it, so it flips to the drawer's near-black.       */
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a.highlighted > span.sub-arrow,
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a.highlighted > span.sub-arrow svg,
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a.highlighted > span.sub-arrow svg *,
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a[aria-expanded="true"] > span.sub-arrow,
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a[aria-expanded="true"] > span.sub-arrow svg,
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a[aria-expanded="true"] > span.sub-arrow svg *,
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a.elementor-item-active > span.sub-arrow,
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a.elementor-item-active > span.sub-arrow svg,
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a.elementor-item-active > span.sub-arrow svg *,
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a:hover > span.sub-arrow,
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a:hover > span.sub-arrow svg,
+#header_menu .elementor-nav-menu--dropdown ul.elementor-nav-menu li > a:hover > span.sub-arrow svg * {
+  fill:  var(--wl-bg, #13181e) !important;
+  color: var(--wl-bg, #13181e) !important;
 }
 
 /* --- desktop horizontal menu: bigger arrow hit area, zero layout shift ---- */
