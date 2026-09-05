@@ -256,11 +256,11 @@ class WL_Render {
 		}
 
 		if ( function_exists( 'vc_build_link' ) ) {
-			$link           = vc_build_link( $raw );
-			$out['url']     = isset( $link['url'] ) ? esc_url_raw( rawurldecode( $link['url'] ) ) : '';
-			$out['target']  = ( isset( $link['target'] ) && false !== strpos( $link['target'], '_blank' ) ) ? '_blank' : '';
+			$link          = vc_build_link( $raw );
+			$out['url']    = isset( $link['url'] ) ? esc_url_raw( rawurldecode( $link['url'] ) ) : '';
+			$out['target'] = ( isset( $link['target'] ) && false !== strpos( $link['target'], '_blank' ) ) ? '_blank' : '';
 
-			return $out;
+			return self::clean_link( $out );
 		}
 
 		// Same format, parsed directly, so the shortcode works without WPBakery.
@@ -278,7 +278,22 @@ class WL_Render {
 			}
 		}
 
-		return $out;
+		return self::clean_link( $out );
+	}
+
+	/**
+	 * A rejected URL must not carry a target with it. Nothing currently acts on
+	 * a target without a URL, but returning one invites a caller to.
+	 *
+	 * @param array $link Parsed link parts.
+	 * @return array
+	 */
+	protected static function clean_link( $link ) {
+		if ( '' === $link['url'] ) {
+			$link['target'] = '';
+		}
+
+		return $link;
 	}
 
 	/* =============================================================
