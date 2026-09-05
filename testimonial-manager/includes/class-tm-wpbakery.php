@@ -119,6 +119,7 @@ class TM_WPBakery {
 
 		self::map_grid();
 		self::map_slider();
+		self::map_home();
 	}
 
 	/* =============================================================
@@ -672,4 +673,240 @@ class TM_WPBakery {
 			)
 		);
 	}
+
+	/* =============================================================
+	 * HOME TESTIMONIAL
+	 * ============================================================= */
+
+	private static function map_home() {
+		$style  = __( 'Style', 'testimonial-manager' );
+		$layout = __( 'Layout', 'testimonial-manager' );
+		$nav    = __( 'Chevrons', 'testimonial-manager' );
+
+		vc_map(
+			array(
+				'name'        => __( 'Home Testimonial', 'testimonial-manager' ),
+				'base'        => 'testimonials_home',
+				'category'    => self::CATEGORY,
+				'icon'        => 'icon-wpb-application-icon-large',
+				'description' => __( 'Wide tinted testimonial panel for the home page', 'testimonial-manager' ),
+				'params'      => array(
+
+					array(
+						'type'        => 'textfield',
+						'heading'     => __( 'Number of Testimonials', 'testimonial-manager' ),
+						'param_name'  => 'count',
+						'value'       => '5',
+						'description' => __( 'Newest first, so a new testimonial appears here on its own.', 'testimonial-manager' ),
+					),
+					array(
+						'type'        => 'textfield',
+						'heading'     => __( 'Category Slug', 'testimonial-manager' ),
+						'param_name'  => 'category',
+						'description' => __( 'Filter to one category. Blank shows all.', 'testimonial-manager' ),
+					),
+					self::toggle( __( 'Featured Only', 'testimonial-manager' ), 'featured', 'no' ),
+					array(
+						'type'        => 'textfield',
+						'heading'     => __( 'Text Above the Name', 'testimonial-manager' ),
+						'param_name'  => 'salutation',
+						'value'       => 'Sincerely,',
+						'description' => __( 'Leave empty to show the name on its own.', 'testimonial-manager' ),
+					),
+					array(
+						'type'        => 'textfield',
+						'heading'     => __( 'Autoplay Speed (ms)', 'testimonial-manager' ),
+						'param_name'  => 'autoplay',
+						'value'       => '6000',
+						'description' => __( 'Use 0 to turn autoplay off.', 'testimonial-manager' ),
+					),
+					array(
+						'type'       => 'dropdown',
+						'heading'    => __( 'Transition', 'testimonial-manager' ),
+						'param_name' => 'effect',
+						'value'      => array(
+							__( 'Fade', 'testimonial-manager' )  => 'fade',
+							__( 'Slide', 'testimonial-manager' ) => 'slide',
+						),
+						'std'        => 'fade',
+					),
+					self::toggle( __( 'Pause on Hover', 'testimonial-manager' ), 'pause_hover', 'yes' ),
+					self::toggle( __( 'Show Chevrons', 'testimonial-manager' ), 'arrows', 'yes' ),
+					self::toggle( __( 'Show Dots', 'testimonial-manager' ), 'dots', 'no' ),
+
+					/* ---------- Display ---------- */
+					self::toggle( __( 'Show Client Image', 'testimonial-manager' ), 'show_image', 'yes', array( 'group' => __( 'Display', 'testimonial-manager' ) ) ),
+					self::toggle( __( 'Show Rating', 'testimonial-manager' ), 'show_rating', 'no', array( 'group' => __( 'Display', 'testimonial-manager' ) ) ),
+					self::toggle( __( 'Show Position', 'testimonial-manager' ), 'show_position', 'no', array( 'group' => __( 'Display', 'testimonial-manager' ) ) ),
+					self::toggle( __( 'Show Company', 'testimonial-manager' ), 'show_company', 'no', array( 'group' => __( 'Display', 'testimonial-manager' ) ) ),
+					self::toggle( __( 'Show Full Testimonial', 'testimonial-manager' ), 'full_text', 'no', array( 'group' => __( 'Display', 'testimonial-manager' ), 'description' => __( 'No trims each slide to the length below, which keeps the panel a consistent height.', 'testimonial-manager' ) ) ),
+					array(
+						'type'       => 'textfield',
+						'heading'    => __( 'Text Length (words)', 'testimonial-manager' ),
+						'param_name' => 'excerpt_words',
+						'value'      => '45',
+						'group'      => __( 'Display', 'testimonial-manager' ),
+						'dependency' => array( 'element' => 'full_text', 'value' => array( 'no' ) ),
+					),
+					array(
+						'type'       => 'attach_image',
+						'heading'    => __( 'Default Client Image', 'testimonial-manager' ),
+						'param_name' => 'fallback_image',
+						'group'      => __( 'Display', 'testimonial-manager' ),
+					),
+
+					/* ---------- Layout ---------- */
+					array(
+						'type'             => 'textfield',
+						'heading'          => __( 'Panel Padding', 'testimonial-manager' ),
+						'param_name'       => 'panel_padding',
+						'value'            => '48',
+						'group'            => $layout,
+						'edit_field_class' => 'vc_col-sm-6',
+						'description'      => __( 'One to four pixel values.', 'testimonial-manager' ),
+					),
+					self::size( __( 'Panel Minimum Height', 'testimonial-manager' ), 'panel_min_height', '0', $layout ),
+					self::size( __( 'Panel Corner Radius', 'testimonial-manager' ), 'panel_radius', '0', $layout ),
+					self::size( __( 'Left Column Width', 'testimonial-manager' ), 'column_width', '128', $layout, array( 'description' => __( 'Holds the quote mark and the photo below it.', 'testimonial-manager' ) ) ),
+					self::size( __( 'Gap Between Columns', 'testimonial-manager' ), 'column_gap', '26', $layout ),
+					self::size( __( 'Gap Between Rows', 'testimonial-manager' ), 'row_gap', '40', $layout ),
+
+					/* ---------- Style ---------- */
+					self::color( __( 'Panel Background', 'testimonial-manager' ), 'panel_bg', '#7ab3af', $style ),
+					array(
+						'type'             => 'textfield',
+						'heading'          => __( 'Font Family', 'testimonial-manager' ),
+						'param_name'       => 'font_family',
+						'group'            => $style,
+						'edit_field_class' => 'vc_col-sm-6',
+						'description'      => __( 'Leave empty to inherit the theme font.', 'testimonial-manager' ),
+					),
+
+					self::color( __( 'Quote Mark Color', 'testimonial-manager' ), 'mark_color', '#ffffff', $style ),
+					self::size( __( 'Quote Mark Size', 'testimonial-manager' ), 'mark_size', '96', $style ),
+					array(
+						'type'             => 'dropdown',
+						'heading'          => __( 'Quote Mark Weight', 'testimonial-manager' ),
+						'param_name'       => 'mark_weight',
+						'value'            => array(
+							__( 'Bold', 'testimonial-manager' )       => '700',
+							__( 'Normal', 'testimonial-manager' )     => '400',
+							__( 'Medium', 'testimonial-manager' )     => '500',
+							__( 'Semi Bold', 'testimonial-manager' )  => '600',
+							__( 'Extra Bold', 'testimonial-manager' ) => '800',
+							__( 'Black', 'testimonial-manager' )      => '900',
+						),
+						'std'              => '700',
+						'group'            => $style,
+						'edit_field_class' => 'vc_col-sm-6',
+					),
+
+					self::color( __( 'Testimonial Color', 'testimonial-manager' ), 'quote_color', '#ffffff', $style ),
+					self::size( __( 'Testimonial Size', 'testimonial-manager' ), 'quote_size', '19', $style ),
+					array(
+						'type'             => 'dropdown',
+						'heading'          => __( 'Testimonial Weight', 'testimonial-manager' ),
+						'param_name'       => 'quote_weight',
+						'value'            => array(
+							__( 'Normal', 'testimonial-manager' )    => '400',
+							__( 'Light', 'testimonial-manager' )     => '300',
+							__( 'Medium', 'testimonial-manager' )    => '500',
+							__( 'Semi Bold', 'testimonial-manager' ) => '600',
+							__( 'Bold', 'testimonial-manager' )      => '700',
+						),
+						'std'              => '400',
+						'group'            => $style,
+						'edit_field_class' => 'vc_col-sm-6',
+					),
+					self::size( __( 'Testimonial Line Height', 'testimonial-manager' ), 'quote_lh', '', $style, array( 'description' => __( 'In pixels. Empty for automatic.', 'testimonial-manager' ) ) ),
+					self::size( __( 'Testimonial Letter Spacing', 'testimonial-manager' ), 'quote_spacing', '', $style, array( 'description' => __( 'In pixels. Empty for normal.', 'testimonial-manager' ) ) ),
+					array(
+						'type'             => 'dropdown',
+						'heading'          => __( 'Testimonial Style', 'testimonial-manager' ),
+						'param_name'       => 'quote_style',
+						'value'            => array(
+							__( 'Italic', 'testimonial-manager' ) => 'italic',
+							__( 'Normal', 'testimonial-manager' ) => 'normal',
+						),
+						'std'              => 'italic',
+						'group'            => $style,
+						'edit_field_class' => 'vc_col-sm-6',
+					),
+					array(
+						'type'             => 'dropdown',
+						'heading'          => __( 'Testimonial Alignment', 'testimonial-manager' ),
+						'param_name'       => 'quote_align',
+						'value'            => array(
+							__( 'Left', 'testimonial-manager' )    => 'left',
+							__( 'Center', 'testimonial-manager' )  => 'center',
+							__( 'Right', 'testimonial-manager' )   => 'right',
+							__( 'Justify', 'testimonial-manager' ) => 'justify',
+						),
+						'std'              => 'left',
+						'group'            => $style,
+						'edit_field_class' => 'vc_col-sm-6',
+					),
+
+					self::size( __( 'Client Image Size', 'testimonial-manager' ), 'avatar_size', '92', $style ),
+					self::color( __( 'Client Image Ring Color', 'testimonial-manager' ), 'avatar_ring_color', '#ffffff', $style ),
+					self::size( __( 'Client Image Ring Width', 'testimonial-manager' ), 'avatar_ring_width', '3', $style ),
+
+					self::color( __( 'Name Color', 'testimonial-manager' ), 'name_color', '#ffffff', $style ),
+					self::size( __( 'Name Size', 'testimonial-manager' ), 'name_size', '17', $style ),
+					array(
+						'type'             => 'dropdown',
+						'heading'          => __( 'Name Weight', 'testimonial-manager' ),
+						'param_name'       => 'name_weight',
+						'value'            => array(
+							__( 'Semi Bold', 'testimonial-manager' ) => '600',
+							__( 'Normal', 'testimonial-manager' )    => '400',
+							__( 'Medium', 'testimonial-manager' )    => '500',
+							__( 'Bold', 'testimonial-manager' )      => '700',
+						),
+						'std'              => '600',
+						'group'            => $style,
+						'edit_field_class' => 'vc_col-sm-6',
+					),
+					array(
+						'type'             => 'dropdown',
+						'heading'          => __( 'Name Style', 'testimonial-manager' ),
+						'param_name'       => 'name_style',
+						'value'            => array(
+							__( 'Italic', 'testimonial-manager' ) => 'italic',
+							__( 'Normal', 'testimonial-manager' ) => 'normal',
+						),
+						'std'              => 'italic',
+						'group'            => $style,
+						'edit_field_class' => 'vc_col-sm-6',
+					),
+					self::size( __( 'Name Line Height', 'testimonial-manager' ), 'name_lh', '', $style, array( 'description' => __( 'In pixels. Empty for automatic.', 'testimonial-manager' ) ) ),
+					self::color( __( 'Position / Company Color', 'testimonial-manager' ), 'role_color', 'rgba(255,255,255,0.8)', $style ),
+					self::size( __( 'Position / Company Size', 'testimonial-manager' ), 'role_size', '14', $style ),
+
+					self::color( __( 'Star Color', 'testimonial-manager' ), 'star_color', '#ffffff', $style, array( 'dependency' => array( 'element' => 'show_rating', 'value' => array( 'yes' ) ) ) ),
+					self::color( __( 'Empty Star Color', 'testimonial-manager' ), 'star_empty_color', 'rgba(255,255,255,0.35)', $style, array( 'dependency' => array( 'element' => 'show_rating', 'value' => array( 'yes' ) ) ) ),
+					self::size( __( 'Star Size', 'testimonial-manager' ), 'star_size', '18', $style, array( 'dependency' => array( 'element' => 'show_rating', 'value' => array( 'yes' ) ) ) ),
+					self::size( __( 'Space Between Stars', 'testimonial-manager' ), 'star_gap', '3', $style, array( 'dependency' => array( 'element' => 'show_rating', 'value' => array( 'yes' ) ) ) ),
+
+					/* ---------- Chevrons ---------- */
+					self::color( __( 'Chevron Color', 'testimonial-manager' ), 'nav_color', 'rgba(255,255,255,0.65)', $nav ),
+					self::color( __( 'Chevron Hover Color', 'testimonial-manager' ), 'nav_hover_color', '#ffffff', $nav ),
+					self::size( __( 'Chevron Size', 'testimonial-manager' ), 'nav_size', '30', $nav ),
+					self::size( __( 'Space Between Chevrons', 'testimonial-manager' ), 'nav_gap', '48', $nav ),
+					self::size( __( 'Distance From Bottom', 'testimonial-manager' ), 'nav_bottom', '78', $nav ),
+					self::size( __( 'Distance From Right', 'testimonial-manager' ), 'nav_right', '48', $nav ),
+					self::color( __( 'Dot Color', 'testimonial-manager' ), 'dot_color', 'rgba(255,255,255,0.4)', $nav, array( 'dependency' => array( 'element' => 'dots', 'value' => array( 'yes' ) ) ) ),
+					self::color( __( 'Active Dot Color', 'testimonial-manager' ), 'dot_active_color', '#ffffff', $nav, array( 'dependency' => array( 'element' => 'dots', 'value' => array( 'yes' ) ) ) ),
+
+					array(
+						'type'       => 'textfield',
+						'heading'    => __( 'Extra CSS Class', 'testimonial-manager' ),
+						'param_name' => 'class',
+						'group'      => $style,
+					),
+				),
+			)
+		);
+	}
+
 }

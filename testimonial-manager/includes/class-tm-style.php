@@ -305,6 +305,61 @@ class TM_Style {
 	}
 
 	/**
+	 * Style properties for the home testimonial panel.
+	 */
+	public static function home_schema() {
+		return array(
+			'panel_bg'          => array( 'var' => '--tm-home-bg', 'type' => 'color' ),
+			'panel_radius'      => array( 'var' => '--tm-home-radius', 'type' => 'px', 'max' => 80 ),
+			'panel_padding'     => array( 'var' => '--tm-home-padding', 'type' => 'spacing' ),
+			'panel_min_height'  => array( 'var' => '--tm-home-min-height', 'type' => 'px', 'max' => 900 ),
+			'column_width'      => array( 'var' => '--tm-home-col', 'type' => 'px', 'min' => 40, 'max' => 320 ),
+			'column_gap'        => array( 'var' => '--tm-home-col-gap', 'type' => 'px', 'max' => 120 ),
+			'row_gap'           => array( 'var' => '--tm-home-row-gap', 'type' => 'px', 'max' => 120 ),
+			'font_family'       => array( 'var' => '--tm-font', 'type' => 'font' ),
+
+			'mark_color'        => array( 'var' => '--tm-home-mark-color', 'type' => 'color' ),
+			'mark_size'         => array( 'var' => '--tm-home-mark-size', 'type' => 'px', 'min' => 20, 'max' => 300 ),
+			'mark_weight'       => array( 'var' => '--tm-home-mark-weight', 'type' => 'keyword', 'allowed' => array( '300', '400', '500', '600', '700', '800', '900' ) ),
+
+			'quote_color'       => array( 'var' => '--tm-home-quote-color', 'type' => 'color' ),
+			'quote_size'        => array( 'var' => '--tm-home-quote-size', 'type' => 'px', 'min' => 8, 'max' => 60 ),
+			'quote_weight'      => array( 'var' => '--tm-home-quote-weight', 'type' => 'keyword', 'allowed' => array( '300', '400', '500', '600', '700', '800' ) ),
+			'quote_lh'          => array( 'var' => '--tm-home-quote-lh', 'type' => 'px', 'min' => 8, 'max' => 120 ),
+			'quote_style'       => array( 'var' => '--tm-home-quote-style', 'type' => 'keyword', 'allowed' => array( 'italic', 'normal' ) ),
+			'quote_align'       => array( 'var' => '--tm-home-quote-align', 'type' => 'keyword', 'allowed' => array( 'left', 'center', 'right', 'justify' ) ),
+			'quote_spacing'     => array( 'var' => '--tm-home-quote-spacing', 'type' => 'px', 'min' => -5, 'max' => 20 ),
+
+			'avatar_size'       => array( 'var' => '--tm-avatar-size', 'type' => 'px', 'min' => 16, 'max' => 220 ),
+			'avatar_ring_color' => array( 'var' => '--tm-home-ring-color', 'type' => 'color' ),
+			'avatar_ring_width' => array( 'var' => '--tm-home-ring-width', 'type' => 'px', 'max' => 20 ),
+
+			'name_color'        => array( 'var' => '--tm-home-name-color', 'type' => 'color' ),
+			'name_size'         => array( 'var' => '--tm-home-name-size', 'type' => 'px', 'min' => 8, 'max' => 60 ),
+			'name_weight'       => array( 'var' => '--tm-home-name-weight', 'type' => 'keyword', 'allowed' => array( '300', '400', '500', '600', '700', '800' ) ),
+			'name_style'        => array( 'var' => '--tm-home-name-style', 'type' => 'keyword', 'allowed' => array( 'italic', 'normal' ) ),
+			'name_lh'           => array( 'var' => '--tm-home-name-lh', 'type' => 'px', 'min' => 8, 'max' => 120 ),
+			'role_color'        => array( 'var' => '--tm-role-color', 'type' => 'color' ),
+			'role_size'         => array( 'var' => '--tm-home-role-size', 'type' => 'px', 'min' => 8, 'max' => 40 ),
+
+			'star_color'        => array( 'var' => '--tm-star-color', 'type' => 'color' ),
+			'star_empty_color'  => array( 'var' => '--tm-star-empty-color', 'type' => 'color' ),
+			'star_size'         => array( 'var' => '--tm-star-size', 'type' => 'px', 'min' => 8, 'max' => 120 ),
+			'star_gap'          => array( 'var' => '--tm-star-gap', 'type' => 'px', 'max' => 40 ),
+
+			'nav_color'         => array( 'var' => '--tm-home-nav-color', 'type' => 'color' ),
+			'nav_hover_color'   => array( 'var' => '--tm-home-nav-hover', 'type' => 'color' ),
+			'nav_size'          => array( 'var' => '--tm-home-nav-size', 'type' => 'px', 'min' => 12, 'max' => 90 ),
+			'nav_gap'           => array( 'var' => '--tm-home-nav-gap', 'type' => 'px', 'max' => 90 ),
+			'nav_bottom'        => array( 'var' => '--tm-home-nav-bottom', 'type' => 'px', 'max' => 400 ),
+			'nav_right'         => array( 'var' => '--tm-home-nav-right', 'type' => 'px', 'max' => 400 ),
+
+			'dot_color'         => array( 'var' => '--tm-slider-dot', 'type' => 'color' ),
+			'dot_active_color'  => array( 'var' => '--tm-slider-dot-active', 'type' => 'color' ),
+		);
+	}
+
+	/**
 	 * Style properties for the slider.
 	 */
 	public static function slider_schema() {

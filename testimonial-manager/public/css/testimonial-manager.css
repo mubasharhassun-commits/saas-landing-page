@@ -125,7 +125,11 @@
 .tm-modal-quote::before,
 .tm-modal-quote::after,
 .tm-modal-quote p::before,
-.tm-modal-quote p::after {
+.tm-modal-quote p::after,
+.tm-home-quote::before,
+.tm-home-quote::after,
+.tm-home-quote p::before,
+.tm-home-quote p::after {
 	content: none !important;
 	display: none !important;
 	background: none !important;
@@ -636,4 +640,225 @@ body.tm-modal-open { overflow: hidden; }
 @media (max-width: 767px) {
 	.tm-slider { --tm-slider-padding: 26px; --tm-slider-quote-size: 16px; }
 	.tm-slider-nav { display: none; }
+}
+
+
+/* =========================================================
+ * HOME TESTIMONIAL
+ *
+ * A wide tinted panel: oversized quote mark and client photo down the left,
+ * testimonial and signature to their right, chevrons bottom right. It reuses
+ * the slider's skeleton and script, so everything here is scoped to .tm-home
+ * and the existing slider is untouched.
+ * ========================================================= */
+
+.tm-slider.tm-home {
+	--tm-home-bg: #7ab3af;
+	--tm-home-radius: 0px;
+	--tm-home-padding: 48px;
+	--tm-home-min-height: 0px;
+
+	/* Left column: wide enough for the quote mark and the photo below it. */
+	--tm-home-col: 128px;
+	--tm-home-col-gap: 26px;
+	--tm-home-row-gap: 40px;
+
+	--tm-home-mark-color: #ffffff;
+	--tm-home-mark-size: 96px;
+	--tm-home-mark-weight: 700;
+
+	--tm-home-quote-color: #ffffff;
+	--tm-home-quote-size: 19px;
+	--tm-home-quote-weight: 400;
+	--tm-home-quote-lh: 1.62;
+	--tm-home-quote-style: italic;
+	--tm-home-quote-align: left;
+	--tm-home-quote-spacing: normal;
+
+	--tm-avatar-size: 92px;
+	--tm-home-ring-color: #ffffff;
+	--tm-home-ring-width: 3px;
+
+	--tm-home-name-color: #ffffff;
+	--tm-home-name-size: 17px;
+	--tm-home-name-weight: 600;
+	--tm-home-name-style: italic;
+	--tm-home-name-lh: 1.5;
+	--tm-home-role-size: 14px;
+
+	--tm-home-nav-color: rgba(255, 255, 255, 0.65);
+	--tm-home-nav-hover: #ffffff;
+	--tm-home-nav-size: 30px;
+	--tm-home-nav-gap: 48px;
+	--tm-home-nav-bottom: 78px;
+	--tm-home-nav-right: 48px;
+
+	background: var(--tm-home-bg);
+	border-radius: var(--tm-home-radius);
+	color: var(--tm-home-quote-color);
+}
+
+.tm-slider.tm-home .tm-slider-viewport {
+	padding: var(--tm-home-padding);
+	min-height: var(--tm-home-min-height);
+}
+
+/* Two columns: the mark sits over the photo, the text over the signature, so
+   both rows share one left edge without any hand-tuned offsets. */
+.tm-home-inner {
+	display: grid;
+	grid-template-columns: var(--tm-home-col) minmax(0, 1fr);
+	column-gap: var(--tm-home-col-gap);
+	row-gap: var(--tm-home-row-gap);
+	align-items: start;
+}
+
+.tm-home-mark {
+	grid-column: 1;
+	color: var(--tm-home-mark-color);
+	font-size: var(--tm-home-mark-size);
+	font-weight: var(--tm-home-mark-weight);
+	font-style: normal;
+	line-height: 0.78;
+}
+
+.tm-home-rating { grid-column: 2; margin-bottom: -18px; }
+
+.tm-slider.tm-home .tm-home-quote {
+	grid-column: 2;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	quotes: none;
+	color: var(--tm-home-quote-color);
+	font-size: var(--tm-home-quote-size);
+	font-weight: var(--tm-home-quote-weight);
+	font-style: var(--tm-home-quote-style);
+	line-height: var(--tm-home-quote-lh);
+	text-align: var(--tm-home-quote-align);
+	letter-spacing: var(--tm-home-quote-spacing);
+}
+
+.tm-home-quote p { margin: 0; }
+
+/* The signature row repeats the same column track, so the photo lines up
+   under the quote mark and the name under the first line of text. */
+.tm-home-person {
+	grid-column: 1 / -1;
+	display: grid;
+	grid-template-columns: var(--tm-home-col) minmax(0, 1fr);
+	column-gap: var(--tm-home-col-gap);
+	align-items: center;
+}
+
+.tm-slider.tm-home .tm-avatar {
+	width: var(--tm-avatar-size);
+	height: var(--tm-avatar-size);
+	border-radius: 50%;
+	object-fit: cover;
+	background: #ffffff;
+	box-shadow: 0 0 0 var(--tm-home-ring-width) var(--tm-home-ring-color);
+}
+
+.tm-slider.tm-home .tm-avatar-fallback {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.tm-home-person-text { display: flex; flex-direction: column; }
+
+.tm-slider.tm-home .tm-home-salutation,
+.tm-slider.tm-home .tm-home-person-text .tm-name {
+	color: var(--tm-home-name-color);
+	font-size: var(--tm-home-name-size);
+	font-weight: var(--tm-home-name-weight);
+	font-style: var(--tm-home-name-style);
+	line-height: var(--tm-home-name-lh);
+}
+
+.tm-slider.tm-home .tm-home-person-text .tm-role {
+	color: var(--tm-role-color, rgba(255, 255, 255, 0.8));
+	font-size: var(--tm-home-role-size);
+}
+
+/* ---------- Chevrons ----------
+   Plain glyphs rather than the round buttons used by the banner slider, so
+   the forced circle styling there has to be undone at higher specificity. */
+.tm-home-nav {
+	position: absolute;
+	right: var(--tm-home-nav-right);
+	bottom: var(--tm-home-nav-bottom);
+	display: flex;
+	align-items: center;
+	gap: var(--tm-home-nav-gap);
+}
+
+.tm-slider.tm-home .tm-home-nav .tm-slider-nav {
+	position: static !important;
+	transform: none !important;
+	width: var(--tm-home-nav-size) !important;
+	height: var(--tm-home-nav-size) !important;
+	background: none !important;
+	border-radius: 0 !important;
+	color: var(--tm-home-nav-color) !important;
+	opacity: 1 !important;
+	transition: color 0.2s ease !important;
+}
+
+.tm-slider.tm-home .tm-home-nav .tm-slider-nav:hover,
+.tm-slider.tm-home .tm-home-nav .tm-slider-nav:focus-visible {
+	color: var(--tm-home-nav-hover) !important;
+}
+
+.tm-slider.tm-home .tm-home-nav .tm-slider-nav svg {
+	width: 100% !important;
+	height: 100% !important;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1024px) {
+	.tm-slider.tm-home {
+		--tm-home-padding: 38px;
+		--tm-home-col: 104px;
+		--tm-home-mark-size: 76px;
+		--tm-home-quote-size: 18px;
+		--tm-avatar-size: 78px;
+		--tm-home-nav-right: 38px;
+		--tm-home-nav-bottom: 66px;
+	}
+}
+
+/* Below the phone breakpoint the two columns collapse: the mark, text and
+   signature stack, and the chevrons move under the content rather than
+   overlapping it. */
+@media (max-width: 767px) {
+	.tm-slider.tm-home {
+		--tm-home-padding: 26px;
+		--tm-home-mark-size: 62px;
+		--tm-home-quote-size: 16px;
+		--tm-home-row-gap: 26px;
+		--tm-avatar-size: 66px;
+		--tm-home-nav-size: 26px;
+		--tm-home-nav-gap: 34px;
+	}
+
+	.tm-home-inner { grid-template-columns: minmax(0, 1fr); }
+	.tm-home-mark,
+	.tm-home-rating,
+	.tm-slider.tm-home .tm-home-quote { grid-column: 1; }
+
+	.tm-home-person {
+		grid-template-columns: auto minmax(0, 1fr);
+		column-gap: 16px;
+	}
+
+	.tm-slider.tm-home .tm-slider-viewport { padding-bottom: 84px; }
+
+	.tm-home-nav {
+		right: auto;
+		bottom: 26px;
+		left: 26px;
+	}
 }

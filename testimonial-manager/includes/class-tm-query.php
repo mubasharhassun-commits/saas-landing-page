@@ -50,6 +50,9 @@ class TM_Query {
 
 			/* Themes draw their own quote glyph on a blockquote; ours is opt-in. */
 			'quote_icon'     => false,
+
+			/* Home panel only: the line above the client name. */
+			'salutation'     => '',
 		);
 	}
 
@@ -107,6 +110,7 @@ class TM_Query {
 		}
 		$args['category']    = sanitize_text_field( (string) $args['category'] );
 		$args['button_text'] = sanitize_text_field( (string) $args['button_text'] );
+		$args['salutation']  = sanitize_text_field( (string) $args['salutation'] );
 		$args['class']       = sanitize_html_class( (string) $args['class'] );
 
 		if ( '' === $args['button_text'] ) {

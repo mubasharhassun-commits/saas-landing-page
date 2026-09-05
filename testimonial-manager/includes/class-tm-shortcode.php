@@ -14,6 +14,7 @@ class TM_Shortcode {
 	public static function init() {
 		add_shortcode( 'testimonials', array( __CLASS__, 'render' ) );
 		add_shortcode( 'testimonials_slider', array( __CLASS__, 'render_slider' ) );
+		add_shortcode( 'testimonials_home', array( __CLASS__, 'render_home' ) );
 	}
 
 	/**
@@ -51,5 +52,26 @@ class TM_Shortcode {
 		$atts = shortcode_atts( $defaults, $atts, 'testimonials_slider' );
 
 		return TM_Renderer::slider( $atts );
+	}
+
+	/**
+	 * [testimonials_home] - the home page panel. Same testimonials, newest
+	 * first, with the chevrons on by default since that is its whole nav.
+	 */
+	public static function render_home( $atts ) {
+		$defaults = self::defaults( TM_Style::home_schema() );
+
+		$defaults['count']       = 5;
+		$defaults['orderby']     = 'date';
+		$defaults['order']       = 'DESC';
+		$defaults['show_button'] = false;
+		$defaults['show_rating'] = false;
+		$defaults['arrows']      = true;
+		$defaults['excerpt_words'] = 45;
+		$defaults['salutation']  = '';
+
+		$atts = shortcode_atts( $defaults, $atts, 'testimonials_home' );
+
+		return TM_Renderer::home_slider( $atts );
 	}
 }

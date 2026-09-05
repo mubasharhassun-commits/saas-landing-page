@@ -68,6 +68,7 @@ class TM_Elementor {
 		$widgets = array(
 			'TM_Widget_Grid'   => 'includes/widgets/class-tm-widget-grid.php',
 			'TM_Widget_Slider' => 'includes/widgets/class-tm-widget-slider.php',
+			'TM_Widget_Home'   => 'includes/widgets/class-tm-widget-home.php',
 		);
 
 		foreach ( $widgets as $class => $relative ) {

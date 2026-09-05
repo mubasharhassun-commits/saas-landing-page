@@ -233,11 +233,175 @@ class TM_Renderer {
 		return $out;
 	}
 
-	private static function chevron( $dir ) {
+	/* =============================================================
+	 * HOME TESTIMONIAL
+	 *
+	 * A third presentation of the same testimonials: one wide tinted panel
+	 * with a large quote mark, the client photo beneath it and a plain pair
+	 * of chevrons on the right. It shares the slider's markup skeleton and
+	 * script, so nothing about the existing slider or grid changes.
+	 * ============================================================= */
+
+	public static function home_slider( $args ) {
+		$args  = TM_Query::normalize( $args );
+		$query = TM_Query::get( $args );
+
+		if ( ! $query->have_posts() ) {
+			return '';
+		}
+
+		TM_Assets::enqueue();
+		TM_Assets::enqueue_slider();
+
+		$slides = array();
+
+		while ( $query->have_posts() ) {
+			$query->the_post();
+			$slides[] = get_post();
+		}
+		wp_reset_postdata();
+
+		$total = count( $slides );
+		$uid   = wp_unique_id( 'tm-home-' );
+
+		$classes = 'tm-slider tm-home tm-effect-' . $args['effect'];
+
+		if ( '' !== $args['class'] ) {
+			$classes .= ' ' . $args['class'];
+		}
+
+		$out = sprintf(
+			'<div class="%1$s" id="%2$s" style="%3$s" data-autoplay="%4$d" data-pause-hover="%5$s">',
+			esc_attr( $classes ),
+			esc_attr( $uid ),
+			esc_attr( TM_Style::build( TM_Style::home_schema(), $args ) ),
+			(int) $args['autoplay'],
+			$args['pause_hover'] ? '1' : '0'
+		);
+
+		$out .= sprintf(
+			'<div class="tm-slider-viewport" aria-roledescription="carousel" aria-label="%s">',
+			esc_attr__( 'Client testimonials', 'testimonial-manager' )
+		);
+		$out .= '<div class="tm-slides">';
+
+		foreach ( $slides as $i => $post ) {
+			$out .= self::home_slide( $post, $args, $i, $total );
+		}
+
+		$out .= '</div></div>';
+
+		if ( $args['arrows'] && $total > 1 ) {
+			$out .= '<div class="tm-home-nav">';
+			$out .= sprintf(
+				'<button type="button" class="tm-slider-nav tm-slider-prev" data-tm-prev aria-controls="%1$s" aria-label="%2$s">%3$s</button>',
+				esc_attr( $uid ),
+				esc_attr__( 'Previous testimonial', 'testimonial-manager' ),
+				self::chevron( 'left', true )
+			);
+			$out .= sprintf(
+				'<button type="button" class="tm-slider-nav tm-slider-next" data-tm-next aria-controls="%1$s" aria-label="%2$s">%3$s</button>',
+				esc_attr( $uid ),
+				esc_attr__( 'Next testimonial', 'testimonial-manager' ),
+				self::chevron( 'right', true )
+			);
+			$out .= '</div>';
+		}
+
+		if ( $args['dots'] && $total > 1 ) {
+			$out .= '<div class="tm-slider-dots">';
+			for ( $i = 0; $i < $total; $i++ ) {
+				$out .= sprintf(
+					'<button type="button" class="tm-slider-dot%1$s" data-tm-goto="%2$d" aria-label="%3$s"%4$s></button>',
+					0 === $i ? ' is-active' : '',
+					$i,
+					esc_attr(
+						sprintf(
+							/* translators: 1: slide number, 2: total slides. */
+							__( 'Show testimonial %1$d of %2$d', 'testimonial-manager' ),
+							$i + 1,
+							$total
+						)
+					),
+					0 === $i ? ' aria-current="true"' : ''
+				);
+			}
+			$out .= '</div>';
+		}
+
+		return $out . '</div>';
+	}
+
+	private static function home_slide( $post, $args, $index, $total ) {
+		$meta = TM_Meta_Fields::get( $post->ID );
+		$name = get_the_title( $post );
+
+		$text = $args['full_text']
+			? wp_strip_all_tags( strip_shortcodes( $post->post_content ) )
+			: self::short_text( $post, $args['excerpt_words'] );
+
+		$out = sprintf(
+			'<div class="tm-slide%1$s" role="group" aria-roledescription="%2$s" aria-label="%3$s"%4$s>',
+			0 === $index ? ' is-active' : '',
+			esc_attr__( 'slide', 'testimonial-manager' ),
+			esc_attr(
+				sprintf(
+					/* translators: 1: slide number, 2: total slides. */
+					__( '%1$d of %2$d', 'testimonial-manager' ),
+					$index + 1,
+					$total
+				)
+			),
+			0 === $index ? '' : ' aria-hidden="true"'
+		);
+
+		$out .= '<div class="tm-home-inner">';
+		$out .= '<div class="tm-home-mark" aria-hidden="true">&#8220;</div>';
+
+		if ( $args['show_rating'] ) {
+			$out .= '<div class="tm-home-rating">' . self::stars( $meta['rating'] ) . '</div>';
+		}
+
+		$out .= '<blockquote class="tm-home-quote"><p>' . esc_html( $text ) . '</p></blockquote>';
+
+		$out .= '<div class="tm-home-person">';
+		$out .= '<div class="tm-home-avatar">';
+		if ( $args['show_image'] ) {
+			$out .= self::avatar( $post, $name, $args );
+		}
+		$out .= '</div>';
+
+		$out .= '<div class="tm-home-person-text">';
+
+		$salutation = isset( $args['salutation'] ) ? sanitize_text_field( (string) $args['salutation'] ) : '';
+		if ( '' !== $salutation ) {
+			$out .= '<span class="tm-home-salutation">' . esc_html( $salutation ) . '</span>';
+		}
+
+		$out .= '<span class="tm-name">' . esc_html( $name ) . '</span>';
+
+		$sub = self::subtitle( $meta, $args );
+		if ( '' !== $sub ) {
+			$out .= '<span class="tm-role">' . esc_html( $sub ) . '</span>';
+		}
+
+		$out .= '</div></div></div></div>';
+
+		return $out;
+	}
+
+	private static function chevron( $dir, $double = false ) {
 		$path = ( 'left' === $dir ) ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7';
 
-		return '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">'
-			. '<path d="' . $path . '" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+		$out = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">'
+			. '<path d="' . $path . '" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+
+		if ( $double ) {
+			$second = ( 'left' === $dir ) ? 'M21 5l-7 7 7 7' : 'M3 5l7 7-7 7';
+			$out   .= '<path d="' . $second . '" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+		}
+
+		return $out . '</svg>';
 	}
 
 	/**

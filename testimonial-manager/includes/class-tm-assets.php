@@ -91,7 +91,8 @@ class TM_Assets {
 			self::enqueue();
 		}
 
-		if ( has_shortcode( $post->post_content, 'testimonials_slider' ) ) {
+		if ( has_shortcode( $post->post_content, 'testimonials_slider' )
+			|| has_shortcode( $post->post_content, 'testimonials_home' ) ) {
 			self::enqueue();
 			self::enqueue_slider();
 		}
