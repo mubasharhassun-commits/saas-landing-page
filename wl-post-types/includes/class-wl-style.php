@@ -137,6 +137,21 @@ class WL_Style {
 		return (int) max( $min, min( $max, $number ) ) . 's';
 	}
 
+	/**
+	 * An image URL as a CSS url() value. Anything containing a quote, bracket,
+	 * semicolon or whitespace is rejected outright rather than escaped, since
+	 * no legitimate media-library URL needs them here.
+	 */
+	public static function image( $value ) {
+		$url = esc_url_raw( trim( (string) $value ) );
+
+		if ( '' === $url || preg_match( '/["\'();\s]/', $url ) ) {
+			return '';
+		}
+
+		return 'url("' . $url . '")';
+	}
+
 	public static function keyword( $value, $allowed ) {
 		$value = strtolower( trim( (string) $value ) );
 
@@ -177,6 +192,9 @@ class WL_Style {
 				case 'seconds':
 					$value = self::seconds( $raw );
 					break;
+				case 'image':
+					$value = self::image( $raw );
+					break;
 				case 'keyword':
 					$value = self::keyword( $raw, $rule['allowed'] );
 					break;
@@ -201,6 +219,8 @@ class WL_Style {
 			'card_height'    => array( 'var' => '--wl-card-h', 'type' => 'px', 'min' => 60, 'max' => 1200 ),
 			'overlay'        => array( 'var' => '--wl-overlay', 'type' => 'color' ),
 			'hover_overlay'  => array( 'var' => '--wl-hover-overlay', 'type' => 'color' ),
+			'overlay_image'         => array( 'var' => '--wl-ov-n-img', 'type' => 'image' ),
+			'hover_overlay_image'   => array( 'var' => '--wl-ov-h-img', 'type' => 'image' ),
 			'overlay_opacity'       => array( 'var' => '--wl-ov-n-op', 'type' => 'opacity' ),
 			'hover_overlay_opacity' => array( 'var' => '--wl-ov-h-op', 'type' => 'opacity' ),
 			'title_color'    => array( 'var' => '--wl-title', 'type' => 'color' ),
@@ -216,7 +236,19 @@ class WL_Style {
 			'btn_bg'         => array( 'var' => '--wl-btn-bg', 'type' => 'color' ),
 			'btn_padding'    => array( 'var' => '--wl-btn-padding', 'type' => 'spacing' ),
 			'btn_radius'     => array( 'var' => '--wl-btn-radius', 'type' => 'px', 'max' => 80 ),
+			'btn_border_width' => array( 'var' => '--wl-btn-border-width', 'type' => 'px', 'max' => 20 ),
+			'btn_border_style' => array(
+				'var'     => '--wl-btn-border-style',
+				'type'    => 'keyword',
+				'allowed' => array( 'solid', 'dashed', 'dotted', 'double', 'none' ),
+			),
 			'btn_size'       => array( 'var' => '--wl-btn-size', 'type' => 'px', 'min' => 8, 'max' => 40 ),
+			'btn_spacing'    => array( 'var' => '--wl-btn-spacing', 'type' => 'px', 'min' => 0, 'max' => 20 ),
+			'btn_weight'     => array(
+				'var'     => '--wl-btn-weight',
+				'type'    => 'keyword',
+				'allowed' => array( '300', '400', '500', '600', '700', '800' ),
+			),
 			'duration'       => array( 'var' => '--wl-duration', 'type' => 'seconds' ),
 		);
 	}

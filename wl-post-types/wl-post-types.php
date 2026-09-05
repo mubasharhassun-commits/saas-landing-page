@@ -3,7 +3,7 @@
  * Plugin Name:       WL Post Types (Waters Law)
  * Plugin URI:        https://waterslaw.com
  * Description:        Registers Vessels, Cases & News custom post types and adds two WPBakery Page Builder elements: "WL Cards" (grid or continuous auto-scrolling slider with hover overlay, slide-up title and Read More button) and "WL News" (featured post plus list). Also available as the [wl_cards] and [wl_news] shortcodes.
- * Version:           3.1.0
+ * Version:           3.2.0
  * Author:            Waters Law Dev
  * Text Domain:       waterslaw
  * License:           GPL-2.0-or-later
@@ -108,7 +108,7 @@ function waterslaw_register_taxonomies() {
 }
 add_action( 'init', 'waterslaw_register_taxonomies' );
 
-define( 'WL_VERSION', '3.1.0' );
+define( 'WL_VERSION', '3.2.0' );
 define( 'WL_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WL_URL', plugin_dir_url( __FILE__ ) );
 

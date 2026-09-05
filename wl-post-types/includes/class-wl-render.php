@@ -87,6 +87,14 @@ class WL_Render {
 			$pause
 		);
 
+		// The image pickers store attachment IDs; the style layer needs URLs.
+		foreach ( array( 'overlay_image', 'hover_overlay_image' ) as $key ) {
+			if ( ! empty( $args[ $key ] ) && is_numeric( $args[ $key ] ) ) {
+				$url           = wp_get_attachment_image_url( absint( $args[ $key ] ), 'large' );
+				$args[ $key ] = $url ? $url : '';
+			}
+		}
+
 		$style .= WL_Style::build( WL_Style::cards_schema(), $args );
 
 		$classes = 'wl-cards ' . $layout . $hidet . $fixed;
