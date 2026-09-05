@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       WL Post Types (Waters Law)
  * Plugin URI:        https://waterslaw.com
- * Description:        Registers Vessels, Cases & News custom post types and adds two WPBakery Page Builder elements: "WL Cards" (grid or continuous auto-scrolling slider with hover overlay, slide-up title and Read More button) and "WL News" (featured post plus list). Also available as the [wl_cards] and [wl_news] shortcodes.
- * Version:           3.2.0
+ * Description:        Registers Vessels, Cases & News custom post types and adds two Elementor widgets and two WPBakery Page Builder elements: "WL Cards" (grid or continuous auto-scrolling slider with hover overlay, slide-up title and Read More button) and "WL News" (featured post plus list). Also available as the [wl_cards] and [wl_news] shortcodes.
+ * Version:           3.3.0
  * Author:            Waters Law Dev
  * Text Domain:       waterslaw
  * License:           GPL-2.0-or-later
@@ -108,7 +108,7 @@ function waterslaw_register_taxonomies() {
 }
 add_action( 'init', 'waterslaw_register_taxonomies' );
 
-define( 'WL_VERSION', '3.2.0' );
+define( 'WL_VERSION', '3.3.0' );
 define( 'WL_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WL_URL', plugin_dir_url( __FILE__ ) );
 
@@ -118,6 +118,7 @@ require_once WL_PATH . 'includes/class-wl-assets.php';
 require_once WL_PATH . 'includes/class-wl-render.php';
 require_once WL_PATH . 'includes/class-wl-shortcodes.php';
 require_once WL_PATH . 'includes/class-wl-wpbakery.php';
+require_once WL_PATH . 'includes/class-wl-elementor.php';
 
 /**
  * Boot the display modules. Each registers its own hooks.
@@ -126,6 +127,7 @@ function waterslaw_bootstrap() {
 	WL_Assets::init();
 	WL_Shortcodes::init();
 	WL_WPBakery::init();
+	WL_Elementor::init();
 }
 waterslaw_bootstrap();
 

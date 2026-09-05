@@ -194,8 +194,14 @@
 		init();
 	}
 
-	/* WPBakery's front-end editor swaps element markup without reloading. */
+	/* Both builders swap element markup in their editors without reloading. */
 	document.addEventListener( 'vc-full-width-row', function () {
+		if ( ! modal ) {
+			init();
+		}
+	} );
+
+	window.addEventListener( 'elementor/frontend/init', function () {
 		if ( ! modal ) {
 			init();
 		}

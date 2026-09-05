@@ -24,6 +24,8 @@ class TM_Assets {
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'maybe_enqueue' ), 20 );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register' ) );
 		add_action( 'vc_frontend_editor_enqueue_js_css', array( __CLASS__, 'enqueue' ) );
+		add_action( 'elementor/editor/before_enqueue_scripts', array( __CLASS__, 'register' ) );
+		add_action( 'elementor/preview/enqueue_scripts', array( __CLASS__, 'enqueue' ) );
 	}
 
 	public static function register() {
