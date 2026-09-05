@@ -181,7 +181,7 @@ class WL_WPBakery {
 						'group'       => __( 'Layout', 'waterslaw' ),
 						'description' => __( 'Grid = static rows. Continuous Slider = seamless auto-scroll.', 'waterslaw' ),
 					),
-					self::toggle( __( 'Make Cards Clickable', 'waterslaw' ), 'link_cards', 'yes', array( 'group' => __( 'Layout', 'waterslaw' ) ) ),
+					self::toggle( __( 'Make Cards Clickable', 'waterslaw' ), 'link_cards', 'no', array( 'group' => __( 'Layout', 'waterslaw' ) ) ),
 					self::size( __( 'Columns - Desktop', 'waterslaw' ), 'columns', '4', __( 'Layout', 'waterslaw' ), array( 'description' => '' ) ),
 					self::size( __( 'Columns - Laptop (1300px)', 'waterslaw' ), 'columns_laptop', '', __( 'Layout', 'waterslaw' ), array( 'description' => __( 'Leave empty to use the desktop count.', 'waterslaw' ) ) ),
 					self::size( __( 'Columns - Tablet (1024px)', 'waterslaw' ), 'columns_tablet', '2', __( 'Layout', 'waterslaw' ), array( 'description' => '' ) ),

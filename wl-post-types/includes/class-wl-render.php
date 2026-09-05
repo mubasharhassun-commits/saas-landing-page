@@ -29,7 +29,7 @@ class WL_Render {
 			'columns_laptop' => 0,
 			'columns_tablet' => 2,
 			'columns_mobile' => 1,
-			'link_cards'     => 'yes',
+			'link_cards'     => 'no',
 			'show_button'    => 'no',
 			'button_text'    => 'READ MORE',
 			'hide_title_hover' => 'yes',

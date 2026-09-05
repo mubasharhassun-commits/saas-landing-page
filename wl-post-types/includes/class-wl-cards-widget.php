@@ -145,7 +145,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'label'        => __( 'Make Cards Clickable', 'waterslaw' ),
 			'type'         => \Elementor\Controls_Manager::SWITCHER,
 			'return_value' => 'yes',
-			'default'      => 'yes',
+			'default'      => 'no',
 			'separator'    => 'before',
 			'description'  => __( 'Turn OFF so no card links anywhere. Custom Cards use the Link set on each card.', 'waterslaw' ),
 		) );
