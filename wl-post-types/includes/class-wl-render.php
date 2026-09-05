@@ -32,6 +32,7 @@ class WL_Render {
 			'link_cards'     => 'yes',
 			'title_source'   => 'post',
 			'titles'         => '',
+			'links'          => '',
 			'show_button'    => 'no',
 			'button_text'    => 'READ MORE',
 			'hide_title_hover' => 'yes',
@@ -148,7 +149,8 @@ class WL_Render {
 	 * Cards pulled from the Vessels / Cases post types.
 	 */
 	private static function post_cards( $args, $type, $btn, $linked ) {
-		$titles  = self::heading_overrides( $args );
+		$titles  = self::lines( isset( $args['titles'] ) ? $args['titles'] : '' );
+		$links   = self::lines( isset( $args['links'] ) ? $args['links'] : '' );
 		$source  = in_array( $args['title_source'], array( 'custom', 'none' ), true ) ? $args['title_source'] : 'post';
 		$index   = 0;
 		$orderby = in_array( $args['orderby'], array( 'menu_order', 'date', 'title', 'rand' ), true )
@@ -184,10 +186,20 @@ class WL_Render {
 				$text = $titles[ $index ];
 			}
 
+			$href = '';
+
+			if ( $linked ) {
+				// A URL typed into the builder wins; otherwise the post's own
+				// Card Link field is used.
+				$href = ( isset( $links[ $index ] ) && '' !== $links[ $index ] )
+					? esc_url_raw( $links[ $index ] )
+					: waterslaw_get_card_link( $id );
+			}
+
 			$out .= self::card_html(
 				(string) get_the_post_thumbnail_url( $id, 'large' ),
 				$text,
-				$linked ? waterslaw_get_card_link( $id ) : '',
+				$href,
 				$btn
 			);
 
@@ -200,22 +212,21 @@ class WL_Render {
 	}
 
 	/**
-	 * Headings typed into the builder, one per line, in card order.
+	 * A textarea typed into the builder, split into one value per card.
 	 *
-	 * A blank line means "keep this card's own title", so a single heading can
-	 * be overridden without retyping the rest.
+	 * A blank line means "leave this card alone", so a single heading or link
+	 * can be set without retyping the rest.
 	 */
-	private static function heading_overrides( $args ) {
-		$raw = isset( $args['titles'] ) ? (string) $args['titles'] : '';
+	private static function lines( $raw ) {
+		$raw = (string) $raw;
 
 		if ( '' === trim( $raw ) ) {
 			return array();
 		}
 
-		$lines = preg_split( '/\r\n|\r|\n/', $raw );
-		$out   = array();
+		$out = array();
 
-		foreach ( $lines as $line ) {
+		foreach ( preg_split( '/\r\n|\r|\n/', $raw ) as $line ) {
 			$out[] = sanitize_text_field( trim( $line ) );
 		}
 

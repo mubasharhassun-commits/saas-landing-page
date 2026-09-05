@@ -150,6 +150,15 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'description'  => __( 'A card links only where you have given it a link of your own. Turn this OFF to switch every link off at once.', 'waterslaw' ),
 		) );
 
+		$this->add_control( 'links', array(
+			'label'       => __( 'Card Links (one per line)', 'waterslaw' ),
+			'type'        => \Elementor\Controls_Manager::TEXTAREA,
+			'rows'        => 8,
+			'default'     => '',
+			'description' => __( 'One full URL per line, in the same order as the cards. Leave a line empty and that card uses the Card Link set on the post itself.', 'waterslaw' ),
+			'condition'   => array( 'post_type!' => 'manual', 'link_cards' => 'yes' ),
+		) );
+
 		/* Responsive columns: desktop 4 / laptop / tablet 2 / mobile 1 */
 		$this->add_control( 'columns', array(
 			'label'   => __( 'Columns — Desktop', 'waterslaw' ),
@@ -509,6 +518,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 				'hide_title_hover' => $s['hide_title_hover'],
 				'title_source'     => isset( $s['title_source'] ) ? $s['title_source'] : 'post',
 				'titles'           => isset( $s['titles'] ) ? $s['titles'] : '',
+				'links'            => isset( $s['links'] ) ? $s['links'] : '',
 				'custom_size'      => $s['custom_size'],
 				'pause_hover'      => $s['pause_hover'],
 				'items'            => isset( $s['items'] ) ? $s['items'] : '',

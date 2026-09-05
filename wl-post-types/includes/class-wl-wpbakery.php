@@ -190,6 +190,14 @@ class WL_WPBakery {
 							'description' => __( 'A card links only where you have given it a link of your own - on the card below for Custom Cards, or in the post\'s "Card Settings" box for Vessels and Cases. Set this to No to switch every link off at once.', 'waterslaw' ),
 						)
 					),
+					array(
+						'type'        => 'textarea',
+						'heading'     => __( 'Card Links (one per line)', 'waterslaw' ),
+						'param_name'  => 'links',
+						'group'       => __( 'Layout', 'waterslaw' ),
+						'dependency'  => array( 'element' => 'source', 'value' => array( 'vessels', 'cases' ) ),
+						'description' => __( 'One full URL per line, in the same order as the cards. Leave a line empty and that card uses the Card Link set on the post itself - or stays non-clickable if that is empty too.', 'waterslaw' ),
+					),
 					self::size( __( 'Columns - Desktop', 'waterslaw' ), 'columns', '4', __( 'Layout', 'waterslaw' ), array( 'description' => '' ) ),
 					self::size( __( 'Columns - Laptop (1300px)', 'waterslaw' ), 'columns_laptop', '', __( 'Layout', 'waterslaw' ), array( 'description' => __( 'Leave empty to use the desktop count.', 'waterslaw' ) ) ),
 					self::size( __( 'Columns - Tablet (1024px)', 'waterslaw' ), 'columns_tablet', '2', __( 'Layout', 'waterslaw' ), array( 'description' => '' ) ),
