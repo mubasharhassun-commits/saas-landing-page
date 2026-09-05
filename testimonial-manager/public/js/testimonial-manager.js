@@ -144,8 +144,15 @@
 			modal.style.removeProperty( name );
 		} );
 
+		// The quote mark is opt-in per grid, and the popup lives outside it.
+		modal.classList.remove( 'tm-show-quote' );
+
 		if ( ! grid ) {
 			return;
+		}
+
+		if ( grid.classList.contains( 'tm-show-quote' ) ) {
+			modal.classList.add( 'tm-show-quote' );
 		}
 
 		var computed = window.getComputedStyle( grid );

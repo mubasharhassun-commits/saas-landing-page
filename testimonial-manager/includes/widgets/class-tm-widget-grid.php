@@ -449,9 +449,55 @@ class TM_Widget_Grid extends \Elementor\Widget_Base {
 				'label'      => __( 'Star Size', 'testimonial-manager' ),
 				'type'       => \Elementor\Controls_Manager::SLIDER,
 				'size_units' => array( 'px' ),
-				'range'      => array( 'px' => array( 'min' => 10, 'max' => 40 ) ),
+				'range'      => array( 'px' => array( 'min' => 10, 'max' => 120 ) ),
 				'default'    => array( 'unit' => 'px', 'size' => 17 ),
 				'selectors'  => array( '{{WRAPPER}} .tm-grid' => '--tm-star-size: {{SIZE}}px;' ),
+			)
+		);
+
+		$this->add_control(
+			'star_gap',
+			array(
+				'label'      => __( 'Space Between Stars', 'testimonial-manager' ),
+				'type'       => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => array( 'px' ),
+				'range'      => array( 'px' => array( 'min' => 0, 'max' => 40 ) ),
+				'default'    => array( 'unit' => 'px', 'size' => 3 ),
+				'selectors'  => array( '{{WRAPPER}} .tm-grid' => '--tm-star-gap: {{SIZE}}px;' ),
+			)
+		);
+
+		$this->add_control(
+			'quote_icon',
+			array(
+				'label'        => __( 'Show Quote Icon', 'testimonial-manager' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'return_value' => 'yes',
+				'default'      => '',
+				'description'  => __( 'The large quote mark above the testimonial. Off also hides the one some themes add of their own.', 'testimonial-manager' ),
+			)
+		);
+
+		$this->add_control(
+			'quote_mark_size',
+			array(
+				'label'      => __( 'Quote Icon Size', 'testimonial-manager' ),
+				'type'       => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => array( 'px' ),
+				'range'      => array( 'px' => array( 'min' => 10, 'max' => 160 ) ),
+				'default'    => array( 'unit' => 'px', 'size' => 44 ),
+				'condition'  => array( 'quote_icon' => 'yes' ),
+				'selectors'  => array( '{{WRAPPER}} .tm-grid' => '--tm-quote-mark-size: {{SIZE}}px;' ),
+			)
+		);
+
+		$this->add_control(
+			'quote_mark_color',
+			array(
+				'label'     => __( 'Quote Icon Color', 'testimonial-manager' ),
+				'type'      => \Elementor\Controls_Manager::COLOR,
+				'condition' => array( 'quote_icon' => 'yes' ),
+				'selectors' => array( '{{WRAPPER}} .tm-grid' => '--tm-quote-mark-color: {{VALUE}};' ),
 			)
 		);
 
@@ -879,6 +925,7 @@ class TM_Widget_Grid extends \Elementor\Widget_Base {
 				'show_company'   => $s['show_company'],
 				'show_position'  => $s['show_position'],
 				'show_button'    => $s['show_button'],
+				'quote_icon'     => isset( $s['quote_icon'] ) ? $s['quote_icon'] : '',
 				'button_text'    => $s['button_text'],
 				'fallback_image' => isset( $s['fallback_image']['url'] ) ? $s['fallback_image']['url'] : '',
 				'title_tag'      => $s['title_tag'],

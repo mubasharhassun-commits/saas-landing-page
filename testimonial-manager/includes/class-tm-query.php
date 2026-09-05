@@ -43,10 +43,13 @@ class TM_Query {
 			/* Slider only. */
 			'autoplay'       => 6000,
 			'effect'         => 'fade',
-			'arrows'         => true,
-			'dots'           => true,
+			'arrows'         => false,
+			'dots'           => false,
 			'pause_hover'    => true,
 			'full_text'      => false,
+
+			/* Themes draw their own quote glyph on a blockquote; ours is opt-in. */
+			'quote_icon'     => false,
 		);
 	}
 
@@ -91,7 +94,7 @@ class TM_Query {
 
 		$args['effect'] = ( 'slide' === $args['effect'] ) ? 'slide' : 'fade';
 
-		foreach ( array( 'featured', 'show_rating', 'show_image', 'show_company', 'show_position', 'show_button', 'arrows', 'dots', 'pause_hover', 'full_text' ) as $flag ) {
+		foreach ( array( 'featured', 'show_rating', 'show_image', 'show_company', 'show_position', 'show_button', 'arrows', 'dots', 'pause_hover', 'full_text', 'quote_icon' ) as $flag ) {
 			$args[ $flag ] = self::to_bool( $args[ $flag ] );
 		}
 

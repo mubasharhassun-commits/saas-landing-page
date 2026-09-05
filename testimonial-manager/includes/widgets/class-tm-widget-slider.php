@@ -373,9 +373,94 @@ class TM_Widget_Slider extends \Elementor\Widget_Base {
 				'label'      => __( 'Star Size', 'testimonial-manager' ),
 				'type'       => \Elementor\Controls_Manager::SLIDER,
 				'size_units' => array( 'px' ),
-				'range'      => array( 'px' => array( 'min' => 10, 'max' => 40 ) ),
+				'range'      => array( 'px' => array( 'min' => 10, 'max' => 120 ) ),
 				'default'    => array( 'unit' => 'px', 'size' => 18 ),
 				'selectors'  => array( '{{WRAPPER}} .tm-slider' => '--tm-star-size: {{SIZE}}px;' ),
+			)
+		);
+
+		$this->add_control(
+			'star_gap',
+			array(
+				'label'      => __( 'Space Between Stars', 'testimonial-manager' ),
+				'type'       => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => array( 'px' ),
+				'range'      => array( 'px' => array( 'min' => 0, 'max' => 40 ) ),
+				'default'    => array( 'unit' => 'px', 'size' => 3 ),
+				'selectors'  => array( '{{WRAPPER}} .tm-slider' => '--tm-star-gap: {{SIZE}}px;' ),
+			)
+		);
+
+		$this->add_control(
+			'quote_icon',
+			array(
+				'label'        => __( 'Show Quote Icon', 'testimonial-manager' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'return_value' => 'yes',
+				'default'      => '',
+				'description'  => __( 'The large quote mark above the testimonial. Off also hides the one some themes add of their own.', 'testimonial-manager' ),
+			)
+		);
+
+		$this->add_control(
+			'quote_mark_size',
+			array(
+				'label'      => __( 'Quote Icon Size', 'testimonial-manager' ),
+				'type'       => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => array( 'px' ),
+				'range'      => array( 'px' => array( 'min' => 10, 'max' => 160 ) ),
+				'default'    => array( 'unit' => 'px', 'size' => 44 ),
+				'condition'  => array( 'quote_icon' => 'yes' ),
+				'selectors'  => array( '{{WRAPPER}} .tm-slider' => '--tm-quote-mark-size: {{SIZE}}px;' ),
+			)
+		);
+
+		$this->add_control(
+			'quote_mark_color',
+			array(
+				'label'     => __( 'Quote Icon Color', 'testimonial-manager' ),
+				'type'      => \Elementor\Controls_Manager::COLOR,
+				'condition' => array( 'quote_icon' => 'yes' ),
+				'selectors' => array( '{{WRAPPER}} .tm-slider' => '--tm-quote-mark-color: {{VALUE}};' ),
+			)
+		);
+
+		$this->add_control(
+			'quote_align',
+			array(
+				'label'     => __( 'Testimonial Alignment', 'testimonial-manager' ),
+				'type'      => \Elementor\Controls_Manager::CHOOSE,
+				'options'   => array(
+					'left'    => array( 'title' => __( 'Left', 'testimonial-manager' ), 'icon' => 'eicon-text-align-left' ),
+					'center'  => array( 'title' => __( 'Center', 'testimonial-manager' ), 'icon' => 'eicon-text-align-center' ),
+					'right'   => array( 'title' => __( 'Right', 'testimonial-manager' ), 'icon' => 'eicon-text-align-right' ),
+					'justify' => array( 'title' => __( 'Justify', 'testimonial-manager' ), 'icon' => 'eicon-text-align-justify' ),
+				),
+				'default'   => 'left',
+				'selectors' => array( '{{WRAPPER}} .tm-slider' => '--tm-slider-quote-align: {{VALUE}};' ),
+			)
+		);
+
+		$this->add_control(
+			'quote_spacing',
+			array(
+				'label'      => __( 'Testimonial Letter Spacing', 'testimonial-manager' ),
+				'type'       => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => array( 'px' ),
+				'range'      => array( 'px' => array( 'min' => -5, 'max' => 20, 'step' => 0.5 ) ),
+				'selectors'  => array( '{{WRAPPER}} .tm-slider' => '--tm-slider-quote-spacing: {{SIZE}}px;' ),
+			)
+		);
+
+		$this->add_control(
+			'role_size',
+			array(
+				'label'      => __( 'Position / Company Size', 'testimonial-manager' ),
+				'type'       => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => array( 'px' ),
+				'range'      => array( 'px' => array( 'min' => 8, 'max' => 40 ) ),
+				'default'    => array( 'unit' => 'px', 'size' => 13 ),
+				'selectors'  => array( '{{WRAPPER}} .tm-slider' => '--tm-slider-role-size: {{SIZE}}px;' ),
 			)
 		);
 
@@ -491,6 +576,7 @@ class TM_Widget_Slider extends \Elementor\Widget_Base {
 				'pause_hover'    => $s['pause_hover'],
 				'arrows'         => $s['arrows'],
 				'dots'           => $s['dots'],
+				'quote_icon'     => isset( $s['quote_icon'] ) ? $s['quote_icon'] : '',
 				'show_rating'    => $s['show_rating'],
 				'show_image'     => $s['show_image'],
 				'show_position'  => $s['show_position'],

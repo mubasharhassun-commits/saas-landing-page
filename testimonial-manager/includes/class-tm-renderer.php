@@ -54,6 +54,10 @@ class TM_Renderer {
 		$style .= TM_Style::build( TM_Style::grid_schema(), $args );
 
 		$classes = 'tm-grid';
+
+		if ( ! empty( $args['quote_icon'] ) ) {
+			$classes .= ' tm-show-quote';
+		}
 		if ( '' !== $args['class'] ) {
 			$classes .= ' ' . $args['class'];
 		}
@@ -106,6 +110,10 @@ class TM_Renderer {
 		$uid   = wp_unique_id( 'tm-slider-' );
 
 		$classes = 'tm-slider tm-effect-' . $args['effect'];
+
+		if ( ! empty( $args['quote_icon'] ) ) {
+			$classes .= ' tm-show-quote';
+		}
 
 		// Lets the stylesheet reserve room so arrows never sit over the text.
 		if ( $args['arrows'] && count( $slides ) > 1 ) {

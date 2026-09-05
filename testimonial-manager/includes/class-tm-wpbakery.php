@@ -260,6 +260,10 @@ class TM_WPBakery {
 					self::color( __( 'Star Color', 'testimonial-manager' ), 'star_color', '#7a9a98', $style ),
 					self::color( __( 'Empty Star Color', 'testimonial-manager' ), 'star_empty_color', '#d8e3e2', $style ),
 					self::size( __( 'Star Size', 'testimonial-manager' ), 'star_size', '17', $style ),
+					self::size( __( 'Space Between Stars', 'testimonial-manager' ), 'star_gap', '3', $style ),
+					self::toggle( __( 'Show Quote Icon', 'testimonial-manager' ), 'quote_icon', 'no', array( 'group' => $style, 'description' => __( 'The large quote mark above the testimonial. Off hides it, including the one some themes add of their own.', 'testimonial-manager' ) ) ),
+					self::size( __( 'Quote Icon Size', 'testimonial-manager' ), 'quote_mark_size', '44', $style, array( 'dependency' => array( 'element' => 'quote_icon', 'value' => array( 'yes' ) ) ) ),
+					self::color( __( 'Quote Icon Color', 'testimonial-manager' ), 'quote_mark_color', '', $style, array( 'dependency' => array( 'element' => 'quote_icon', 'value' => array( 'yes' ) ) ) ),
 
 					self::color( __( 'Testimonial Text Color', 'testimonial-manager' ), 'quote_color', '#33383d', $style ),
 					self::size( __( 'Testimonial Text Size', 'testimonial-manager' ), 'quote_size', '15', $style ),
@@ -306,6 +310,21 @@ class TM_WPBakery {
 						'edit_field_class' => 'vc_col-sm-6',
 					),
 					self::size( __( 'Testimonial Line Height', 'testimonial-manager' ), 'quote_lh', '', $style, array( 'description' => __( 'In pixels. Empty for automatic.', 'testimonial-manager' ) ) ),
+					self::size( __( 'Testimonial Letter Spacing', 'testimonial-manager' ), 'quote_spacing', '', $style, array( 'description' => __( 'In pixels. Empty for normal.', 'testimonial-manager' ) ) ),
+					array(
+						'type'             => 'dropdown',
+						'heading'          => __( 'Testimonial Alignment', 'testimonial-manager' ),
+						'param_name'       => 'quote_align',
+						'value'            => array(
+							__( 'Left', 'testimonial-manager' )    => 'left',
+							__( 'Center', 'testimonial-manager' )  => 'center',
+							__( 'Right', 'testimonial-manager' )   => 'right',
+							__( 'Justify', 'testimonial-manager' ) => 'justify',
+						),
+						'std'              => 'left',
+						'group'            => $style,
+						'edit_field_class' => 'vc_col-sm-6',
+					),
 					self::size( __( 'Testimonial Letter Spacing', 'testimonial-manager' ), 'quote_spacing', '', $style ),
 					self::color( __( 'Client Name Color', 'testimonial-manager' ), 'name_color', '#1f2d3a', $style ),
 					self::size( __( 'Client Name Size', 'testimonial-manager' ), 'name_size', '17', $style ),
@@ -559,7 +578,11 @@ class TM_WPBakery {
 
 					self::color( __( 'Star Color', 'testimonial-manager' ), 'star_color', '#7a9a98', $style ),
 					self::color( __( 'Empty Star Color', 'testimonial-manager' ), 'star_empty_color', 'rgba(255,255,255,0.3)', $style ),
-					self::size( __( 'Star Size', 'testimonial-manager' ), 'star_size', '18', $style ),
+					self::size( __( 'Star Size', 'testimonial-manager' ), 'star_size', '18', $style, array( 'description' => __( 'In pixels, up to 120 - raise it for a banner.', 'testimonial-manager' ) ) ),
+					self::size( __( 'Space Between Stars', 'testimonial-manager' ), 'star_gap', '3', $style ),
+					self::toggle( __( 'Show Quote Icon', 'testimonial-manager' ), 'quote_icon', 'no', array( 'group' => $style, 'description' => __( 'The large quote mark above the testimonial. Off hides it, including the one some themes add of their own.', 'testimonial-manager' ) ) ),
+					self::size( __( 'Quote Icon Size', 'testimonial-manager' ), 'quote_mark_size', '44', $style, array( 'dependency' => array( 'element' => 'quote_icon', 'value' => array( 'yes' ) ) ) ),
+					self::color( __( 'Quote Icon Color', 'testimonial-manager' ), 'quote_mark_color', '', $style, array( 'dependency' => array( 'element' => 'quote_icon', 'value' => array( 'yes' ) ) ) ),
 
 					self::color( __( 'Testimonial Color', 'testimonial-manager' ), 'quote_color', '#ffffff', $style ),
 					self::size( __( 'Testimonial Size', 'testimonial-manager' ), 'quote_size', '19', $style ),
@@ -579,6 +602,21 @@ class TM_WPBakery {
 						'edit_field_class' => 'vc_col-sm-6',
 					),
 					self::size( __( 'Testimonial Line Height', 'testimonial-manager' ), 'quote_lh', '', $style, array( 'description' => __( 'In pixels. Empty for automatic.', 'testimonial-manager' ) ) ),
+					self::size( __( 'Testimonial Letter Spacing', 'testimonial-manager' ), 'quote_spacing', '', $style, array( 'description' => __( 'In pixels. Empty for normal.', 'testimonial-manager' ) ) ),
+					array(
+						'type'             => 'dropdown',
+						'heading'          => __( 'Testimonial Alignment', 'testimonial-manager' ),
+						'param_name'       => 'quote_align',
+						'value'            => array(
+							__( 'Left', 'testimonial-manager' )    => 'left',
+							__( 'Center', 'testimonial-manager' )  => 'center',
+							__( 'Right', 'testimonial-manager' )   => 'right',
+							__( 'Justify', 'testimonial-manager' ) => 'justify',
+						),
+						'std'              => 'left',
+						'group'            => $style,
+						'edit_field_class' => 'vc_col-sm-6',
+					),
 					array(
 						'type'             => 'dropdown',
 						'heading'          => __( 'Testimonial Style', 'testimonial-manager' ),
@@ -616,6 +654,7 @@ class TM_WPBakery {
 						'edit_field_class' => 'vc_col-sm-6',
 					),
 					self::color( __( 'Position / Company Color', 'testimonial-manager' ), 'role_color', 'rgba(255,255,255,0.75)', $style ),
+					self::size( __( 'Position / Company Size', 'testimonial-manager' ), 'role_size', '13', $style ),
 
 					/* ---------- Arrows & dots ---------- */
 					self::color( __( 'Arrow Color', 'testimonial-manager' ), 'nav_color', '#ffffff', $nav ),
