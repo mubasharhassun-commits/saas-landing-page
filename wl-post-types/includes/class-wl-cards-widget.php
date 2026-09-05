@@ -349,7 +349,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'label'        => __( 'Hide Title on Hover', 'waterslaw' ),
 			'type'         => \Elementor\Controls_Manager::SWITCHER,
 			'return_value' => 'yes',
-			'default'      => '',
+			'default'      => 'yes',
 			'description'  => __( 'On hover, hide the title so only the button shows.', 'waterslaw' ),
 			'condition'    => array( 'show_button' => 'yes' ),
 		) );

@@ -198,7 +198,7 @@ class TM_Widget_Slider extends \Elementor\Widget_Base {
 				'label'        => __( 'Show Dots', 'testimonial-manager' ),
 				'type'         => \Elementor\Controls_Manager::SWITCHER,
 				'return_value' => 'yes',
-				'default'      => 'yes',
+				'default'      => '',
 			)
 		);
 

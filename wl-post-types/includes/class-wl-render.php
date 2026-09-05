@@ -32,7 +32,7 @@ class WL_Render {
 			'link_cards'     => 'yes',
 			'show_button'    => 'no',
 			'button_text'    => 'READ MORE',
-			'hide_title_hover' => 'no',
+			'hide_title_hover' => 'yes',
 			'custom_size'    => 'no',
 			'pause_hover'    => 'yes',
 			'class'          => '',

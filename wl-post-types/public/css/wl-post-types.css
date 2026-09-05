@@ -83,12 +83,23 @@
 @media (prefers-reduced-motion: reduce) { .wl-marquee { animation: none; } }
 
 /* CARD */
-.wl-card {
+.wl-cards .wl-card,
+.wl-cards .wl-card:hover,
+.wl-cards .wl-card:focus,
+.wl-cards .wl-card:visited {
 	position: relative;
 	display: block;
-	text-decoration: none;
 	overflow: hidden;
 	border-radius: var(--wl-radius, 0);
+	/* Themes underline links on hover, commonly with !important; a card is not
+	   a text link, so this has to win. */
+	text-decoration: none !important;
+	box-shadow: none;
+}
+
+.wl-cards .wl-card .wl-card-title,
+.wl-cards .wl-card:hover .wl-card-title {
+	text-decoration: none !important;
 }
 
 .wl-card-static { cursor: default; }

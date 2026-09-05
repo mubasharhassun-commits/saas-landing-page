@@ -261,7 +261,7 @@ class WL_WPBakery {
 						'group'      => $button,
 						'dependency' => array( 'element' => 'show_button', 'value' => array( 'yes' ) ),
 					),
-					self::toggle( __( 'Hide Title on Hover', 'waterslaw' ), 'hide_title_hover', 'no', array( 'group' => $button, 'dependency' => array( 'element' => 'show_button', 'value' => array( 'yes' ) ) ) ),
+					self::toggle( __( 'Hide Title on Hover', 'waterslaw' ), 'hide_title_hover', 'yes', array( 'group' => $button, 'dependency' => array( 'element' => 'show_button', 'value' => array( 'yes' ) ) ) ),
 					self::color( __( 'Button Text Color', 'waterslaw' ), 'btn_color', '#ffffff', $button ),
 					self::color( __( 'Button Border Color', 'waterslaw' ), 'btn_border', '#ffffff', $button ),
 					self::color( __( 'Button Background', 'waterslaw' ), 'btn_bg', 'rgba(0,0,0,0.15)', $button ),

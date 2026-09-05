@@ -117,6 +117,33 @@ class TM_Style {
 	/**
 	 * A value that must be one of a known set.
 	 */
+	/**
+	 * A font-family list. Quotes, brackets and semicolons are rejected rather
+	 * than escaped: CSS accepts unquoted family names, so none are needed.
+	 */
+	public static function font( $value ) {
+		$value = trim( (string) $value );
+
+		return preg_match( '/^[A-Za-z0-9 ,\-]{1,120}$/', $value ) ? $value : '';
+	}
+
+	/**
+	 * Box-shadow presets. Arbitrary shadow strings are not accepted, so there
+	 * is nothing to sanitise at the point of use.
+	 */
+	public static function shadow( $value ) {
+		$presets = array(
+			'none'   => 'none',
+			'soft'   => '0 4px 14px rgba(0,0,0,0.08)',
+			'medium' => '0 8px 24px rgba(0,0,0,0.14)',
+			'strong' => '0 16px 40px rgba(0,0,0,0.22)',
+		);
+
+		$key = self::keyword( $value, array_keys( $presets ) );
+
+		return ( '' === $key ) ? '' : $presets[ $key ];
+	}
+
 	public static function keyword( $value, $allowed ) {
 		$value = strtolower( trim( (string) $value ) );
 
@@ -181,6 +208,14 @@ class TM_Style {
 					$value = self::spacing( $raw );
 					break;
 
+				case 'font':
+					$value = self::font( $raw );
+					break;
+
+				case 'shadow':
+					$value = self::shadow( $raw );
+					break;
+
 				case 'keyword':
 					$value = self::keyword( $raw, $rule['allowed'] );
 					break;
@@ -214,6 +249,8 @@ class TM_Style {
 			'card_border_width'  => array( 'var' => '--tm-card-border-width', 'type' => 'px', 'max' => 20 ),
 			'card_radius'        => array( 'var' => '--tm-card-radius', 'type' => 'px', 'max' => 80 ),
 			'card_padding'       => array( 'var' => '--tm-card-padding', 'type' => 'spacing' ),
+			'card_shadow'        => array( 'var' => '--tm-card-shadow', 'type' => 'shadow' ),
+			'font_family'        => array( 'var' => '--tm-font', 'type' => 'font' ),
 			'avatar_size'        => array( 'var' => '--tm-avatar-size', 'type' => 'px', 'min' => 16, 'max' => 200 ),
 			'star_color'         => array( 'var' => '--tm-star-color', 'type' => 'color' ),
 			'star_empty_color'   => array( 'var' => '--tm-star-empty-color', 'type' => 'color' ),
@@ -222,10 +259,19 @@ class TM_Style {
 			'quote_size'         => array( 'var' => '--tm-quote-size', 'type' => 'px', 'min' => 8, 'max' => 60 ),
 			'quote_align'        => array( 'var' => '--tm-quote-align', 'type' => 'keyword', 'allowed' => array( 'left', 'center', 'right', 'justify' ) ),
 			'quote_style'        => array( 'var' => '--tm-quote-style', 'type' => 'keyword', 'allowed' => array( 'italic', 'normal' ) ),
+			'quote_weight'       => array( 'var' => '--tm-quote-weight', 'type' => 'keyword', 'allowed' => array( '300', '400', '500', '600', '700', '800' ) ),
+			'quote_lh'           => array( 'var' => '--tm-quote-lh', 'type' => 'px', 'min' => 8, 'max' => 120 ),
+			'quote_spacing'      => array( 'var' => '--tm-quote-spacing', 'type' => 'px', 'min' => -5, 'max' => 20 ),
 			'name_color'         => array( 'var' => '--tm-name-color', 'type' => 'color' ),
 			'name_size'          => array( 'var' => '--tm-name-size', 'type' => 'px', 'min' => 8, 'max' => 60 ),
+			'name_weight'        => array( 'var' => '--tm-name-weight', 'type' => 'keyword', 'allowed' => array( '300', '400', '500', '600', '700', '800' ) ),
+			'name_lh'            => array( 'var' => '--tm-name-lh', 'type' => 'px', 'min' => 8, 'max' => 120 ),
+			'name_spacing'       => array( 'var' => '--tm-name-spacing', 'type' => 'px', 'min' => -5, 'max' => 20 ),
+			'name_transform'     => array( 'var' => '--tm-name-transform', 'type' => 'keyword', 'allowed' => array( 'none', 'uppercase', 'capitalize', 'lowercase' ) ),
 			'role_color'         => array( 'var' => '--tm-role-color', 'type' => 'color' ),
 			'role_size'          => array( 'var' => '--tm-role-size', 'type' => 'px', 'min' => 8, 'max' => 40 ),
+			'role_weight'        => array( 'var' => '--tm-role-weight', 'type' => 'keyword', 'allowed' => array( '300', '400', '500', '600', '700', '800' ) ),
+			'role_lh'            => array( 'var' => '--tm-role-lh', 'type' => 'px', 'min' => 8, 'max' => 80 ),
 			'btn_bg'             => array( 'var' => '--tm-btn-bg', 'type' => 'color' ),
 			'btn_color'          => array( 'var' => '--tm-btn-color', 'type' => 'color' ),
 			'btn_border_color'   => array( 'var' => '--tm-btn-border-color', 'type' => 'color' ),
@@ -236,6 +282,9 @@ class TM_Style {
 			'btn_radius'         => array( 'var' => '--tm-btn-radius', 'type' => 'px', 'max' => 80 ),
 			'btn_padding'        => array( 'var' => '--tm-btn-padding', 'type' => 'spacing' ),
 			'btn_font_size'      => array( 'var' => '--tm-btn-font-size', 'type' => 'px', 'min' => 8, 'max' => 40 ),
+			'btn_weight'         => array( 'var' => '--tm-btn-weight', 'type' => 'keyword', 'allowed' => array( '300', '400', '500', '600', '700', '800' ) ),
+			'btn_spacing'        => array( 'var' => '--tm-btn-spacing', 'type' => 'px', 'min' => -5, 'max' => 20 ),
+			'btn_transform'      => array( 'var' => '--tm-btn-transform', 'type' => 'keyword', 'allowed' => array( 'none', 'uppercase', 'capitalize', 'lowercase' ) ),
 
 			/* Read by the script and copied onto the shared popup. */
 			'popup_max_width'    => array( 'var' => '--tm-modal-max-width', 'type' => 'px', 'min' => 280, 'max' => 1600 ),
@@ -267,8 +316,13 @@ class TM_Style {
 			'star_size'          => array( 'var' => '--tm-star-size', 'type' => 'px', 'min' => 8, 'max' => 60 ),
 			'quote_color'        => array( 'var' => '--tm-slider-color', 'type' => 'color' ),
 			'quote_size'         => array( 'var' => '--tm-slider-quote-size', 'type' => 'px', 'min' => 8, 'max' => 60 ),
+			'quote_weight'       => array( 'var' => '--tm-slider-quote-weight', 'type' => 'keyword', 'allowed' => array( '300', '400', '500', '600', '700', '800' ) ),
+			'quote_lh'           => array( 'var' => '--tm-slider-quote-lh', 'type' => 'px', 'min' => 8, 'max' => 120 ),
+			'quote_style'        => array( 'var' => '--tm-slider-quote-style', 'type' => 'keyword', 'allowed' => array( 'italic', 'normal' ) ),
+			'font_family'        => array( 'var' => '--tm-font', 'type' => 'font' ),
 			'name_color'         => array( 'var' => '--tm-name-color', 'type' => 'color' ),
 			'name_size'          => array( 'var' => '--tm-slider-name-size', 'type' => 'px', 'min' => 8, 'max' => 60 ),
+			'name_weight'        => array( 'var' => '--tm-slider-name-weight', 'type' => 'keyword', 'allowed' => array( '300', '400', '500', '600', '700', '800' ) ),
 			'role_color'         => array( 'var' => '--tm-role-color', 'type' => 'color' ),
 			'nav_color'          => array( 'var' => '--tm-slider-nav-color', 'type' => 'color' ),
 			'nav_bg'             => array( 'var' => '--tm-slider-nav-bg', 'type' => 'color' ),
