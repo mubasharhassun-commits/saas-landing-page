@@ -266,10 +266,20 @@ class TM_Widget_Home extends \Elementor\Widget_Base {
 		);
 
 		$this->add_control(
+			'client_image',
+			array(
+				'label'       => __( 'Client Image for Every Slide', 'testimonial-manager' ),
+				'type'        => \Elementor\Controls_Manager::MEDIA,
+				'description' => __( 'Use one image on every slide, such as the firm logo. Leave empty and each testimonial uses its own.', 'testimonial-manager' ),
+			)
+		);
+
+		$this->add_control(
 			'fallback_image',
 			array(
-				'label' => __( 'Default Client Image', 'testimonial-manager' ),
-				'type'  => \Elementor\Controls_Manager::MEDIA,
+				'label'       => __( 'Default Client Image', 'testimonial-manager' ),
+				'type'        => \Elementor\Controls_Manager::MEDIA,
+				'description' => __( 'Shown only for a testimonial that has no image of its own.', 'testimonial-manager' ),
 			)
 		);
 
@@ -321,6 +331,17 @@ class TM_Widget_Home extends \Elementor\Widget_Base {
 				'selectors' => array( '{{WRAPPER}} .tm-home' => '--tm-home-bg: {{VALUE}};' ),
 			)
 		);
+
+		$this->add_control(
+			'mark_image',
+			array(
+				'label'       => __( 'Quote Mark Image', 'testimonial-manager' ),
+				'type'        => \Elementor\Controls_Manager::MEDIA,
+				'description' => __( 'Upload an image to use instead of the typed quote mark. Leave empty for the built-in one.', 'testimonial-manager' ),
+			)
+		);
+
+		$this->px( 'mark_image_width', __( 'Quote Mark Image Width', 'testimonial-manager' ), 10, 320, 96, '--tm-home-mark-img-width', array( 'condition' => array( 'mark_image[url]!' => '' ) ) );
 
 		$this->add_control(
 			'mark_color',
@@ -612,6 +633,8 @@ class TM_Widget_Home extends \Elementor\Widget_Base {
 				'full_text'      => $s['full_text'],
 				'excerpt_words'  => $s['excerpt_words'],
 				'fallback_image' => isset( $s['fallback_image']['url'] ) ? $s['fallback_image']['url'] : '',
+				'client_image'   => isset( $s['client_image']['url'] ) ? $s['client_image']['url'] : '',
+				'mark_image'     => isset( $s['mark_image']['url'] ) ? $s['mark_image']['url'] : '',
 			)
 		);
 

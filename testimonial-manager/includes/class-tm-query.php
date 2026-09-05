@@ -51,8 +51,12 @@ class TM_Query {
 			/* Themes draw their own quote glyph on a blockquote; ours is opt-in. */
 			'quote_icon'     => false,
 
-			/* Home panel only: the line above the client name. */
+			/* Home panel only: the line above the client name, an image to use
+			   instead of the typographic quote mark, and one client image for
+			   every slide. */
 			'salutation'     => '',
+			'mark_image'     => '',
+			'client_image'   => '',
 		);
 	}
 
@@ -101,12 +105,16 @@ class TM_Query {
 			$args[ $flag ] = self::to_bool( $args[ $flag ] );
 		}
 
-		// WPBakery's image picker stores an attachment ID; a shortcode may pass a URL.
-		if ( is_numeric( $args['fallback_image'] ) ) {
-			$url                    = wp_get_attachment_image_url( absint( $args['fallback_image'] ), 'tm_avatar' );
-			$args['fallback_image'] = $url ? $url : '';
-		} else {
-			$args['fallback_image'] = esc_url_raw( (string) $args['fallback_image'] );
+		// The builders' image pickers store an attachment ID; a shortcode may
+		// pass a URL. The quote mark is shown at whatever size the element sets,
+		// so it is resolved at full size rather than the avatar thumbnail.
+		foreach ( array( 'fallback_image' => 'tm_avatar', 'client_image' => 'tm_avatar', 'mark_image' => 'full' ) as $key => $size ) {
+			if ( is_numeric( $args[ $key ] ) ) {
+				$url          = wp_get_attachment_image_url( absint( $args[ $key ] ), $size );
+				$args[ $key ] = $url ? $url : '';
+			} else {
+				$args[ $key ] = esc_url_raw( (string) $args[ $key ] );
+			}
 		}
 		$args['category']    = sanitize_text_field( (string) $args['category'] );
 		$args['button_text'] = sanitize_text_field( (string) $args['button_text'] );

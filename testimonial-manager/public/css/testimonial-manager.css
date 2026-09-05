@@ -666,6 +666,7 @@ body.tm-modal-open { overflow: hidden; }
 	--tm-home-mark-color: #ffffff;
 	--tm-home-mark-size: 96px;
 	--tm-home-mark-weight: 700;
+	--tm-home-mark-img-width: 96px;
 
 	--tm-home-quote-color: #ffffff;
 	--tm-home-quote-size: 19px;
@@ -720,6 +721,15 @@ body.tm-modal-open { overflow: hidden; }
 	font-weight: var(--tm-home-mark-weight);
 	font-style: normal;
 	line-height: 0.78;
+}
+
+/* An uploaded mark replaces the glyph; it scales on its own width so the
+   typographic size control does not silently distort it. */
+.tm-home-mark-img {
+	display: block;
+	width: var(--tm-home-mark-img-width, 96px);
+	max-width: 100%;
+	height: auto;
 }
 
 .tm-home-rating { grid-column: 2; margin-bottom: -18px; }
@@ -823,6 +833,7 @@ body.tm-modal-open { overflow: hidden; }
 		--tm-home-padding: 38px;
 		--tm-home-col: 104px;
 		--tm-home-mark-size: 76px;
+		--tm-home-mark-img-width: 76px;
 		--tm-home-quote-size: 18px;
 		--tm-avatar-size: 78px;
 		--tm-home-nav-right: 38px;
@@ -837,6 +848,7 @@ body.tm-modal-open { overflow: hidden; }
 	.tm-slider.tm-home {
 		--tm-home-padding: 26px;
 		--tm-home-mark-size: 62px;
+		--tm-home-mark-img-width: 62px;
 		--tm-home-quote-size: 16px;
 		--tm-home-row-gap: 26px;
 		--tm-avatar-size: 66px;

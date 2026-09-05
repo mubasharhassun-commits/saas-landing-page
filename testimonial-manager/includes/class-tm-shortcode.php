@@ -69,6 +69,8 @@ class TM_Shortcode {
 		$defaults['arrows']      = true;
 		$defaults['excerpt_words'] = 45;
 		$defaults['salutation']  = '';
+		$defaults['mark_image']  = '';
+		$defaults['client_image'] = '';
 
 		$atts = shortcode_atts( $defaults, $atts, 'testimonials_home' );
 

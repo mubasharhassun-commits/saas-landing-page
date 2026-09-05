@@ -321,6 +321,7 @@ class TM_Style {
 			'mark_color'        => array( 'var' => '--tm-home-mark-color', 'type' => 'color' ),
 			'mark_size'         => array( 'var' => '--tm-home-mark-size', 'type' => 'px', 'min' => 20, 'max' => 300 ),
 			'mark_weight'       => array( 'var' => '--tm-home-mark-weight', 'type' => 'keyword', 'allowed' => array( '300', '400', '500', '600', '700', '800', '900' ) ),
+			'mark_image_width'  => array( 'var' => '--tm-home-mark-img-width', 'type' => 'px', 'min' => 10, 'max' => 320 ),
 
 			'quote_color'       => array( 'var' => '--tm-home-quote-color', 'type' => 'color' ),
 			'quote_size'        => array( 'var' => '--tm-home-quote-size', 'type' => 'px', 'min' => 8, 'max' => 60 ),

@@ -356,7 +356,12 @@ class TM_Renderer {
 		);
 
 		$out .= '<div class="tm-home-inner">';
-		$out .= '<div class="tm-home-mark" aria-hidden="true">&#8220;</div>';
+
+		$mark = ( ! empty( $args['mark_image'] ) )
+			? sprintf( '<img class="tm-home-mark-img" src="%s" alt="" />', esc_url( $args['mark_image'] ) )
+			: '&#8220;';
+
+		$out .= '<div class="tm-home-mark" aria-hidden="true">' . $mark . '</div>';
 
 		if ( $args['show_rating'] ) {
 			$out .= '<div class="tm-home-rating">' . self::stars( $meta['rating'] ) . '</div>';
@@ -541,6 +546,15 @@ class TM_Renderer {
 	 *   4. a lettered circle, so the layout always holds
 	 */
 	private static function avatar( $post, $name, $args = array() ) {
+		// An image chosen on the element itself is deliberate, so it wins over
+		// whatever the individual testimonial carries.
+		if ( ! empty( $args['client_image'] ) ) {
+			return sprintf(
+				'<img class="tm-avatar" src="%s" alt="" loading="lazy" />',
+				esc_url( $args['client_image'] )
+			);
+		}
+
 		$image_id = (int) get_post_meta( $post->ID, '_tm_image_id', true );
 
 		if ( $image_id ) {

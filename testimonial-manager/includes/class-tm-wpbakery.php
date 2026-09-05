@@ -749,10 +749,18 @@ class TM_WPBakery {
 						'dependency' => array( 'element' => 'full_text', 'value' => array( 'no' ) ),
 					),
 					array(
-						'type'       => 'attach_image',
-						'heading'    => __( 'Default Client Image', 'testimonial-manager' ),
-						'param_name' => 'fallback_image',
-						'group'      => __( 'Display', 'testimonial-manager' ),
+						'type'        => 'attach_image',
+						'heading'     => __( 'Client Image for Every Slide', 'testimonial-manager' ),
+						'param_name'  => 'client_image',
+						'group'       => __( 'Display', 'testimonial-manager' ),
+						'description' => __( 'Use one image on every slide, such as the firm logo. Leave empty and each testimonial uses its own.', 'testimonial-manager' ),
+					),
+					array(
+						'type'        => 'attach_image',
+						'heading'     => __( 'Default Client Image', 'testimonial-manager' ),
+						'param_name'  => 'fallback_image',
+						'group'       => __( 'Display', 'testimonial-manager' ),
+						'description' => __( 'Shown only for a testimonial that has no image of its own.', 'testimonial-manager' ),
 					),
 
 					/* ---------- Layout ---------- */
@@ -782,6 +790,14 @@ class TM_WPBakery {
 						'description'      => __( 'Leave empty to inherit the theme font.', 'testimonial-manager' ),
 					),
 
+					array(
+						'type'        => 'attach_image',
+						'heading'     => __( 'Quote Mark Image', 'testimonial-manager' ),
+						'param_name'  => 'mark_image',
+						'group'       => $style,
+						'description' => __( 'Upload an image to use instead of the typed quote mark. Leave empty for the built-in one.', 'testimonial-manager' ),
+					),
+					self::size( __( 'Quote Mark Image Width', 'testimonial-manager' ), 'mark_image_width', '96', $style, array( 'dependency' => array( 'element' => 'mark_image', 'not_empty' => true ) ) ),
 					self::color( __( 'Quote Mark Color', 'testimonial-manager' ), 'mark_color', '#ffffff', $style ),
 					self::size( __( 'Quote Mark Size', 'testimonial-manager' ), 'mark_size', '96', $style ),
 					array(
