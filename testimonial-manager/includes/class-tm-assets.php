@@ -20,7 +20,8 @@ class TM_Assets {
 		// Registered in every context an element may render, including
 		// WPBakery's front-end editor and its back-end preview, which are admin
 		// screens where wp_enqueue_scripts does not always run.
-		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register' ) );
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register' ), 5 );
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'maybe_enqueue' ), 20 );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register' ) );
 		add_action( 'vc_frontend_editor_enqueue_js_css', array( __CLASS__, 'enqueue' ) );
 	}
@@ -63,6 +64,35 @@ class TM_Assets {
 		}
 
 		wp_enqueue_script( self::SLIDER );
+	}
+
+	/**
+	 * Enqueue in the head when the page being viewed actually uses an element.
+	 *
+	 * WPBakery stores its layout as shortcodes in post_content, so the content
+	 * can be checked before rendering. Enqueueing only at render time means the
+	 * assets are requested after wp_head, and while WordPress can print late
+	 * styles in the footer, themes and optimisation layers routinely drop them.
+	 */
+	public static function maybe_enqueue() {
+		if ( ! is_singular() ) {
+			return;
+		}
+
+		$post = get_post();
+
+		if ( ! $post || empty( $post->post_content ) ) {
+			return;
+		}
+
+		if ( has_shortcode( $post->post_content, 'testimonials' ) ) {
+			self::enqueue();
+		}
+
+		if ( has_shortcode( $post->post_content, 'testimonials_slider' ) ) {
+			self::enqueue();
+			self::enqueue_slider();
+		}
 	}
 
 	/**
