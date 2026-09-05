@@ -242,6 +242,9 @@ class WL_Style {
 				'type'    => 'keyword',
 				'allowed' => array( 'solid', 'dashed', 'dotted', 'double', 'none' ),
 			),
+			'btn_color_h'    => array( 'var' => '--wl-btn-color-h', 'type' => 'color' ),
+			'btn_border_h'   => array( 'var' => '--wl-btn-border-h', 'type' => 'color' ),
+			'btn_bg_h'       => array( 'var' => '--wl-btn-bg-h', 'type' => 'color' ),
 			'btn_size'       => array( 'var' => '--wl-btn-size', 'type' => 'px', 'min' => 8, 'max' => 40 ),
 			'btn_spacing'    => array( 'var' => '--wl-btn-spacing', 'type' => 'px', 'min' => 0, 'max' => 20 ),
 			'btn_weight'     => array(

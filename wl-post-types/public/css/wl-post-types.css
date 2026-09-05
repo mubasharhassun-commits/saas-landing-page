@@ -31,6 +31,9 @@
 	--wl-btn-size: 13px;
 	--wl-btn-weight: 400;
 	--wl-btn-spacing: 0.5px;
+	--wl-btn-color-h: var(--wl-btn-color, #ffffff);
+	--wl-btn-border-h: var(--wl-btn-border, #ffffff);
+	--wl-btn-bg-h: var(--wl-btn-bg, rgba(0, 0, 0, 0.15));
 	--wl-duration: 30s;
 	--wl-pause: paused;
 
@@ -180,6 +183,19 @@
 }
 
 .wl-card:hover .wl-card-btn { opacity: 1; transform: translate(-50%, -50%); }
+
+/* Hovering the button itself, once it has appeared. */
+.wl-cards .wl-card-btn {
+	transition: opacity 0.4s ease, transform 0.4s ease, background 0.3s ease,
+		color 0.3s ease, border-color 0.3s ease;
+}
+
+.wl-cards .wl-card-btn:hover,
+.wl-cards .wl-card-btn.wl-btn-hover {
+	color: var(--wl-btn-color-h, var(--wl-btn-color, #fff));
+	border-color: var(--wl-btn-border-h, var(--wl-btn-border, #fff));
+	background: var(--wl-btn-bg-h, var(--wl-btn-bg, rgba(0,0,0,0.15)));
+}
 
 .wl-cards.wl-hide-title .wl-card:hover .wl-card-title { opacity: 0; transform: translateY(14px); }
 

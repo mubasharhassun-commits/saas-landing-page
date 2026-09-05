@@ -181,7 +181,15 @@ class WL_WPBakery {
 						'group'       => __( 'Layout', 'waterslaw' ),
 						'description' => __( 'Grid = static rows. Continuous Slider = seamless auto-scroll.', 'waterslaw' ),
 					),
-					self::toggle( __( 'Make Cards Clickable', 'waterslaw' ), 'link_cards', 'no', array( 'group' => __( 'Layout', 'waterslaw' ) ) ),
+					self::toggle(
+						__( 'Use Card Links', 'waterslaw' ),
+						'link_cards',
+						'yes',
+						array(
+							'group'       => __( 'Layout', 'waterslaw' ),
+							'description' => __( 'A card links only where you have given it a link of your own - on the card below for Custom Cards, or in the post\'s "Card Settings" box for Vessels and Cases. Set this to No to switch every link off at once.', 'waterslaw' ),
+						)
+					),
 					self::size( __( 'Columns - Desktop', 'waterslaw' ), 'columns', '4', __( 'Layout', 'waterslaw' ), array( 'description' => '' ) ),
 					self::size( __( 'Columns - Laptop (1300px)', 'waterslaw' ), 'columns_laptop', '', __( 'Layout', 'waterslaw' ), array( 'description' => __( 'Leave empty to use the desktop count.', 'waterslaw' ) ) ),
 					self::size( __( 'Columns - Tablet (1024px)', 'waterslaw' ), 'columns_tablet', '2', __( 'Layout', 'waterslaw' ), array( 'description' => '' ) ),
@@ -231,6 +239,28 @@ class WL_WPBakery {
 					),
 					self::size( __( 'Overlay Opacity (normal) %', 'waterslaw' ), 'overlay_opacity', '100', $overlay, array( 'description' => __( '0-100.', 'waterslaw' ) ) ),
 					self::size( __( 'Overlay Opacity (hover) %', 'waterslaw' ), 'hover_overlay_opacity', '100', $overlay, array( 'description' => __( '0-100.', 'waterslaw' ) ) ),
+					array(
+						'type'        => 'dropdown',
+						'heading'     => __( 'Headings', 'waterslaw' ),
+						'param_name'  => 'title_source',
+						'value'       => array(
+							__( 'Use each post title', 'waterslaw' )   => 'post',
+							__( 'Write them here', 'waterslaw' )       => 'custom',
+							__( 'No headings at all', 'waterslaw' )    => 'none',
+						),
+						'std'         => 'post',
+						'group'       => $overlay,
+						'dependency'  => array( 'element' => 'source', 'value' => array( 'vessels', 'cases' ) ),
+						'description' => __( 'Custom Cards always use the text typed on each card.', 'waterslaw' ),
+					),
+					array(
+						'type'        => 'textarea',
+						'heading'     => __( 'Headings (one per line)', 'waterslaw' ),
+						'param_name'  => 'titles',
+						'group'       => $overlay,
+						'dependency'  => array( 'element' => 'title_source', 'value' => array( 'custom' ) ),
+						'description' => __( 'One heading per line, in the same order as the cards. Leave a line empty to keep that card\'s own title.', 'waterslaw' ),
+					),
 					self::color( __( 'Title Color', 'waterslaw' ), 'title_color', '#ffffff', $overlay ),
 					self::size( __( 'Title Size', 'waterslaw' ), 'title_size', '18', $overlay ),
 					self::size( __( 'Title Line Height', 'waterslaw' ), 'title_line_height', '', $overlay, array( 'description' => __( 'In pixels. Leave empty for automatic.', 'waterslaw' ) ) ),
@@ -261,10 +291,21 @@ class WL_WPBakery {
 						'group'      => $button,
 						'dependency' => array( 'element' => 'show_button', 'value' => array( 'yes' ) ),
 					),
-					self::toggle( __( 'Hide Title on Hover', 'waterslaw' ), 'hide_title_hover', 'yes', array( 'group' => $button, 'dependency' => array( 'element' => 'show_button', 'value' => array( 'yes' ) ) ) ),
+					self::toggle(
+						__( 'Hide Title on Hover', 'waterslaw' ),
+						'hide_title_hover',
+						'yes',
+						array(
+							'group'       => $button,
+							'description' => __( 'Only applies while the Read More button is on - with no button the title always stays put.', 'waterslaw' ),
+						)
+					),
 					self::color( __( 'Button Text Color', 'waterslaw' ), 'btn_color', '#ffffff', $button ),
 					self::color( __( 'Button Border Color', 'waterslaw' ), 'btn_border', '#ffffff', $button ),
 					self::color( __( 'Button Background', 'waterslaw' ), 'btn_bg', 'rgba(0,0,0,0.15)', $button ),
+					self::color( __( 'Button Text Color (hover)', 'waterslaw' ), 'btn_color_h', '', $button ),
+					self::color( __( 'Button Border Color (hover)', 'waterslaw' ), 'btn_border_h', '', $button ),
+					self::color( __( 'Button Background (hover)', 'waterslaw' ), 'btn_bg_h', '', $button, array( 'description' => __( 'Leave the three hover colours empty to keep the normal ones.', 'waterslaw' ) ) ),
 					array(
 						'type'             => 'textfield',
 						'heading'          => __( 'Button Padding', 'waterslaw' ),

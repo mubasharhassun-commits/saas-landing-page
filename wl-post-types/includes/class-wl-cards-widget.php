@@ -142,12 +142,12 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 		) );
 
 		$this->add_control( 'link_cards', array(
-			'label'        => __( 'Make Cards Clickable', 'waterslaw' ),
+			'label'        => __( 'Use Card Links', 'waterslaw' ),
 			'type'         => \Elementor\Controls_Manager::SWITCHER,
 			'return_value' => 'yes',
-			'default'      => 'no',
+			'default'      => 'yes',
 			'separator'    => 'before',
-			'description'  => __( 'Turn OFF so no card links anywhere. Custom Cards use the Link set on each card.', 'waterslaw' ),
+			'description'  => __( 'A card links only where you have given it a link of your own. Turn this OFF to switch every link off at once.', 'waterslaw' ),
 		) );
 
 		/* Responsive columns: desktop 4 / laptop / tablet 2 / mobile 1 */
@@ -309,6 +309,27 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'selectors'  => array( '{{WRAPPER}} .wl-cards' => '--wl-ov-h-op: calc({{SIZE}}/100);' ),
 		) );
 
+		$this->add_control( 'title_source', array(
+			'label'       => __( 'Headings', 'waterslaw' ),
+			'type'        => \Elementor\Controls_Manager::SELECT,
+			'default'     => 'post',
+			'options'     => array(
+				'post'   => __( 'Use each post title', 'waterslaw' ),
+				'custom' => __( 'Write them here', 'waterslaw' ),
+				'none'   => __( 'No headings at all', 'waterslaw' ),
+			),
+			'description' => __( 'Custom Cards always use the text typed on each card.', 'waterslaw' ),
+		) );
+
+		$this->add_control( 'titles', array(
+			'label'       => __( 'Headings (one per line)', 'waterslaw' ),
+			'type'        => \Elementor\Controls_Manager::TEXTAREA,
+			'rows'        => 8,
+			'default'     => '',
+			'description' => __( 'One heading per line, in the same order as the cards. Leave a line empty to keep that card\'s own title.', 'waterslaw' ),
+			'condition'   => array( 'title_source' => 'custom' ),
+		) );
+
 		$this->add_control( 'title_color', array(
 			'label'     => __( 'Title Color', 'waterslaw' ),
 			'type'      => \Elementor\Controls_Manager::COLOR,
@@ -350,8 +371,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'type'         => \Elementor\Controls_Manager::SWITCHER,
 			'return_value' => 'yes',
 			'default'      => 'yes',
-			'description'  => __( 'On hover, hide the title so only the button shows.', 'waterslaw' ),
-			'condition'    => array( 'show_button' => 'yes' ),
+			'description'  => __( 'On hover, hide the title so only the button shows. Only applies while the button is on.', 'waterslaw' ),
 		) );
 
 		$this->add_control( 'btn_heading', array(
@@ -390,6 +410,28 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'default'   => 'rgba(0,0,0,0.15)',
 			'selectors' => array( '{{WRAPPER}} .wl-card-btn' => 'background: {{VALUE}};' ),
 			'condition' => array( 'show_button' => 'yes' ),
+		) );
+
+		$this->add_control( 'btn_color_h', array(
+			'label'     => __( 'Text Color (hover)', 'waterslaw' ),
+			'type'      => \Elementor\Controls_Manager::COLOR,
+			'selectors' => array( '{{WRAPPER}} .wl-card .wl-card-btn:hover' => 'color: {{VALUE}};' ),
+			'condition' => array( 'show_button' => 'yes' ),
+		) );
+
+		$this->add_control( 'btn_border_color_h', array(
+			'label'     => __( 'Border Color (hover)', 'waterslaw' ),
+			'type'      => \Elementor\Controls_Manager::COLOR,
+			'selectors' => array( '{{WRAPPER}} .wl-card .wl-card-btn:hover' => 'border-color: {{VALUE}};' ),
+			'condition' => array( 'show_button' => 'yes' ),
+		) );
+
+		$this->add_control( 'btn_bg_h', array(
+			'label'       => __( 'Background (hover)', 'waterslaw' ),
+			'type'        => \Elementor\Controls_Manager::COLOR,
+			'selectors'   => array( '{{WRAPPER}} .wl-card .wl-card-btn:hover' => 'background: {{VALUE}};' ),
+			'description' => __( 'Leave the three hover colours empty to keep the normal ones.', 'waterslaw' ),
+			'condition'   => array( 'show_button' => 'yes' ),
 		) );
 
 		$this->add_responsive_control( 'btn_padding', array(
@@ -465,6 +507,8 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 				'show_button'      => $s['show_button'],
 				'button_text'      => $s['button_text'],
 				'hide_title_hover' => $s['hide_title_hover'],
+				'title_source'     => isset( $s['title_source'] ) ? $s['title_source'] : 'post',
+				'titles'           => isset( $s['titles'] ) ? $s['titles'] : '',
 				'custom_size'      => $s['custom_size'],
 				'pause_hover'      => $s['pause_hover'],
 				'items'            => isset( $s['items'] ) ? $s['items'] : '',

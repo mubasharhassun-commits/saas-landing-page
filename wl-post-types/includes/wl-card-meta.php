@@ -61,7 +61,7 @@ function waterslaw_render_card_meta_box( $post ) {
 		       value="<?php echo esc_attr( $link ); ?>" placeholder="https://example.com/page/" />
 	</p>
 	<p class="description">
-		<?php esc_html_e( 'Where a click on this card goes. Leave blank to use this post\'s own page.', 'waterslaw' ); ?>
+		<?php esc_html_e( 'Where a click on this card goes. Leave it blank and the card is not clickable at all.', 'waterslaw' ); ?>
 	</p>
 
 	<script>
@@ -132,9 +132,12 @@ function waterslaw_get_card_text( $post_id ) {
 }
 
 /**
- * Resolve a card's destination: the custom URL if one is set, else the permalink.
+ * Resolve a card's destination.
+ *
+ * Only the URL typed into "Card Link" is used. There is deliberately no
+ * fallback to the post's own permalink: a card links where the editor says it
+ * links, or it does not link at all.
  */
 function waterslaw_get_card_link( $post_id ) {
-	$custom = get_post_meta( $post_id, '_wl_card_link', true );
-	return $custom ? $custom : get_permalink( $post_id );
+	return (string) get_post_meta( $post_id, '_wl_card_link', true );
 }

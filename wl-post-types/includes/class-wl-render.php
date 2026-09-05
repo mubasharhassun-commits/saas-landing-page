@@ -29,7 +29,9 @@ class WL_Render {
 			'columns_laptop' => 0,
 			'columns_tablet' => 2,
 			'columns_mobile' => 1,
-			'link_cards'     => 'no',
+			'link_cards'     => 'yes',
+			'title_source'   => 'post',
+			'titles'         => '',
 			'show_button'    => 'no',
 			'button_text'    => 'READ MORE',
 			'hide_title_hover' => 'yes',
@@ -64,7 +66,9 @@ class WL_Render {
 
 		$linked = self::to_bool( $args['link_cards'] );
 		$btn    = self::to_bool( $args['show_button'] ) ? sanitize_text_field( $args['button_text'] ) : '';
-		$hidet  = self::to_bool( $args['hide_title_hover'] ) ? ' wl-hide-title' : '';
+		// Hiding the title on hover only makes sense when the button takes its
+		// place; with no button the card would just go blank.
+		$hidet  = ( '' !== $btn && self::to_bool( $args['hide_title_hover'] ) ) ? ' wl-hide-title' : '';
 		$fixed  = self::to_bool( $args['custom_size'] ) ? ' wl-fixed' : '';
 		$pause  = self::to_bool( $args['pause_hover'] ) ? 'paused' : 'running';
 
@@ -144,6 +148,9 @@ class WL_Render {
 	 * Cards pulled from the Vessels / Cases post types.
 	 */
 	private static function post_cards( $args, $type, $btn, $linked ) {
+		$titles  = self::heading_overrides( $args );
+		$source  = in_array( $args['title_source'], array( 'custom', 'none' ), true ) ? $args['title_source'] : 'post';
+		$index   = 0;
 		$orderby = in_array( $args['orderby'], array( 'menu_order', 'date', 'title', 'rand' ), true )
 			? $args['orderby']
 			: 'menu_order';
@@ -169,15 +176,48 @@ class WL_Render {
 		while ( $q->have_posts() ) {
 			$q->the_post();
 			$id   = get_the_ID();
+			$text = waterslaw_get_card_text( $id );
+
+			if ( 'none' === $source ) {
+				$text = '';
+			} elseif ( 'custom' === $source && isset( $titles[ $index ] ) && '' !== $titles[ $index ] ) {
+				$text = $titles[ $index ];
+			}
+
 			$out .= self::card_html(
 				(string) get_the_post_thumbnail_url( $id, 'large' ),
-				waterslaw_get_card_text( $id ),
+				$text,
 				$linked ? waterslaw_get_card_link( $id ) : '',
 				$btn
 			);
+
+			$index++;
 		}
 
 		wp_reset_postdata();
+
+		return $out;
+	}
+
+	/**
+	 * Headings typed into the builder, one per line, in card order.
+	 *
+	 * A blank line means "keep this card's own title", so a single heading can
+	 * be overridden without retyping the rest.
+	 */
+	private static function heading_overrides( $args ) {
+		$raw = isset( $args['titles'] ) ? (string) $args['titles'] : '';
+
+		if ( '' === trim( $raw ) ) {
+			return array();
+		}
+
+		$lines = preg_split( '/\r\n|\r|\n/', $raw );
+		$out   = array();
+
+		foreach ( $lines as $line ) {
+			$out[] = sanitize_text_field( trim( $line ) );
+		}
 
 		return $out;
 	}
