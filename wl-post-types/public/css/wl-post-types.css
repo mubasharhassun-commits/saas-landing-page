@@ -19,6 +19,8 @@
 	--wl-ov-h-op: 1;
 	--wl-title: #ffffff;
 	--wl-title-size: 18px;
+	--wl-title-line-height: 1.25;
+	--wl-title-weight: 600;
 	--wl-btn-color: #ffffff;
 	--wl-btn-border: #ffffff;
 	--wl-btn-bg: rgba(0, 0, 0, 0.15);
@@ -123,8 +125,8 @@
 	margin: 0 0 18px;
 	padding: 0 12px;
 	font-size: var(--wl-title-size, 18px);
-	font-weight: 600;
-	line-height: 1.25;
+	font-weight: var(--wl-title-weight, 600);
+	line-height: var(--wl-title-line-height, 1.25);
 	transition: transform 0.4s ease;
 }
 

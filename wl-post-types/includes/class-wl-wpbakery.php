@@ -220,6 +220,23 @@ class WL_WPBakery {
 					self::size( __( 'Overlay Opacity (hover) %', 'waterslaw' ), 'hover_overlay_opacity', '100', $overlay, array( 'description' => __( '0-100.', 'waterslaw' ) ) ),
 					self::color( __( 'Title Color', 'waterslaw' ), 'title_color', '#ffffff', $overlay ),
 					self::size( __( 'Title Size', 'waterslaw' ), 'title_size', '18', $overlay ),
+					self::size( __( 'Title Line Height', 'waterslaw' ), 'title_line_height', '', $overlay, array( 'description' => __( 'In pixels. Leave empty for automatic.', 'waterslaw' ) ) ),
+					array(
+						'type'             => 'dropdown',
+						'heading'          => __( 'Title Weight', 'waterslaw' ),
+						'param_name'       => 'title_weight',
+						'value'            => array(
+							__( 'Semi Bold', 'waterslaw' )   => '600',
+							__( 'Light', 'waterslaw' )       => '300',
+							__( 'Normal', 'waterslaw' )      => '400',
+							__( 'Medium', 'waterslaw' )      => '500',
+							__( 'Bold', 'waterslaw' )        => '700',
+							__( 'Extra Bold', 'waterslaw' )  => '800',
+						),
+						'std'              => '600',
+						'group'            => $overlay,
+						'edit_field_class' => 'vc_col-sm-6',
+					),
 
 					/* ---------- Hover button ---------- */
 					self::toggle( __( 'Show Read More Button', 'waterslaw' ), 'show_button', 'no', array( 'group' => $button ) ),

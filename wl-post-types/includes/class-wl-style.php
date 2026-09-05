@@ -205,6 +205,12 @@ class WL_Style {
 			'hover_overlay_opacity' => array( 'var' => '--wl-ov-h-op', 'type' => 'opacity' ),
 			'title_color'    => array( 'var' => '--wl-title', 'type' => 'color' ),
 			'title_size'     => array( 'var' => '--wl-title-size', 'type' => 'px', 'min' => 8, 'max' => 80 ),
+			'title_line_height' => array( 'var' => '--wl-title-line-height', 'type' => 'px', 'min' => 8, 'max' => 120 ),
+			'title_weight'   => array(
+				'var'     => '--wl-title-weight',
+				'type'    => 'keyword',
+				'allowed' => array( '300', '400', '500', '600', '700', '800' ),
+			),
 			'btn_color'      => array( 'var' => '--wl-btn-color', 'type' => 'color' ),
 			'btn_border'     => array( 'var' => '--wl-btn-border', 'type' => 'color' ),
 			'btn_bg'         => array( 'var' => '--wl-btn-bg', 'type' => 'color' ),
