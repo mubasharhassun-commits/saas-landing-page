@@ -45,15 +45,31 @@ class TM_Style {
 	/**
 	 * A single length in pixels.
 	 */
+	/**
+	 * The first number in the string, or null when there isn't one. Taking the
+	 * first token rather than stripping every non-digit means "10px<junk>9"
+	 * reads as 10, not 109.
+	 */
+	private static function first_number( $value ) {
+		if ( ! preg_match( '/-?\d+(?:\.\d+)?/', (string) $value, $m ) ) {
+			return null;
+		}
+
+		return (float) $m[0];
+	}
+
 	public static function px( $value, $min = 0, $max = 2000 ) {
 		if ( '' === trim( (string) $value ) ) {
 			return '';
 		}
 
-		$number = (float) preg_replace( '/[^0-9.\-]/', '', (string) $value );
-		$number = max( $min, min( $max, $number ) );
+		$number = self::first_number( $value );
 
-		return round( $number, 2 ) . 'px';
+		if ( null === $number ) {
+			return '';
+		}
+
+		return round( max( $min, min( $max, $number ) ), 2 ) . 'px';
 	}
 
 	/**
@@ -64,7 +80,11 @@ class TM_Style {
 			return '';
 		}
 
-		$number = (float) preg_replace( '/[^0-9.\-]/', '', (string) $value );
+		$number = self::first_number( $value );
+
+		if ( null === $number ) {
+			return '';
+		}
 
 		return (string) max( $min, min( $max, $number ) );
 	}

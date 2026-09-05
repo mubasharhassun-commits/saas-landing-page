@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       WL Post Types (Waters Law)
  * Plugin URI:        https://waterslaw.com
- * Description:        Registers Vessels & Cases custom post types and adds a native Elementor widget ("WL Cards") to display them as a responsive grid or continuous auto-scrolling slider with hover overlay + slide-up title + Read More button. Works on FREE Elementor.
- * Version:           2.6.0
+ * Description:        Registers Vessels, Cases & News custom post types and adds two WPBakery Page Builder elements: "WL Cards" (grid or continuous auto-scrolling slider with hover overlay, slide-up title and Read More button) and "WL News" (featured post plus list). Also available as the [wl_cards] and [wl_news] shortcodes.
+ * Version:           3.0.0
  * Author:            Waters Law Dev
  * Text Domain:       waterslaw
  * License:           GPL-2.0-or-later
@@ -108,106 +108,26 @@ function waterslaw_register_taxonomies() {
 }
 add_action( 'init', 'waterslaw_register_taxonomies' );
 
-/* Per-post card text + link settings (admin fields + resolvers). */
-require_once plugin_dir_path( __FILE__ ) . 'includes/wl-card-meta.php';
+define( 'WL_VERSION', '3.0.0' );
+define( 'WL_PATH', plugin_dir_path( __FILE__ ) );
+define( 'WL_URL', plugin_dir_url( __FILE__ ) );
 
-/* =============================================================
- * 2. ELEMENTOR WIDGET
- * ============================================================= */
-add_action( 'elementor/elements/categories_registered', function( $mgr ) {
-	$mgr->add_category( 'waterslaw', array(
-		'title' => __( 'Waters Law', 'waterslaw' ),
-		'icon'  => 'fa fa-anchor',
-	) );
-} );
+require_once WL_PATH . 'includes/wl-card-meta.php';
+require_once WL_PATH . 'includes/class-wl-style.php';
+require_once WL_PATH . 'includes/class-wl-assets.php';
+require_once WL_PATH . 'includes/class-wl-render.php';
+require_once WL_PATH . 'includes/class-wl-shortcodes.php';
+require_once WL_PATH . 'includes/class-wl-wpbakery.php';
 
-add_action( 'elementor/widgets/register', function( $widgets_manager ) {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wl-cards-widget.php';
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wl-news-widget.php';
-	$widgets_manager->register( new \WL_Cards_Widget() );
-	$widgets_manager->register( new \WL_News_Widget() );
-} );
-
-/* Front-end + editor CSS. */
-function waterslaw_assets() {
-	wp_register_style( 'waterslaw-cards', false );
-	wp_enqueue_style( 'waterslaw-cards' );
-	wp_add_inline_style( 'waterslaw-cards', waterslaw_inline_css() );
+/**
+ * Boot the display modules. Each registers its own hooks.
+ */
+function waterslaw_bootstrap() {
+	WL_Assets::init();
+	WL_Shortcodes::init();
+	WL_WPBakery::init();
 }
-add_action( 'wp_enqueue_scripts', 'waterslaw_assets' );
-add_action( 'elementor/preview/enqueue_scripts', 'waterslaw_assets' );
-
-function waterslaw_inline_css() {
-	return '
-	.wl-cards{position:relative;width:100%;--active-cols:var(--wl-cols,4)}
-	@media(max-width:1300px){.wl-cards{--active-cols:var(--wl-cols-l,var(--wl-cols,4))}}
-	@media(max-width:1024px){.wl-cards{--active-cols:var(--wl-cols-t,2)}}
-	@media(max-width:767px){.wl-cards{--active-cols:var(--wl-cols-m,1)}}
-
-	/* GRID */
-	.wl-grid{display:grid;grid-template-columns:repeat(var(--active-cols,4),1fr);gap:var(--wl-gap,8px)}
-
-	/* CONTINUOUS SLIDER (marquee) */
-	.wl-marquee-wrap{container-type:inline-size;overflow:hidden;width:100%}
-	.wl-marquee{display:flex;width:max-content;animation:wl-scroll var(--wl-duration,30s) linear infinite}
-	.wl-marquee-wrap:hover .wl-marquee{animation-play-state:var(--wl-pause,paused)}
-	.wl-marquee .wl-card{flex:0 0 calc(100cqw / var(--active-cols,4) - var(--wl-gap,8px));margin-right:var(--wl-gap,8px)}
-	@keyframes wl-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-	@media(prefers-reduced-motion:reduce){.wl-marquee{animation:none}}
-
-	/* CARD */
-	.wl-card{position:relative;display:block;text-decoration:none;overflow:hidden;border-radius:var(--wl-radius,0)}
-	.wl-card-static{cursor:default}
-	.wl-card-img{position:relative;width:100%;aspect-ratio:var(--wl-ratio,3/4);background-size:cover;background-position:center;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
-	.wl-card-ov{position:absolute;inset:0;z-index:1;transition:opacity .4s ease}
-	.wl-ov-normal{opacity:1;background:linear-gradient(to top,var(--wl-overlay,rgba(10,25,40,.85)) 0%,rgba(10,25,40,.1) 55%,rgba(10,25,40,0) 100%)}
-	.wl-ov-normal-img{opacity:var(--wl-ov-n-op,1)}
-	.wl-ov-hover{opacity:0;background:var(--wl-hover-overlay,rgba(0,0,0,.55))}
-	.wl-ov-hover-img{opacity:0}
-	.wl-card:hover .wl-ov-normal,.wl-card:hover .wl-ov-normal-img{opacity:0}
-	.wl-card:hover .wl-ov-hover{opacity:1}
-	.wl-card:hover .wl-ov-hover-img{opacity:var(--wl-ov-h-op,1)}
-	.wl-card-title{position:relative;z-index:2;color:var(--wl-title,#fff);text-align:center;margin:0 0 18px;padding:0 12px;font-size:var(--wl-title-size,18px);font-weight:600;line-height:1.25;transition:transform .4s ease}
-	.wl-card:hover .wl-card-title{transform:translateY(-10px)}
-	.wl-card-btn{position:absolute;z-index:3;top:50%;left:50%;transform:translate(-50%,-35%);opacity:0;transition:opacity .4s ease,transform .4s ease;color:#fff;border:1px solid #fff;padding:9px 22px;font-size:13px;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;background:rgba(0,0,0,.15)}
-	.wl-card:hover .wl-card-btn{opacity:1;transform:translate(-50%,-50%)}
-	.wl-cards.wl-hide-title .wl-card:hover .wl-card-title{opacity:0;transform:translateY(14px)}
-	@media(max-width:767px){.wl-card-title{font-size:15px}}
-
-	/* ================= WL NEWS ================= */
-	.wl-news{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:stretch;--wl-accent:#7a9a98;--wl-news-title:#1a2b3c}
-	/* Laptop & down: full width — featured on top, list below, each item stacked with a full-width thumb.
-	   !important beats the desktop thumb width/height emitted by Elementor, whose small
-	   side-by-side sizing would otherwise leak into the stacked layout, where flex-basis
-	   sets height rather than width. */
-	@media(max-width:1300px){
-		.wl-news{grid-template-columns:1fr;gap:26px}
-		.wl-news-item{flex-direction:column}
-		.wl-news-thumb{flex:0 0 auto!important;width:100%!important;height:clamp(180px,28vw,280px)!important}
-	}
-	/* Mobile: shorter thumbs so a full-width image does not dominate the screen */
-	@media(max-width:767px){
-		.wl-news{gap:22px}
-		.wl-news-thumb{height:clamp(170px,45vw,240px)!important}
-	}
-	.wl-news-featured{position:relative;display:flex;align-items:flex-end;min-height:340px;border-radius:4px;overflow:hidden;text-decoration:none;background-size:cover;background-position:center}
-	.wl-news-featured-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.75) 0%,rgba(0,0,0,.1) 60%,transparent 100%)}
-	.wl-news-featured-body{position:relative;z-index:2;padding:24px}
-	.wl-news-featured-title{color:#fff;font-size:22px;font-weight:700;line-height:1.25;margin:0 0 10px}
-	.wl-news-list{display:flex;flex-direction:column;gap:24px;justify-content:center}
-	.wl-news-item{display:flex;gap:16px;align-items:flex-start}
-	.wl-news-thumb{flex:0 0 92px;height:92px;border-radius:4px;background-size:cover;background-position:center;display:block}
-	.wl-news-body{flex:1;min-width:0}
-	.wl-news-title{display:block;color:var(--wl-news-title);font-size:17px;font-weight:700;line-height:1.3;text-decoration:none;margin-bottom:8px}
-	.wl-news-title:hover{color:var(--wl-accent)}
-	.wl-news-meta{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:#8a8a8a;margin-bottom:10px}
-	.wl-news-meta.light{color:rgba(255,255,255,.85)}
-	.wl-news-meta .wl-m{display:inline-flex;align-items:center;gap:5px}
-	.wl-news-meta .wl-m svg{opacity:.85;flex:0 0 auto}
-	.wl-news-readmore{display:inline-block;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--wl-news-title);text-decoration:none;border:1px solid #d9d9d9;padding:7px 16px;transition:.25s}
-	.wl-news-readmore:hover{background:var(--wl-accent);border-color:var(--wl-accent);color:#fff}
-	';
-}
+waterslaw_bootstrap();
 
 /* =============================================================
  * 3. ACTIVATION / DEACTIVATION
