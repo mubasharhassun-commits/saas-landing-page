@@ -1,0 +1,406 @@
+/**
+ * ADA Accessibility
+ *
+ * Nothing here is a design decision that cannot be changed from the Elementor
+ * Style tab. Every appearance value reads from a custom property, and the
+ * !important flags exist only so a theme's generic button rules cannot
+ * override what you set in the widget.
+ */
+
+.adaa {
+	/*
+	 * Panel. Defaults match a dark slide-out menu: near-black background,
+	 * white text, hairline dividers, and a teal highlight on hover. Set
+	 * "Match site colours" to pull from Elementor's global palette instead.
+	 */
+	--adaa-bg: #161a20;
+	--adaa-panel-w: 300px;
+	--adaa-panel-maxw: 85vw;
+	--adaa-panel-pt: 72px;
+	--adaa-panel-pb: 32px;
+	--adaa-panel-radius: 0;
+	--adaa-panel-shadow: none;
+
+	/* Divider */
+	--adaa-rule: rgba( 255, 255, 255, .10 );
+	--adaa-rule-w: 1px;
+
+	/* Items */
+	--adaa-fg: #ffffff;
+	--adaa-hover: #8cb5b8;
+	--adaa-hover-fg: #ffffff;
+	--adaa-item-py: 17px;
+	--adaa-item-px: 24px;
+	--adaa-item-radius: 0;
+	--adaa-item-transform: none;
+	--adaa-item-justify: flex-start;
+	--adaa-item-font: 1rem;
+
+	/* Icons */
+	--adaa-icon-size: 21px;
+	--adaa-icon-gap: 16px;
+	--adaa-icon-color: currentColor;
+	--adaa-icon-hover-color: currentColor;
+	--adaa-icon-stroke: 1.8;
+
+	/* Active-state dot */
+	--adaa-dot-size: 8px;
+	--adaa-dot-color: currentColor;
+	--adaa-dot-display: block;
+
+	/* Floating button */
+	--adaa-size: 52px;
+	--adaa-launcher-bg: #65868b;
+	--adaa-launcher-fg: #ffffff;
+	--adaa-launcher-hover-bg: #83aeb4;
+	--adaa-launcher-ring: 3px;
+	--adaa-launcher-ring-color: #ffffff;
+	--adaa-launcher-hover-fg: #ffffff;
+	--adaa-launcher-radius: 50%;
+	--adaa-launcher-icon: 100%;
+	--adaa-offset-x: 24px;
+	--adaa-offset-y: 24px;
+	--adaa-offset-y-scrolled: 96px;
+
+	/* Behaviour */
+	--adaa-focus: #ffbf47;
+	--adaa-speed: .4s;
+	--adaa-speed-hover: .2s;
+	--adaa-z: 2147483646;
+}
+
+/* Elementor wraps widgets in a container that would clip a fixed child. */
+.elementor-widget-ada_accessibility,
+.elementor-widget-ada_accessibility > .elementor-widget-container {
+	position: static !important;
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
+/* --- Floating button ---------------------------------------------------- */
+
+body .adaa .adaa__launcher {
+	position: fixed;
+	z-index: 2147483646;
+	z-index: var( --adaa-z ) !important;
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	width: var( --adaa-size ) !important;
+	height: var( --adaa-size ) !important;
+	min-width: 0 !important;
+	max-width: none !important;
+	min-height: 0 !important;
+	padding: 0 !important;
+	border: var( --adaa-launcher-ring ) solid var( --adaa-launcher-ring-color );
+	border-radius: var( --adaa-launcher-radius );
+	background: var( --adaa-launcher-bg );
+	color: var( --adaa-launcher-fg );
+	line-height: 0 !important;
+	cursor: pointer;
+	transition: bottom var( --adaa-speed ) ease,
+		top var( --adaa-speed ) ease,
+		background-color var( --adaa-speed-hover ) ease,
+		color var( --adaa-speed-hover ) ease;
+}
+
+.adaa .adaa__launcher svg {
+	display: block;
+	width: var( --adaa-launcher-icon );
+	height: var( --adaa-launcher-icon );
+	stroke: none;
+	fill: currentColor;
+}
+
+/* The glyph is two layers: a disc in the icon colour with the figure punched
+   through it in the button colour. */
+.adaa .adaa__launcher .adaa__glyph-disc {
+	fill: var( --adaa-launcher-fg );
+}
+
+.adaa .adaa__launcher .adaa__glyph-mark {
+	fill: var( --adaa-launcher-bg );
+}
+
+body .adaa .adaa__launcher:hover .adaa__glyph-disc,
+body .adaa .adaa__launcher:focus-visible .adaa__glyph-disc {
+	fill: var( --adaa-launcher-hover-fg );
+}
+
+body .adaa .adaa__launcher:hover .adaa__glyph-mark,
+body .adaa .adaa__launcher:focus-visible .adaa__glyph-mark {
+	fill: var( --adaa-launcher-hover-bg );
+}
+
+/* Font-icon and image icons chosen in the widget. */
+.adaa .adaa__launcher i,
+.adaa .adaa__launcher span {
+	display: block;
+	font-size: var( --adaa-launcher-icon );
+	line-height: 1;
+	color: inherit;
+}
+
+.adaa .adaa__launcher img {
+	display: block;
+	width: var( --adaa-launcher-icon );
+	height: var( --adaa-launcher-icon );
+	object-fit: contain;
+}
+
+body .adaa .adaa__launcher:hover,
+body .adaa .adaa__launcher:focus-visible {
+	background: var( --adaa-launcher-hover-bg );
+	color: var( --adaa-launcher-hover-fg );
+}
+
+.adaa .adaa__launcher:focus-visible {
+	outline: 3px solid var( --adaa-focus );
+	outline-offset: 3px;
+}
+
+.adaa--btn-bottom-right .adaa__launcher { right: var( --adaa-offset-x ); bottom: var( --adaa-offset-y ); }
+.adaa--btn-bottom-left  .adaa__launcher { left: var( --adaa-offset-x );  bottom: var( --adaa-offset-y ); }
+.adaa--btn-middle-right .adaa__launcher { right: var( --adaa-offset-x ); top: 50%; transform: translateY( -50% ); }
+.adaa--btn-middle-left  .adaa__launcher { left: var( --adaa-offset-x );  top: 50%; transform: translateY( -50% ); }
+
+.adaa--btn-bottom-right.is-scrolled .adaa__launcher,
+.adaa--btn-bottom-left.is-scrolled .adaa__launcher {
+	bottom: var( --adaa-offset-y-scrolled );
+}
+
+/* --- Panel -------------------------------------------------------------- */
+
+body .adaa .adaa__panel {
+	position: fixed;
+	top: 0;
+	z-index: 2147483647;
+	z-index: calc( var( --adaa-z ) + 1 ) !important;
+	box-sizing: border-box;
+	width: var( --adaa-panel-w );
+	max-width: var( --adaa-panel-maxw );
+	height: 100vh;
+	height: 100dvh;
+	margin: 0 !important;
+	padding: var( --adaa-panel-pt ) 0 var( --adaa-panel-pb ) !important;
+	list-style: none !important;
+	background: var( --adaa-bg );
+	color: var( --adaa-fg );
+	border-radius: var( --adaa-panel-radius );
+	overflow-y: auto;
+	visibility: hidden;
+	transition: transform var( --adaa-speed ) ease, visibility 0s linear var( --adaa-speed );
+}
+
+.adaa--side-left .adaa__panel  { left: 0;  transform: translateX( -100% ); }
+.adaa--side-right .adaa__panel { right: 0; transform: translateX( 100% ); }
+
+.adaa .adaa__panel.is-open {
+	visibility: visible;
+	transform: translateX( 0 );
+	transition: transform var( --adaa-speed ) ease, visibility 0s linear 0s;
+}
+
+.adaa .adaa__panel > li {
+	display: block !important;
+	width: 100% !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	list-style: none !important;
+	background: none !important;
+	border: 0 !important;
+}
+
+.adaa .adaa__panel > li::before,
+.adaa .adaa__panel > li::after {
+	content: none !important;
+}
+
+/* --- Menu items ---------------------------------------------------------
+   Typography is intentionally left as inherit so the Elementor Typography
+   group is the only thing deciding it.
+   ------------------------------------------------------------------------ */
+
+body .adaa .adaa__panel .adaa__item {
+	display: flex !important;
+	align-items: center;
+	justify-content: var( --adaa-item-justify );
+	gap: var( --adaa-icon-gap );
+	box-sizing: border-box;
+	width: 100% !important;
+	min-width: 0 !important;
+	max-width: none !important;
+	height: auto !important;
+	min-height: 0 !important;
+	margin: 0 !important;
+	padding: var( --adaa-item-py ) var( --adaa-item-px ) !important;
+	border: 0;
+	border-bottom: var( --adaa-rule-w ) solid var( --adaa-rule );
+	border-radius: var( --adaa-item-radius );
+	background: transparent;
+	color: var( --adaa-fg );
+	font: inherit;
+	text-transform: var( --adaa-item-transform ) !important;
+	text-decoration: none !important;
+	cursor: pointer;
+	transform: none !important;
+	transition: background-color var( --adaa-speed-hover ) ease, color var( --adaa-speed-hover ) ease;
+}
+
+body .adaa .adaa__panel .adaa__item:hover,
+body .adaa .adaa__panel .adaa__item:focus-visible {
+	background: var( --adaa-hover );
+	color: var( --adaa-hover-fg );
+}
+
+.adaa .adaa__panel .adaa__item:hover svg,
+.adaa .adaa__panel .adaa__item:focus-visible svg {
+	color: var( --adaa-icon-hover-color );
+}
+
+.adaa .adaa__panel .adaa__item:focus-visible {
+	outline: 2px solid var( --adaa-focus );
+	outline-offset: -2px;
+}
+
+/* The label has its own span so the Typography group can target it without
+   fighting the structural resets above. */
+.adaa .adaa__panel .adaa__item > span {
+	flex: 0 1 auto;
+	color: inherit;
+}
+
+/* The text-resize feature must never scale the toolbar itself, otherwise the
+   controls grow along with the page and push each other off screen. */
+.adaa,
+.adaa * {
+	font-size: revert;
+}
+
+.adaa .adaa__panel .adaa__item,
+.adaa .adaa__panel .adaa__item > span {
+	font-size: var( --adaa-item-font, 1rem );
+}
+
+.adaa .adaa__panel .adaa__item > i,
+.adaa .adaa__panel .adaa__item > img {
+	flex: 0 0 auto;
+	width: var( --adaa-icon-size );
+	height: var( --adaa-icon-size );
+	font-size: var( --adaa-icon-size );
+	line-height: 1;
+	color: var( --adaa-icon-color );
+	object-fit: contain;
+	transition: color var( --adaa-speed-hover ) ease;
+}
+
+.adaa .adaa__panel .adaa__item > i {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: auto;
+}
+
+.adaa .adaa__panel .adaa__item:hover > i,
+.adaa .adaa__panel .adaa__item:focus-visible > i {
+	color: var( --adaa-icon-hover-color );
+}
+
+.adaa .adaa__panel .adaa__item svg {
+	flex: 0 0 auto;
+	width: var( --adaa-icon-size );
+	height: var( --adaa-icon-size );
+	color: var( --adaa-icon-color );
+	stroke-width: var( --adaa-icon-stroke );
+	fill: none;
+	transition: color var( --adaa-speed-hover ) ease;
+}
+
+/* Dot marking an option that is currently on. */
+.adaa .adaa__panel .adaa__item[aria-pressed="true"]::after {
+	content: "";
+	display: var( --adaa-dot-display );
+	flex: 0 0 auto;
+	width: var( --adaa-dot-size );
+	height: var( --adaa-dot-size );
+	border-radius: 50%;
+	background: var( --adaa-dot-color );
+}
+
+/* --- High contrast ------------------------------------------------------
+   The recolouring is done in JavaScript: the background can sit on an inner
+   container rather than the header or footer element itself, so it has to be
+   found at runtime. Text colours are never touched. Only the toolbar's own
+   guard rules live here.
+   ------------------------------------------------------------------------ */
+
+/*
+ * The current page's menu link is the one text colour that has to change:
+ * themes usually give it a dark accent, which disappears against the black
+ * bar. Everything else keeps its own colour.
+ */
+body.adaa-contrast header .current-menu-item > a,
+body.adaa-contrast header .current_page_item > a,
+body.adaa-contrast header .current-menu-ancestor > a,
+body.adaa-contrast header .elementor-item-active,
+body.adaa-contrast header [aria-current="page"],
+body.adaa-contrast .elementor-location-header .current-menu-item > a,
+body.adaa-contrast .elementor-location-header .current_page_item > a,
+body.adaa-contrast .elementor-location-header .current-menu-ancestor > a,
+body.adaa-contrast .elementor-location-header .elementor-item-active,
+body.adaa-contrast .elementor-location-header [aria-current="page"],
+body.adaa-contrast footer .current-menu-item > a,
+body.adaa-contrast footer .current_page_item > a,
+body.adaa-contrast footer .elementor-item-active,
+body.adaa-contrast footer [aria-current="page"],
+body.adaa-contrast .elementor-location-footer .current-menu-item > a,
+body.adaa-contrast .elementor-location-footer .current_page_item > a,
+body.adaa-contrast .elementor-location-footer .elementor-item-active,
+body.adaa-contrast .elementor-location-footer [aria-current="page"] {
+	color: #ffffff !important;
+}
+
+body.adaa-contrast .adaa .adaa__panel {
+	background: var( --adaa-bg ) !important;
+	color: var( --adaa-fg ) !important;
+}
+
+body.adaa-contrast .adaa .adaa__launcher {
+	background: var( --adaa-launcher-bg ) !important;
+	color: var( --adaa-launcher-fg ) !important;
+}
+
+body.adaa-contrast .adaa .adaa__panel .adaa__item {
+	background: transparent !important;
+	color: var( --adaa-fg ) !important;
+}
+
+body.adaa-contrast .adaa .adaa__panel .adaa__item:hover,
+body.adaa-contrast .adaa .adaa__panel .adaa__item:focus-visible {
+	background: var( --adaa-hover ) !important;
+	color: var( --adaa-hover-fg ) !important;
+}
+
+/* --- Visitor preferences ------------------------------------------------ */
+
+@media ( prefers-reduced-motion: reduce ) {
+	.adaa .adaa__panel,
+	.adaa .adaa__launcher,
+	.adaa .adaa__panel .adaa__item {
+		transition: none !important;
+	}
+}
+
+/* Hover border colours. Elementor writes these directly from its Style tab;
+   these variables let a builder without a selector system drive them too, and
+   default to the resting colours so nothing changes when unset. */
+.adaa .adaa__panel .adaa__item:hover,
+.adaa .adaa__panel .adaa__item:focus-visible {
+	border-color: var( --adaa-rule-hover, var( --adaa-rule ) );
+}
+
+.adaa .adaa__launcher:hover,
+.adaa .adaa__launcher:focus-visible {
+	border-color: var( --adaa-launcher-ring-hover, var( --adaa-launcher-ring-color ) );
+}
