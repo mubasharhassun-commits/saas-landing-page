@@ -229,6 +229,6 @@
 		init();
 	}
 
-	// Elementor re-renders widgets in the editor without reloading the page.
-	window.addEventListener( 'elementor/frontend/init', function () { init(); } );
+	// WPBakery's front-end editor swaps element markup without reloading.
+	document.addEventListener( 'vc-full-width-row', function () { init(); } );
 }() );

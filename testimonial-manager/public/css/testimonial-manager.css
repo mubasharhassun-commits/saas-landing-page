@@ -1,9 +1,8 @@
 /**
  * Testimonial Manager - front end.
  *
- * Everything themeable is a custom property on .tm-grid, so the Elementor
- * widget can restyle a grid by setting variables rather than fighting
- * selector specificity.
+ * Everything themeable is a custom property, so a builder can restyle a grid
+ * by setting variables inline rather than fighting selector specificity.
  */
 
 /* Shared visual tokens. The modal is moved to <body>, so it sits outside
@@ -24,6 +23,12 @@
 	--tm-star-size: 17px;
 
 	--tm-avatar-size: 44px;
+
+	--tm-quote-size: 15px;
+	--tm-quote-align: justify;
+	--tm-quote-style: italic;
+	--tm-name-size: 17px;
+	--tm-role-size: 13px;
 }
 
 .tm-grid {
@@ -45,6 +50,10 @@
 	--tm-btn-border-hover: #658b88;
 	--tm-btn-border-width: 1px;
 	--tm-btn-radius: 2px;
+	--tm-btn-padding: 14px 18px;
+	--tm-btn-font-size: 14px;
+
+	--tm-card-padding: 26px;
 
 	display: grid;
 	grid-template-columns: repeat(var(--tm-active-cols, var(--tm-cols)), minmax(0, 1fr));
@@ -69,7 +78,7 @@
 .tm-card {
 	display: flex;
 	flex-direction: column;
-	padding: 26px;
+	padding: var(--tm-card-padding);
 	background: var(--tm-card-bg);
 	border: var(--tm-card-border-width) solid var(--tm-card-border-color);
 	border-radius: var(--tm-card-radius);
@@ -83,10 +92,10 @@
 	border: 0;
 	quotes: none;
 	color: var(--tm-text-color);
-	font-style: italic;
-	font-size: 15px;
+	font-style: var(--tm-quote-style);
+	font-size: var(--tm-quote-size);
 	line-height: 1.62;
-	text-align: justify;
+	text-align: var(--tm-quote-align);
 	hyphens: auto;
 }
 
@@ -153,7 +162,7 @@
 	margin: 0;
 	padding: 0;
 	color: var(--tm-name-color);
-	font-size: 17px;
+	font-size: var(--tm-name-size);
 	font-weight: 500;
 	line-height: 1.3;
 	letter-spacing: normal;
@@ -167,7 +176,7 @@
 
 .tm-role {
 	color: var(--tm-role-color);
-	font-size: 13px;
+	font-size: var(--tm-role-size);
 	line-height: 1.35;
 }
 
@@ -177,13 +186,13 @@
 	display: block;
 	width: 100%;
 	margin-top: 22px;
-	padding: 14px 18px;
+	padding: var(--tm-btn-padding);
 	background: var(--tm-btn-bg);
 	color: var(--tm-btn-color);
 	border: var(--tm-btn-border-width) solid var(--tm-btn-border-color);
 	border-radius: var(--tm-btn-radius);
 	font-family: inherit;
-	font-size: 14px;
+	font-size: var(--tm-btn-font-size);
 	font-weight: 500;
 	letter-spacing: 0.06em;
 	text-transform: uppercase;
@@ -388,6 +397,7 @@ body.tm-modal-open { overflow: hidden; }
 	--tm-slider-radius: 0px;
 	--tm-slider-min-height: 0px;
 	--tm-slider-quote-size: 19px;
+	--tm-slider-name-size: 18px;
 	--tm-slider-nav-color: #ffffff;
 	--tm-slider-nav-bg: rgba(255, 255, 255, 0.14);
 	--tm-slider-dot: rgba(255, 255, 255, 0.4);
@@ -455,7 +465,7 @@ body.tm-modal-open { overflow: hidden; }
 
 .tm-slider .tm-name {
 	color: var(--tm-name-color);
-	font-size: 18px;
+	font-size: var(--tm-slider-name-size);
 	font-weight: 500;
 	line-height: 1.3;
 }
@@ -553,6 +563,6 @@ body.tm-modal-open { overflow: hidden; }
 }
 
 @media (max-width: 767px) {
-	.tm-slider { --tm-slider-padding: 26px 20px; --tm-slider-quote-size: 16px; }
+	.tm-slider { --tm-slider-padding: 26px; --tm-slider-quote-size: 16px; }
 	.tm-slider-nav { display: none; }
 }

@@ -17,13 +17,12 @@ class TM_Assets {
 	const SLIDER = 'testimonial-manager-slider';
 
 	public static function init() {
-		// Registered in every context the widget can be asked about its
-		// dependencies, including the Elementor editor, which is an admin
-		// screen where wp_enqueue_scripts never runs.
+		// Registered in every context an element may render, including
+		// WPBakery's front-end editor and its back-end preview, which are admin
+		// screens where wp_enqueue_scripts does not always run.
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register' ) );
-		add_action( 'elementor/editor/before_enqueue_scripts', array( __CLASS__, 'register' ) );
-		add_action( 'elementor/preview/enqueue_scripts', array( __CLASS__, 'enqueue' ) );
+		add_action( 'vc_frontend_editor_enqueue_js_css', array( __CLASS__, 'enqueue' ) );
 	}
 
 	public static function register() {

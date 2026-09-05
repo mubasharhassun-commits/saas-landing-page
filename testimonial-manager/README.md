@@ -3,12 +3,13 @@
 Manage client testimonials from the WordPress dashboard and display them as a
 responsive grid with an accessible "read full review" popup.
 
-- Works through the `[testimonials]` shortcode anywhere on the site.
-- Adds a native **Testimonials Grid** widget when Elementor is active.
-- Works on **Elementor Free** — the popup is built into this plugin and does
-  not use Elementor Pro's Popup Builder.
-- Does not require Elementor at all. With Elementor absent the widget simply
-  is not registered and the shortcode keeps working.
+- Adds two native **WPBakery Page Builder** elements: Testimonials Grid and
+  Testimonials Slider.
+- Also works through the `[testimonials]` and `[testimonials_slider]`
+  shortcodes anywhere on the site.
+- The popup is built into this plugin — no third-party popup add-on needed.
+- Does not require WPBakery at all. With WPBakery absent the elements are
+  simply not mapped and the shortcodes keep working.
 
 Requires WordPress 6.0+ and PHP 7.4+.
 
@@ -83,15 +84,15 @@ copy with the same text, meta, image and categories.
 
 ---
 
-## Elementor widget
+## WPBakery element
 
-Search for **Testimonials Grid** in the Elementor panel, under the
-**Testimonial Manager** category.
+Add an element and pick **Testimonials Grid**, under the **Testimonial
+Manager** category.
 
-**Content → Query** — number of testimonials, order by (display order, date,
-client name, rating, random), order, category, featured only.
+**General** — number of testimonials, order by (display order, date, client
+name, rating, random), order, category, featured only.
 
-**Content → Layout** — columns for desktop / laptop / tablet / mobile, card
+**Layout** — columns for desktop / laptop / tablet / mobile, card
 spacing. Laptop applies at 1300px and below; leave it empty to use the desktop
 count.
 
@@ -104,48 +105,54 @@ count.
 | Tablet | 1024px and below | — |
 | Mobile | 767px and below | — |
 
-**Content → Display** — show or hide the rating, client image, position,
-company and button; button text; short text length; the heading tag used for
-the client name.
+**Display** — show or hide the rating, client image, position, company and
+button; button text; short text length; default client image; the heading tag
+used for the client name.
 
-**Style → Card** — background, border colour and width, radius, box shadow,
-padding, client image size.
+**Style** — card background, border colour and width, radius, padding, client
+image size; star colours and size; testimonial colour, size, alignment and
+italic/normal; client name and position/company colour and size.
 
-**Style → Typography** — colour, font and size for the stars, testimonial text,
-client name and position/company, plus text alignment.
+**Button** — normal and hover colours, border width, radius, padding, font size.
 
-**Style → Button** — typography, normal and hover colours, border, radius,
-padding.
-
-**Style → Popup** — max width, background, overlay colour, text colour and
-size, radius, padding, close button position, size and colours.
+**Popup** — max width, background, overlay colour, text colour and size,
+radius, padding, close button position, size and colours.
 
 ### A note on popup styling
 
 One popup is shared by every testimonial on the page rather than one being
-built per testimonial. Popup settings are stored on the widget and applied to
-that shared popup when a card from that widget opens it, so two grids on one
-page can each style their own popup.
+built per testimonial. Popup settings are written onto each grid as CSS custom
+properties and copied to the shared popup when a card from that grid opens it,
+so two grids on one page can each style their own popup.
+
+### How styling is applied
+
+WPBakery has no scoped-selector system, so every style parameter is validated
+and written onto the element as an inline CSS custom property. Values are
+type-checked before they reach the style attribute: colours must be hex,
+rgb/rgba, hsl/hsla or a keyword, lengths are clamped numbers, and anything
+unrecognised is dropped rather than passed through.
 
 ---
 
 ## Testimonials Slider (banner)
 
-A second widget, **Testimonials Slider**, shows one testimonial at a time on a
+A second element, **Testimonials Slider**, shows one testimonial at a time on a
 translucent panel - built for a banner or hero area. It defaults to *Date
 Published* / *Newest First*, so the latest testimonial leads and the rest follow.
 
-**Content → Query** - number of slides, order by, order, category, featured only.
+**General** - number of slides, order by, order, category, featured only.
 
-**Content → Slider** - autoplay speed in milliseconds (0 turns it off),
-transition (fade or slide), pause on hover, arrows, dots.
+**Slider** - autoplay speed in milliseconds (0 turns it off), transition (fade
+or slide), pause on hover, arrows, dots.
 
-**Content → Display** - rating, client image, position, company, full text or a
-word limit, default client image.
+**Display** - rating, client image, position, company, full text or a word
+limit, default client image.
 
 **Style** - panel background, radius, padding, minimum height, client image
-size, star colour and size, testimonial and client name colour and typography,
-arrow and dot colours.
+size, star colour and size, testimonial and client name colour and size.
+
+**Arrows & Dots** - arrow colour and background, dot and active dot colours.
 
 Behaviour:
 
@@ -272,19 +279,23 @@ testimonial-manager/
 │   ├── class-tm-renderer.php        All front-end markup
 │   ├── class-tm-shortcode.php       [testimonials]
 │   ├── class-tm-assets.php          Conditional CSS/JS loading
-│   ├── class-tm-elementor.php       Elementor registration, guarded
-│   └── widgets/
-│       └── class-tm-widget-grid.php Testimonials Grid widget
+│   ├── class-tm-style.php           Style parameter validation
+│   └── class-tm-wpbakery.php        WPBakery element mapping, guarded
 ├── admin/css/testimonial-manager-admin.css
 └── public/
     ├── css/testimonial-manager.css
     └── js/testimonial-manager.js
 ```
 
-The Elementor widget and the shortcode both call `TM_Renderer::grid()`, so
-their output can never drift apart.
+The WPBakery elements and the shortcodes both call `TM_Renderer::grid()`,
+so their output can never drift apart.
 
 ## Changelog
+
+### 2.0.0
+Moved from Elementor to WPBakery Page Builder. The Elementor widgets are
+removed; the same two elements are now mapped with `vc_map()`. Style settings
+are applied as validated inline CSS custom properties.
 
 ### 1.0.0
 Initial release.

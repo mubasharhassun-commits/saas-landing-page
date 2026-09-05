@@ -2,7 +2,7 @@
 /**
  * All front-end markup lives here.
  *
- * The shortcode, the Elementor widget and any future block all call
+ * The shortcode and the WPBakery elements all call
  * TM_Renderer::grid(), so the output can never drift between them.
  *
  * @package TestimonialManager
@@ -49,6 +49,9 @@ class TM_Renderer {
 			$args['columns_mobile'],
 			$args['gap']
 		);
+
+		// Style parameters become custom properties on the element itself.
+		$style .= TM_Style::build( TM_Style::grid_schema(), $args );
 
 		$classes = 'tm-grid';
 		if ( '' !== $args['class'] ) {
@@ -113,9 +116,10 @@ class TM_Renderer {
 		}
 
 		$out = sprintf(
-			'<div class="%1$s" id="%2$s" data-autoplay="%3$d" data-pause-hover="%4$s">',
+			'<div class="%1$s" id="%2$s" style="%3$s" data-autoplay="%4$d" data-pause-hover="%5$s">',
 			esc_attr( $classes ),
 			esc_attr( $uid ),
+			esc_attr( TM_Style::build( TM_Style::slider_schema(), $args ) ),
 			(int) $args['autoplay'],
 			$args['pause_hover'] ? '1' : '0'
 		);

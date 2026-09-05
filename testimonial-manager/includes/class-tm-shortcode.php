@@ -19,8 +19,19 @@ class TM_Shortcode {
 	/**
 	 * Every attribute maps one-to-one onto TM_Query::defaults().
 	 */
+	/**
+	 * Content defaults plus every style key, so shortcode_atts() keeps the
+	 * style parameters instead of stripping them as unknown attributes.
+	 */
+	private static function defaults( $schema ) {
+		return array_merge(
+			TM_Query::defaults(),
+			array_fill_keys( array_keys( $schema ), '' )
+		);
+	}
+
 	public static function render( $atts ) {
-		$atts = shortcode_atts( TM_Query::defaults(), $atts, 'testimonials' );
+		$atts = shortcode_atts( self::defaults( TM_Style::grid_schema() ), $atts, 'testimonials' );
 
 		return TM_Renderer::grid( $atts );
 	}
@@ -30,7 +41,7 @@ class TM_Shortcode {
 	 * newest first so the latest testimonial leads.
 	 */
 	public static function render_slider( $atts ) {
-		$defaults = TM_Query::defaults();
+		$defaults = self::defaults( TM_Style::slider_schema() );
 
 		$defaults['count']       = 5;
 		$defaults['orderby']     = 'date';

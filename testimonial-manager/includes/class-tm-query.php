@@ -2,7 +2,7 @@
 /**
  * Turns normalised display arguments into a WP_Query.
  *
- * Shared by the shortcode and the Elementor widget so both select testimonials
+ * Shared by the shortcode and the WPBakery elements so both select testimonials
  * by exactly the same rules.
  *
  * @package TestimonialManager
@@ -51,7 +51,7 @@ class TM_Query {
 	}
 
 	/**
-	 * Coerce loose input (shortcode strings, Elementor switchers) into real types.
+	 * Coerce loose input (shortcode strings, builder dropdowns) into real types.
 	 */
 	public static function normalize( $args ) {
 		$args = wp_parse_args( $args, self::defaults() );
@@ -95,7 +95,13 @@ class TM_Query {
 			$args[ $flag ] = self::to_bool( $args[ $flag ] );
 		}
 
-		$args['fallback_image'] = esc_url_raw( (string) $args['fallback_image'] );
+		// WPBakery's image picker stores an attachment ID; a shortcode may pass a URL.
+		if ( is_numeric( $args['fallback_image'] ) ) {
+			$url                    = wp_get_attachment_image_url( absint( $args['fallback_image'] ), 'tm_avatar' );
+			$args['fallback_image'] = $url ? $url : '';
+		} else {
+			$args['fallback_image'] = esc_url_raw( (string) $args['fallback_image'] );
+		}
 		$args['category']    = sanitize_text_field( (string) $args['category'] );
 		$args['button_text'] = sanitize_text_field( (string) $args['button_text'] );
 		$args['class']       = sanitize_html_class( (string) $args['class'] );

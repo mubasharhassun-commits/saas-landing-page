@@ -56,7 +56,7 @@
 		body   = modal.querySelector( '.tm-modal-body' );
 
 		/* A fixed-position element is positioned against a transformed ancestor
-		   rather than the viewport, and Elementor sections do use transforms.
+		   rather than the viewport, and page-builder rows do use transforms.
 		   Re-parenting to <body> keeps the modal centred on screen. */
 		if ( modal.parentNode !== document.body ) {
 			document.body.appendChild( modal );
@@ -194,8 +194,8 @@
 		init();
 	}
 
-	/* Elementor re-renders widgets in the editor without a page reload. */
-	window.addEventListener( 'elementor/frontend/init', function () {
+	/* WPBakery's front-end editor swaps element markup without reloading. */
+	document.addEventListener( 'vc-full-width-row', function () {
 		if ( ! modal ) {
 			init();
 		}
