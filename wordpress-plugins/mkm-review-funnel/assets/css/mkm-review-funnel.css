@@ -1,0 +1,391 @@
+/**
+ * Review Funnel front end.
+ *
+ * Colours are exposed as custom properties so a theme can restyle the funnel
+ * without overriding every rule.
+ */
+
+.mkm-rf {
+	--mkm-rf-navy: #052f55;
+	--mkm-rf-gold: #d6ab3b;
+	--mkm-rf-gold-dark: #7a5f1a;
+	--mkm-rf-surface: #f1f1f1;
+	--mkm-rf-border: #d8d8d8;
+	--mkm-rf-error: #b3261e;
+	--mkm-rf-radius: 4px;
+
+	margin: 0 auto;
+	max-width: 900px;
+}
+
+.mkm-rf--align-center {
+	text-align: center;
+}
+
+.mkm-rf--align-left {
+	text-align: left;
+}
+
+.mkm-rf--align-right {
+	text-align: right;
+}
+
+.mkm-rf__heading {
+	color: var(--mkm-rf-gold);
+	margin-bottom: .5em;
+}
+
+.mkm-rf__intro {
+	color: var(--mkm-rf-navy);
+	margin: 0 auto 2em;
+	max-width: 44em;
+}
+
+.mkm-rf__choices {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+	justify-content: center;
+}
+
+.mkm-rf--align-left .mkm-rf__choices {
+	justify-content: flex-start;
+}
+
+.mkm-rf--align-right .mkm-rf__choices {
+	justify-content: flex-end;
+}
+
+.mkm-rf__choice {
+	align-items: center;
+	background: var(--mkm-rf-surface);
+	border: 1px solid transparent;
+	border-radius: var(--mkm-rf-radius);
+	color: var(--mkm-rf-navy);
+	cursor: pointer;
+	display: flex;
+	flex: 1 1 240px;
+	flex-direction: column;
+	font: inherit;
+	gap: 18px;
+	justify-content: center;
+	max-width: 320px;
+	min-height: 220px;
+	padding: 32px 24px;
+	text-align: center;
+	transition: background-color .2s ease, border-color .2s ease, transform .2s ease;
+}
+
+.mkm-rf__choice:hover,
+.mkm-rf__choice:focus-visible {
+	background: #e6e6e6;
+	border-color: var(--mkm-rf-gold);
+	transform: translateY(-2px);
+}
+
+.mkm-rf__choice:focus-visible {
+	outline: 2px solid var(--mkm-rf-gold-dark);
+	outline-offset: 2px;
+}
+
+.mkm-rf__choice-icon svg {
+	fill: currentColor;
+	height: 72px;
+	width: 72px;
+}
+
+.mkm-rf__choice-label {
+	font-size: 1.05em;
+	font-weight: 600;
+	letter-spacing: .02em;
+	text-transform: uppercase;
+}
+
+/* Modals */
+
+.mkm-rf-modal {
+	inset: 0;
+	overflow-y: auto;
+	position: fixed;
+	z-index: 100000;
+}
+
+.mkm-rf-modal[hidden] {
+	display: none;
+}
+
+.mkm-rf-modal__overlay {
+	background: rgba(0, 0, 0, .65);
+	inset: 0;
+	position: fixed;
+}
+
+.mkm-rf-modal__dialog {
+	background: #fff;
+	border-radius: var(--mkm-rf-radius);
+	box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+	margin: 5vh auto;
+	max-width: 620px;
+	padding: 40px 32px 32px;
+	position: relative;
+	text-align: left;
+	width: calc(100% - 32px);
+}
+
+.mkm-rf-modal__close {
+	background: var(--mkm-rf-navy);
+	border: 0;
+	border-radius: 50%;
+	color: #fff;
+	cursor: pointer;
+	font-size: 22px;
+	height: 34px;
+	line-height: 1;
+	position: absolute;
+	right: -12px;
+	top: -12px;
+	width: 34px;
+}
+
+.mkm-rf-modal__close:focus-visible {
+	outline: 2px solid var(--mkm-rf-gold);
+	outline-offset: 2px;
+}
+
+.mkm-rf-modal__intro {
+	color: var(--mkm-rf-navy);
+	font-size: 1.15em;
+	font-weight: 600;
+	margin-top: 0;
+	text-align: center;
+}
+
+.mkm-rf-modal__title {
+	color: var(--mkm-rf-navy);
+	margin-top: 0;
+}
+
+.mkm-rf-sites {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	justify-content: center;
+}
+
+.mkm-rf-site {
+	background: var(--mkm-rf-surface);
+	border: 1px solid var(--mkm-rf-border);
+	border-radius: var(--mkm-rf-radius);
+	color: var(--mkm-rf-navy);
+	cursor: pointer;
+	flex: 0 1 200px;
+	font: inherit;
+	font-size: 1.1em;
+	font-weight: 600;
+	padding: 28px 16px;
+}
+
+.mkm-rf-site:hover,
+.mkm-rf-site:focus-visible {
+	border-color: var(--mkm-rf-gold);
+}
+
+.mkm-rf-steps {
+	color: var(--mkm-rf-navy);
+	margin: 0 0 1.5em;
+	padding-left: 1.2em;
+}
+
+.mkm-rf-steps li {
+	margin-bottom: .4em;
+}
+
+.mkm-rf-button {
+	background: var(--mkm-rf-gold);
+	border: 0;
+	border-radius: 40px;
+	color: var(--mkm-rf-navy);
+	cursor: pointer;
+	display: inline-block;
+	font: inherit;
+	font-weight: 600;
+	padding: 14px 32px;
+	text-align: center;
+	text-decoration: none;
+	transition: background-color .2s ease;
+}
+
+.mkm-rf-button:hover,
+.mkm-rf-button:focus-visible {
+	background: var(--mkm-rf-gold-dark);
+	color: #fff;
+}
+
+.mkm-rf-button--submit {
+	width: 100%;
+}
+
+.mkm-rf-button[disabled] {
+	cursor: default;
+	opacity: .6;
+}
+
+.mkm-rf-back {
+	background: none;
+	border: 0;
+	color: var(--mkm-rf-navy);
+	cursor: pointer;
+	display: block;
+	font: inherit;
+	margin-top: 1em;
+	padding: 4px 0;
+	text-decoration: underline;
+}
+
+/* Form */
+
+.mkm-rf-field {
+	margin-bottom: 16px;
+}
+
+.mkm-rf-field input[type="text"],
+.mkm-rf-field input[type="email"],
+.mkm-rf-field input[type="tel"],
+.mkm-rf-field select,
+.mkm-rf-field textarea {
+	background: #fff;
+	border: 1px solid var(--mkm-rf-border);
+	border-radius: var(--mkm-rf-radius);
+	box-sizing: border-box;
+	color: var(--mkm-rf-navy);
+	font: inherit;
+	padding: 14px 16px;
+	width: 100%;
+}
+
+.mkm-rf-field--invalid input,
+.mkm-rf-field--invalid select,
+.mkm-rf-field--invalid textarea {
+	border-color: var(--mkm-rf-error);
+}
+
+.mkm-rf-field--consent label {
+	align-items: flex-start;
+	color: var(--mkm-rf-navy);
+	display: flex;
+	font-size: .82em;
+	font-style: italic;
+	gap: 10px;
+	line-height: 1.5;
+}
+
+.mkm-rf-field--consent input {
+	flex: 0 0 auto;
+	margin-top: 3px;
+}
+
+.mkm-rf-error {
+	color: var(--mkm-rf-error);
+	display: block;
+	font-size: .85em;
+	margin-top: 4px;
+}
+
+.mkm-rf-error:empty {
+	display: none;
+}
+
+.mkm-rf-form__status {
+	margin: 0 0 12px;
+}
+
+.mkm-rf-form__status:empty {
+	display: none;
+}
+
+.mkm-rf-form__status--error {
+	color: var(--mkm-rf-error);
+	font-weight: 600;
+}
+
+.mkm-rf-captcha {
+	margin-bottom: 16px;
+}
+
+.mkm-rf-success {
+	color: var(--mkm-rf-navy);
+	font-size: 1.1em;
+	text-align: center;
+}
+
+.mkm-rf-success:focus {
+	outline: none;
+}
+
+/* The honeypot must be reachable by bots but never seen or tabbed into. */
+.mkm-rf-hp {
+	height: 0;
+	left: -9999px;
+	overflow: hidden;
+	position: absolute;
+	width: 0;
+}
+
+.mkm-rf-notice {
+	background: #fff8e5;
+	border-left: 4px solid var(--mkm-rf-gold);
+	padding: 12px 16px;
+}
+
+body.mkm-rf-modal-open {
+	overflow: hidden;
+}
+
+@media (max-width: 600px) {
+	.mkm-rf-modal__dialog {
+		margin: 0 auto;
+		min-height: 100%;
+		padding: 48px 20px 24px;
+		width: 100%;
+	}
+
+	.mkm-rf-modal__close {
+		right: 8px;
+		top: 8px;
+	}
+
+	.mkm-rf__choice {
+		min-height: 0;
+		padding: 24px 16px;
+	}
+
+	.mkm-rf__choice-icon svg {
+		height: 52px;
+		width: 52px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.mkm-rf__choice,
+	.mkm-rf-button {
+		transition: none;
+	}
+
+	.mkm-rf__choice:hover {
+		transform: none;
+	}
+}
+
+/* Fallback in case the active theme does not define .screen-reader-text. */
+.mkm-rf .screen-reader-text,
+.mkm-rf-modal .screen-reader-text {
+	border: 0;
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}

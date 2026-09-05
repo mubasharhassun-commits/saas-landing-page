@@ -1,0 +1,73 @@
+/**
+ * Review Funnel dashboard styling.
+ */
+
+.mkm-rf-stats {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	margin: 16px 0;
+}
+
+.mkm-rf-stat {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	flex: 0 1 220px;
+	padding: 16px 20px;
+}
+
+.mkm-rf-stat__value {
+	color: #1d2327;
+	display: block;
+	font-size: 26px;
+	font-weight: 600;
+	line-height: 1.2;
+}
+
+.mkm-rf-stat__label {
+	color: #646970;
+	display: block;
+	font-size: 13px;
+	margin-top: 4px;
+}
+
+.mkm-rf-badge {
+	border-radius: 3px;
+	display: inline-block;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 1.6;
+	padding: 1px 8px;
+	text-transform: uppercase;
+}
+
+.mkm-rf-badge--positive {
+	background: #edfaef;
+	color: #1d6b2c;
+}
+
+.mkm-rf-badge--negative {
+	background: #fcf0ef;
+	color: #a02a20;
+}
+
+.mkm-rf-badge--click {
+	background: #eef3fb;
+	color: #1f4b8e;
+	text-transform: none;
+}
+
+.mkm-rf-badge--new {
+	background: #d6ab3b;
+	color: #052f55;
+}
+
+.mkm-rf-entry td {
+	vertical-align: top;
+}
+
+.mkm-rf-entry .description {
+	font-style: italic;
+	margin: 4px 0 0;
+}
