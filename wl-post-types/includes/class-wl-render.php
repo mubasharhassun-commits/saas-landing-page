@@ -359,6 +359,7 @@ class WL_Render {
 			'show_date'     => 'yes',
 			'show_category' => 'yes',
 			'show_author'   => 'yes',
+			'meta_wrap'     => '',
 			'button_text'   => 'READ MORE',
 			'class'         => '',
 		);
@@ -412,6 +413,12 @@ class WL_Render {
 
 		$style   = WL_Style::build( WL_Style::news_schema(), $args );
 		$classes = 'wl-news';
+
+		// Keeping the meta on one line takes more than flex-wrap: the text
+		// inside each item has to stop wrapping too.
+		if ( isset( $args['meta_wrap'] ) && 'nowrap' === strtolower( trim( (string) $args['meta_wrap'] ) ) ) {
+			$classes .= ' wl-meta-1line';
+		}
 
 		if ( '' !== $args['class'] ) {
 			$classes .= ' ' . sanitize_html_class( $args['class'] );

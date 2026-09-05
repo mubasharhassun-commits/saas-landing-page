@@ -221,7 +221,12 @@
 	--wl-news-meta-color: #8a8a8a;
 	--wl-news-meta-icon-color: currentColor;
 	--wl-news-meta-icon-size: 14px;
+	--wl-news-meta-size: 12px;
 	--wl-news-meta-gap: 14px;
+	--wl-news-meta-row-gap: 6px;
+	--wl-news-meta-wrap: wrap;
+	--wl-news-title-space: 8px;
+	--wl-news-meta-space: 10px;
 	--wl-news-btn-color: #1a2b3c;
 	--wl-news-btn-bg: transparent;
 	--wl-news-btn-border: #d9d9d9;
@@ -229,6 +234,10 @@
 	--wl-news-btn-bg-h: var(--wl-accent);
 	--wl-news-btn-padding: 7px 16px;
 	--wl-news-btn-radius: 0px;
+	--wl-news-btn-size: 12px;
+	--wl-news-btn-weight: 400;
+	--wl-news-btn-spacing: 0.5px;
+	--wl-news-btn-border-width: 1px;
 
 	display: grid;
 	grid-template-columns: 1fr 1fr;
@@ -310,18 +319,32 @@
 	font-weight: 700;
 	line-height: 1.3;
 	text-decoration: none;
-	margin-bottom: 8px;
+	margin-bottom: var(--wl-news-title-space, 8px);
 }
 
 .wl-news-title:hover { color: var(--wl-news-title-hover); }
 
 .wl-news-meta {
 	display: flex;
-	flex-wrap: wrap;
-	gap: var(--wl-news-meta-gap);
-	font-size: 12px;
+	/* Row gap is separate from column gap: when the meta wraps onto a second
+	   line, one shared gap value leaves a wide band of empty space. */
+	flex-wrap: var(--wl-news-meta-wrap, wrap);
+	column-gap: var(--wl-news-meta-gap, 14px);
+	row-gap: var(--wl-news-meta-row-gap, 6px);
+	font-size: var(--wl-news-meta-size, 12px);
+	line-height: 1.3;
 	color: var(--wl-news-meta-color);
-	margin-bottom: 10px;
+	margin-bottom: var(--wl-news-meta-space, 10px);
+}
+
+/* One line means one line: the items stay put and their text stops wrapping,
+   with anything too long trimmed rather than pushed onto a second row. */
+.wl-news.wl-meta-1line .wl-news-meta { flex-wrap: nowrap; overflow: hidden; }
+
+.wl-news.wl-meta-1line .wl-news-meta .wl-m {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .wl-news-meta.light { color: rgba(255, 255, 255, 0.85); }
@@ -339,13 +362,15 @@
 
 .wl-news .wl-news-readmore {
 	display: inline-block;
-	font-size: 12px;
-	letter-spacing: 0.5px;
+	font-size: var(--wl-news-btn-size, 12px);
+	font-weight: var(--wl-news-btn-weight, 400);
+	letter-spacing: var(--wl-news-btn-spacing, 0.5px);
+	line-height: 1.2;
 	text-transform: uppercase;
 	color: var(--wl-news-btn-color);
 	background: var(--wl-news-btn-bg);
 	text-decoration: none;
-	border: 1px solid var(--wl-news-btn-border);
+	border: var(--wl-news-btn-border-width, 1px) solid var(--wl-news-btn-border);
 	border-radius: var(--wl-news-btn-radius);
 	padding: var(--wl-news-btn-padding);
 	transition: 0.25s;

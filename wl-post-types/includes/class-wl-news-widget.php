@@ -232,7 +232,33 @@ class WL_News_Widget extends \Elementor\Widget_Base {
 		$this->add_responsive_control( 'meta_gap', array(
 			'label' => __( 'Gap Between Items', 'waterslaw' ), 'type' => \Elementor\Controls_Manager::SLIDER,
 			'range' => array( 'px' => array( 'min' => 4, 'max' => 40 ) ), 'default' => array( 'size' => 14 ),
-			'selectors' => array( '{{WRAPPER}} .wl-news-meta' => 'gap: {{SIZE}}px;' ),
+			'selectors' => array( '{{WRAPPER}} .wl-news-meta' => 'column-gap: {{SIZE}}px;' ),
+		) );
+		$this->add_responsive_control( 'meta_row_gap', array(
+			'label' => __( 'Gap Between Lines', 'waterslaw' ), 'type' => \Elementor\Controls_Manager::SLIDER,
+			'range' => array( 'px' => array( 'min' => 0, 'max' => 40 ) ), 'default' => array( 'size' => 6 ),
+			'description' => __( 'Only shows when the meta wraps onto a second line.', 'waterslaw' ),
+			'selectors' => array( '{{WRAPPER}} .wl-news-meta' => 'row-gap: {{SIZE}}px;' ),
+		) );
+		$this->add_control( 'meta_wrap', array(
+			'label' => __( 'Wrapping', 'waterslaw' ), 'type' => \Elementor\Controls_Manager::SELECT,
+			'default' => 'wrap',
+			'options' => array(
+				'wrap'   => __( 'Wrap onto more lines', 'waterslaw' ),
+				'nowrap' => __( 'Keep on one line', 'waterslaw' ),
+			),
+			'description' => __( 'One line is tighter, but long author or category names may be cut off.', 'waterslaw' ),
+			'selectors' => array( '{{WRAPPER}} .wl-news-meta' => 'flex-wrap: {{VALUE}};' ),
+		) );
+		$this->add_responsive_control( 'title_space', array(
+			'label' => __( 'Space Below Title', 'waterslaw' ), 'type' => \Elementor\Controls_Manager::SLIDER,
+			'range' => array( 'px' => array( 'min' => 0, 'max' => 40 ) ), 'default' => array( 'size' => 8 ),
+			'selectors' => array( '{{WRAPPER}} .wl-news-title' => 'margin-bottom: {{SIZE}}px;' ),
+		) );
+		$this->add_responsive_control( 'meta_space', array(
+			'label' => __( 'Space Below Meta', 'waterslaw' ), 'type' => \Elementor\Controls_Manager::SLIDER,
+			'range' => array( 'px' => array( 'min' => 0, 'max' => 40 ) ), 'default' => array( 'size' => 10 ),
+			'selectors' => array( '{{WRAPPER}} .wl-news-meta' => 'margin-bottom: {{SIZE}}px;' ),
 		) );
 
 		$this->end_controls_section();
@@ -286,6 +312,11 @@ class WL_News_Widget extends \Elementor\Widget_Base {
 			'label' => __( 'Border Radius (px)', 'waterslaw' ), 'type' => \Elementor\Controls_Manager::SLIDER,
 			'range' => array( 'px' => array( 'min' => 0, 'max' => 40 ) ), 'default' => array( 'size' => 0 ),
 			'selectors' => array( '{{WRAPPER}} .wl-news-readmore' => 'border-radius: {{SIZE}}px;' ),
+		) );
+		$this->add_control( 'btn_border_width', array(
+			'label' => __( 'Border Width (px)', 'waterslaw' ), 'type' => \Elementor\Controls_Manager::SLIDER,
+			'range' => array( 'px' => array( 'min' => 0, 'max' => 10 ) ), 'default' => array( 'size' => 1 ),
+			'selectors' => array( '{{WRAPPER}} .wl-news-readmore' => 'border-width: {{SIZE}}px;' ),
 		) );
 
 		$this->end_controls_section();

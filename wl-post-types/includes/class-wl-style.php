@@ -275,7 +275,16 @@ class WL_Style {
 			'meta_color'            => array( 'var' => '--wl-news-meta-color', 'type' => 'color' ),
 			'meta_icon_color'       => array( 'var' => '--wl-news-meta-icon-color', 'type' => 'color' ),
 			'meta_icon_size'        => array( 'var' => '--wl-news-meta-icon-size', 'type' => 'px', 'min' => 6, 'max' => 40 ),
+			'meta_size'             => array( 'var' => '--wl-news-meta-size', 'type' => 'px', 'min' => 8, 'max' => 40 ),
 			'meta_gap'              => array( 'var' => '--wl-news-meta-gap', 'type' => 'px', 'max' => 60 ),
+			'meta_row_gap'          => array( 'var' => '--wl-news-meta-row-gap', 'type' => 'px', 'max' => 60 ),
+			'meta_wrap'             => array(
+				'var'     => '--wl-news-meta-wrap',
+				'type'    => 'keyword',
+				'allowed' => array( 'wrap', 'nowrap' ),
+			),
+			'title_space'           => array( 'var' => '--wl-news-title-space', 'type' => 'px', 'max' => 60 ),
+			'meta_space'            => array( 'var' => '--wl-news-meta-space', 'type' => 'px', 'max' => 60 ),
 			'btn_color'             => array( 'var' => '--wl-news-btn-color', 'type' => 'color' ),
 			'btn_bg'                => array( 'var' => '--wl-news-btn-bg', 'type' => 'color' ),
 			'btn_border'            => array( 'var' => '--wl-news-btn-border', 'type' => 'color' ),
@@ -283,6 +292,14 @@ class WL_Style {
 			'btn_bg_h'              => array( 'var' => '--wl-news-btn-bg-h', 'type' => 'color' ),
 			'btn_padding'           => array( 'var' => '--wl-news-btn-padding', 'type' => 'spacing' ),
 			'btn_radius'            => array( 'var' => '--wl-news-btn-radius', 'type' => 'px', 'max' => 80 ),
+			'btn_size'              => array( 'var' => '--wl-news-btn-size', 'type' => 'px', 'min' => 8, 'max' => 40 ),
+			'btn_spacing'           => array( 'var' => '--wl-news-btn-spacing', 'type' => 'px', 'max' => 20 ),
+			'btn_border_width'      => array( 'var' => '--wl-news-btn-border-width', 'type' => 'px', 'max' => 20 ),
+			'btn_weight'            => array(
+				'var'     => '--wl-news-btn-weight',
+				'type'    => 'keyword',
+				'allowed' => array( '300', '400', '500', '600', '700', '800' ),
+			),
 		);
 	}
 }
