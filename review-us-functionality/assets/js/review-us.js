@@ -191,7 +191,7 @@
 
 	function validate( form ) {
 		var errors = {};
-		var required = [ 'first_name', 'last_name', 'email', 'reason', 'feedback_message' ];
+		var required = [ 'first_name', 'last_name', 'email', 'client_status', 'feedback_message' ];
 
 		required.forEach( function ( name ) {
 			var input = form.querySelector( '[name="' + name + '"]' );
@@ -205,6 +205,12 @@
 
 		if ( email && email.value.trim() && ! /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test( email.value.trim() ) ) {
 			errors.email = 'Please enter a valid email address.';
+		}
+
+		var disclaimer = form.querySelector( '[name="disclaimer"]' );
+
+		if ( disclaimer && ! disclaimer.checked ) {
+			errors.disclaimer = 'Please confirm you have read the notice above.';
 		}
 
 		return errors;

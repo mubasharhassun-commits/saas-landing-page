@@ -3,7 +3,7 @@
  * Plugin Name:       MKM Review Us Functionality
  * Plugin URI:        https://mkmlaw.net/
  * Description:       Review funnel for the Law Offices of Michael Kevin Murphy: a Review Us page with thumbs up / thumbs down, a two-step Google review popup flow, and a private negative-feedback form stored in WordPress.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Requires at least: 5.6
  * Requires PHP:      7.2
  * Author:            Law Offices of Michael Kevin Murphy
@@ -16,7 +16,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MKM_REVIEW_US_VERSION', '1.0.0' );
+define( 'MKM_REVIEW_US_VERSION', '1.1.0' );
 define( 'MKM_REVIEW_US_FILE', __FILE__ );
 define( 'MKM_REVIEW_US_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MKM_REVIEW_US_URL', plugin_dir_url( __FILE__ ) );

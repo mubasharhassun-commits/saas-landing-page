@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class MKM_Review_Us_Feedback {
 
-	const DB_VERSION        = '1.0.0';
+	const DB_VERSION        = '1.1.0';
 	const DB_VERSION_OPTION = 'mkm_review_us_db_version';
 	const AJAX_ACTION       = 'mkm_review_us_feedback';
 	const NONCE_ACTION      = 'mkm_review_us_feedback_submit';
@@ -61,9 +61,9 @@ class MKM_Review_Us_Feedback {
 			last_name varchar(100) NOT NULL DEFAULT '',
 			email varchar(190) NOT NULL DEFAULT '',
 			phone varchar(50) NOT NULL DEFAULT '',
-			reason varchar(100) NOT NULL DEFAULT '',
+			client_status varchar(20) NOT NULL DEFAULT '',
 			feedback_message longtext NOT NULL,
-			contact_permission varchar(3) NOT NULL DEFAULT '',
+			disclaimer_accepted tinyint(1) NOT NULL DEFAULT 0,
 			source varchar(20) NOT NULL DEFAULT 'builtin',
 			created_at datetime NOT NULL,
 			PRIMARY KEY  (id),
@@ -77,35 +77,31 @@ class MKM_Review_Us_Feedback {
 	}
 
 	/**
-	 * Reasons offered in the form.
+	 * Options for the "Are you a new client?" field.
 	 *
 	 * @return array Key => label.
 	 */
-	public static function reasons() {
+	public static function client_statuses() {
 		return apply_filters(
-			'mkm_review_us_reasons',
+			'mkm_review_us_client_statuses',
 			array(
-				'customer-service'   => __( 'Customer Service', 'mkm-review-us' ),
-				'communication'      => __( 'Communication', 'mkm-review-us' ),
-				'response-time'      => __( 'Response Time', 'mkm-review-us' ),
-				'legal-services'     => __( 'Legal Services', 'mkm-review-us' ),
-				'billing'            => __( 'Billing', 'mkm-review-us' ),
-				'website-experience' => __( 'Website Experience', 'mkm-review-us' ),
-				'other'              => __( 'Other', 'mkm-review-us' ),
+				'new'      => __( 'Yes, I am a potential new client.', 'mkm-review-us' ),
+				'existing' => __( "No, I'm a current existing client.", 'mkm-review-us' ),
+				'neither'  => __( "I'm neither.", 'mkm-review-us' ),
 			)
 		);
 	}
 
 	/**
-	 * Human readable label for a stored reason key.
+	 * Human readable label for a stored client status key.
 	 *
-	 * @param string $key Reason key.
+	 * @param string $key Status key.
 	 * @return string
 	 */
-	public static function reason_label( $key ) {
-		$reasons = self::reasons();
+	public static function client_status_label( $key ) {
+		$statuses = self::client_statuses();
 
-		return isset( $reasons[ $key ] ) ? $reasons[ $key ] : $key;
+		return isset( $statuses[ $key ] ) ? $statuses[ $key ] : $key;
 	}
 
 	/**
@@ -148,14 +144,14 @@ class MKM_Review_Us_Feedback {
 		$post = wp_unslash( $_POST );
 
 		$data = array(
-			'first_name'         => isset( $post['first_name'] ) ? sanitize_text_field( $post['first_name'] ) : '',
-			'last_name'          => isset( $post['last_name'] ) ? sanitize_text_field( $post['last_name'] ) : '',
-			'email'              => isset( $post['email'] ) ? sanitize_email( $post['email'] ) : '',
-			'phone'              => isset( $post['phone'] ) ? sanitize_text_field( $post['phone'] ) : '',
-			'reason'             => isset( $post['reason'] ) ? sanitize_key( $post['reason'] ) : '',
-			'feedback_message'   => isset( $post['feedback_message'] ) ? sanitize_textarea_field( $post['feedback_message'] ) : '',
-			'contact_permission' => isset( $post['contact_permission'] ) ? sanitize_key( $post['contact_permission'] ) : '',
-			'source'             => 'builtin',
+			'first_name'          => isset( $post['first_name'] ) ? sanitize_text_field( $post['first_name'] ) : '',
+			'last_name'           => isset( $post['last_name'] ) ? sanitize_text_field( $post['last_name'] ) : '',
+			'email'               => isset( $post['email'] ) ? sanitize_email( $post['email'] ) : '',
+			'phone'               => isset( $post['phone'] ) ? sanitize_text_field( $post['phone'] ) : '',
+			'client_status'       => isset( $post['client_status'] ) ? sanitize_key( $post['client_status'] ) : '',
+			'feedback_message'    => isset( $post['feedback_message'] ) ? sanitize_textarea_field( $post['feedback_message'] ) : '',
+			'disclaimer_accepted' => empty( $post['disclaimer'] ) ? 0 : 1,
+			'source'              => 'builtin',
 		);
 
 		$errors = $this->validate( $data );
@@ -210,16 +206,16 @@ class MKM_Review_Us_Feedback {
 			$errors['phone'] = __( 'Please enter a valid phone number.', 'mkm-review-us' );
 		}
 
-		if ( ! array_key_exists( $data['reason'], self::reasons() ) ) {
-			$errors['reason'] = __( 'Please choose a reason.', 'mkm-review-us' );
+		if ( ! array_key_exists( $data['client_status'], self::client_statuses() ) ) {
+			$errors['client_status'] = __( 'Please tell us whether you are a new client.', 'mkm-review-us' );
 		}
 
 		if ( strlen( trim( $data['feedback_message'] ) ) < 5 ) {
 			$errors['feedback_message'] = __( 'Please tell us a little more so we can look into it.', 'mkm-review-us' );
 		}
 
-		if ( '' !== $data['contact_permission'] && ! in_array( $data['contact_permission'], array( 'yes', 'no' ), true ) ) {
-			$errors['contact_permission'] = __( 'Please choose yes or no.', 'mkm-review-us' );
+		if ( empty( $data['disclaimer_accepted'] ) ) {
+			$errors['disclaimer'] = __( 'Please confirm you have read the notice above.', 'mkm-review-us' );
 		}
 
 		return $errors;
@@ -235,18 +231,20 @@ class MKM_Review_Us_Feedback {
 		global $wpdb;
 
 		$row = array(
-			'first_name'         => isset( $data['first_name'] ) ? $data['first_name'] : '',
-			'last_name'          => isset( $data['last_name'] ) ? $data['last_name'] : '',
-			'email'              => isset( $data['email'] ) ? $data['email'] : '',
-			'phone'              => isset( $data['phone'] ) ? $data['phone'] : '',
-			'reason'             => isset( $data['reason'] ) ? $data['reason'] : '',
-			'feedback_message'   => isset( $data['feedback_message'] ) ? $data['feedback_message'] : '',
-			'contact_permission' => isset( $data['contact_permission'] ) ? $data['contact_permission'] : '',
-			'source'             => isset( $data['source'] ) ? $data['source'] : 'builtin',
-			'created_at'         => current_time( 'mysql' ),
+			'first_name'          => isset( $data['first_name'] ) ? $data['first_name'] : '',
+			'last_name'           => isset( $data['last_name'] ) ? $data['last_name'] : '',
+			'email'               => isset( $data['email'] ) ? $data['email'] : '',
+			'phone'               => isset( $data['phone'] ) ? $data['phone'] : '',
+			'client_status'       => isset( $data['client_status'] ) ? $data['client_status'] : '',
+			'feedback_message'    => isset( $data['feedback_message'] ) ? $data['feedback_message'] : '',
+			'disclaimer_accepted' => empty( $data['disclaimer_accepted'] ) ? 0 : 1,
+			'source'              => isset( $data['source'] ) ? $data['source'] : 'builtin',
+			'created_at'          => current_time( 'mysql' ),
 		);
 
-		$inserted = $wpdb->insert( self::table_name(), $row, array_fill( 0, count( $row ), '%s' ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$formats = array( '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s' );
+
+		$inserted = $wpdb->insert( self::table_name(), $row, $formats ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 
 		if ( ! $inserted ) {
 			return 0;
@@ -315,19 +313,26 @@ class MKM_Review_Us_Feedback {
 			return '';
 		};
 
-		$reason     = sanitize_text_field( $value( array( 'reason', 'menu-reason', 'your-reason' ) ) );
-		$reason_key = sanitize_key( str_replace( ' ', '-', strtolower( $reason ) ) );
+		$status_raw = sanitize_text_field( $value( array( 'new-client', 'menu-new-client', 'are-you-a-new-client' ) ) );
+		$status_key = '';
+
+		foreach ( self::client_statuses() as $key => $label ) {
+			if ( strtolower( $status_raw ) === strtolower( $label ) || $status_raw === $key ) {
+				$status_key = $key;
+				break;
+			}
+		}
 
 		self::insert(
 			array(
-				'first_name'         => sanitize_text_field( $value( array( 'first-name', 'first_name', 'your-first-name' ) ) ),
-				'last_name'          => sanitize_text_field( $value( array( 'last-name', 'last_name', 'your-last-name' ) ) ),
-				'email'              => sanitize_email( $value( array( 'your-email', 'email' ) ) ),
-				'phone'              => sanitize_text_field( $value( array( 'phone', 'your-phone', 'tel-phone' ) ) ),
-				'reason'             => array_key_exists( $reason_key, self::reasons() ) ? $reason_key : $reason,
-				'feedback_message'   => sanitize_textarea_field( $value( array( 'your-message', 'message', 'feedback' ) ) ),
-				'contact_permission' => strtolower( substr( $value( array( 'contact-permission', 'may-we-contact-you' ) ), 0, 3 ) ),
-				'source'             => 'cf7',
+				'first_name'          => sanitize_text_field( $value( array( 'first-name', 'first_name', 'your-first-name' ) ) ),
+				'last_name'           => sanitize_text_field( $value( array( 'last-name', 'last_name', 'your-last-name' ) ) ),
+				'email'               => sanitize_email( $value( array( 'your-email', 'email' ) ) ),
+				'phone'               => sanitize_text_field( $value( array( 'phone', 'your-phone', 'tel-phone' ) ) ),
+				'client_status'       => $status_key ? $status_key : $status_raw,
+				'feedback_message'    => sanitize_textarea_field( $value( array( 'your-message', 'message', 'feedback' ) ) ),
+				'disclaimer_accepted' => $value( array( 'disclaimer', 'acceptance', 'your-consent' ) ) ? 1 : 0,
+				'source'              => 'cf7',
 			)
 		);
 	}
@@ -391,10 +396,10 @@ class MKM_Review_Us_Feedback {
 			sprintf( __( 'Name: %s', 'mkm-review-us' ), trim( $data['first_name'] . ' ' . $data['last_name'] ) ),
 			sprintf( __( 'Email: %s', 'mkm-review-us' ), $data['email'] ),
 			sprintf( __( 'Phone: %s', 'mkm-review-us' ), $data['phone'] ? $data['phone'] : __( 'Not provided', 'mkm-review-us' ) ),
-			sprintf( __( 'Reason: %s', 'mkm-review-us' ), self::reason_label( $data['reason'] ) ),
-			sprintf( __( 'May we contact you: %s', 'mkm-review-us' ), $data['contact_permission'] ? $data['contact_permission'] : __( 'Not answered', 'mkm-review-us' ) ),
+			sprintf( __( 'Are you a new client: %s', 'mkm-review-us' ), self::client_status_label( $data['client_status'] ) ),
+			sprintf( __( 'Disclaimer accepted: %s', 'mkm-review-us' ), empty( $data['disclaimer_accepted'] ) ? __( 'No', 'mkm-review-us' ) : __( 'Yes', 'mkm-review-us' ) ),
 			'',
-			__( 'Feedback:', 'mkm-review-us' ),
+			__( 'Message:', 'mkm-review-us' ),
 			$data['feedback_message'],
 			'',
 			sprintf( __( 'View all feedback: %s', 'mkm-review-us' ), admin_url( 'admin.php?page=' . self::MENU_SLUG ) ),
@@ -474,8 +479,8 @@ class MKM_Review_Us_Feedback {
 		$paged   = isset( $_GET['paged'] ) ? absint( $_GET['paged'] ) : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$data    = $this->get_entries( $paged );
 		$pages   = (int) ceil( $data['total'] / self::PER_PAGE );
-		$notice  = isset( $_GET['mkm_notice'] ) ? sanitize_key( $_GET['mkm_notice'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$reasons = self::reasons();
+		$notice   = isset( $_GET['mkm_notice'] ) ? sanitize_key( $_GET['mkm_notice'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$statuses = self::client_statuses();
 		?>
 		<div class="wrap">
 			<h1 class="wp-heading-inline"><?php esc_html_e( 'Review Feedback', 'mkm-review-us' ); ?></h1>
@@ -505,9 +510,9 @@ class MKM_Review_Us_Feedback {
 						<th scope="col"><?php esc_html_e( 'Name', 'mkm-review-us' ); ?></th>
 						<th scope="col"><?php esc_html_e( 'Email', 'mkm-review-us' ); ?></th>
 						<th scope="col"><?php esc_html_e( 'Phone', 'mkm-review-us' ); ?></th>
-						<th scope="col"><?php esc_html_e( 'Reason', 'mkm-review-us' ); ?></th>
-						<th scope="col"><?php esc_html_e( 'Feedback', 'mkm-review-us' ); ?></th>
-						<th scope="col"><?php esc_html_e( 'May contact', 'mkm-review-us' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'New client?', 'mkm-review-us' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Message', 'mkm-review-us' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Disclaimer', 'mkm-review-us' ); ?></th>
 						<th scope="col"><?php esc_html_e( 'Submitted', 'mkm-review-us' ); ?></th>
 						<th scope="col" style="width:90px;"><?php esc_html_e( 'Actions', 'mkm-review-us' ); ?></th>
 					</tr>
@@ -523,9 +528,9 @@ class MKM_Review_Us_Feedback {
 							<td><?php echo esc_html( trim( $item['first_name'] . ' ' . $item['last_name'] ) ); ?></td>
 							<td><a href="mailto:<?php echo esc_attr( $item['email'] ); ?>"><?php echo esc_html( $item['email'] ); ?></a></td>
 							<td><?php echo esc_html( $item['phone'] ); ?></td>
-							<td><?php echo esc_html( isset( $reasons[ $item['reason'] ] ) ? $reasons[ $item['reason'] ] : $item['reason'] ); ?></td>
+							<td><?php echo esc_html( isset( $statuses[ $item['client_status'] ] ) ? $statuses[ $item['client_status'] ] : $item['client_status'] ); ?></td>
 							<td><?php echo nl2br( esc_html( $item['feedback_message'] ) ); ?></td>
-							<td><?php echo esc_html( $item['contact_permission'] ); ?></td>
+							<td><?php echo empty( $item['disclaimer_accepted'] ) ? esc_html__( 'No', 'mkm-review-us' ) : esc_html__( 'Yes', 'mkm-review-us' ); ?></td>
 							<td>
 								<?php
 								echo esc_html(
@@ -621,9 +626,9 @@ class MKM_Review_Us_Feedback {
 				__( 'Last Name', 'mkm-review-us' ),
 				__( 'Email', 'mkm-review-us' ),
 				__( 'Phone', 'mkm-review-us' ),
-				__( 'Reason', 'mkm-review-us' ),
-				__( 'Feedback', 'mkm-review-us' ),
-				__( 'May Contact', 'mkm-review-us' ),
+				__( 'New Client', 'mkm-review-us' ),
+				__( 'Message', 'mkm-review-us' ),
+				__( 'Disclaimer Accepted', 'mkm-review-us' ),
 				__( 'Source', 'mkm-review-us' ),
 				__( 'Submitted', 'mkm-review-us' ),
 			)
@@ -638,9 +643,9 @@ class MKM_Review_Us_Feedback {
 					$row['last_name'],
 					$row['email'],
 					$row['phone'],
-					self::reason_label( $row['reason'] ),
+					self::client_status_label( $row['client_status'] ),
 					$row['feedback_message'],
-					$row['contact_permission'],
+					empty( $row['disclaimer_accepted'] ) ? 'No' : 'Yes',
 					$row['source'],
 					$row['created_at'],
 				)

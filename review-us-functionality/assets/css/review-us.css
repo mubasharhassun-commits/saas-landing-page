@@ -403,31 +403,35 @@
 	display: block;
 }
 
-.mkm-feedback-fieldset {
-	margin: 0 0 20px;
-	padding: 0;
-	border: 0;
+.mkm-feedback-consent {
+	margin-top: 4px;
 }
 
-.mkm-feedback-fieldset legend {
-	margin-bottom: 8px;
-	padding: 0;
-	font-weight: 600;
-	font-size: 0.95em;
-	color: var(--mkm-review-navy);
-}
-
-.mkm-feedback-radio {
-	display: inline-flex;
-	align-items: center;
-	gap: 6px;
-	margin-right: 20px;
+.mkm-feedback-consent__label {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	margin: 0;
+	font-weight: 400;
 	cursor: pointer;
 }
 
-.mkm-feedback-radio input {
-	width: auto;
-	margin: 0;
+.mkm-feedback-consent__label input[type="checkbox"] {
+	width: 18px;
+	height: 18px;
+	margin: 2px 0 0;
+	flex: 0 0 auto;
+}
+
+.mkm-feedback-consent__text {
+	font-size: 0.78em;
+	font-style: italic;
+	line-height: 1.5;
+	color: var(--mkm-review-muted);
+}
+
+.mkm-feedback-consent.has-error .mkm-feedback-consent__text {
+	color: var(--mkm-review-error);
 }
 
 .mkm-feedback-form__error {

@@ -67,7 +67,7 @@ Do not add a second button. Pick the case that matches the footer:
 * **Gravity Forms** — entries land in **Forms → Entries** as usual.
 * **Contact Form 7** — CF7 does not store entries, so the plugin also mirrors each successful
   submission into its own table (`wpcf7_mail_sent`). Field names are matched from
-  `first-name`, `last-name`, `your-email`, `phone`, `reason`, `your-message`, `contact-permission`.
+  `first-name`, `last-name`, `your-email`, `phone`, `new-client`, `your-message`, `disclaimer`.
 * **Built-in form** — validated and stored server side, then emailed to the notification address.
 
 All submissions are visible under **Review Feedback** in the admin menu: paginated table, secure

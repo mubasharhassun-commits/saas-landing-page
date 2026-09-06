@@ -323,7 +323,7 @@ class MKM_Review_Us_Page {
 		$this->open_popup( 'mkm-review-popup-negative', 'mkm-review-popup-negative-title' );
 		?>
 		<h2 class="mkm-review-popup__title" id="mkm-review-popup-negative-title"><?php esc_html_e( "We're sorry to hear that.", 'mkm-review-us' ); ?></h2>
-		<p class="mkm-review-popup__text"><?php esc_html_e( 'We appreciate your feedback and would like to know how we can improve. Your response goes straight to our office and is not published.', 'mkm-review-us' ); ?></p>
+		<p class="mkm-review-popup__text"><?php esc_html_e( 'We strive for 100% customer satisfaction. If we fell short, please tell us more so we can address your concerns.', 'mkm-review-us' ); ?></p>
 
 		<div class="mkm-feedback-form-wrap" data-mkm-form-wrap>
 			<?php $this->render_form(); ?>
@@ -369,69 +369,66 @@ class MKM_Review_Us_Page {
 
 	/**
 	 * The plugin's own form, submitted over AJAX and stored in the feedback table.
+	 *
+	 * Field order and copy mirror the firm's existing contact form. Labels are
+	 * visually hidden rather than removed, so the placeholders stay accessible.
 	 */
 	private function render_builtin_form() {
-		$reasons = MKM_Review_Us_Feedback::reasons();
+		$statuses = MKM_Review_Us_Feedback::client_statuses();
 		?>
 		<form class="mkm-feedback-form" data-mkm-feedback-form novalidate>
 			<p class="mkm-feedback-form__error" data-mkm-form-error role="alert" hidden></p>
 
-			<div class="mkm-feedback-form__row">
-				<div class="mkm-feedback-field">
-					<label for="mkm-first-name"><?php esc_html_e( 'First Name', 'mkm-review-us' ); ?> <span class="mkm-feedback-field__required" aria-hidden="true">*</span></label>
-					<input type="text" id="mkm-first-name" name="first_name" autocomplete="given-name" required aria-describedby="mkm-first-name-error" />
-					<span class="mkm-feedback-field__error" id="mkm-first-name-error" data-mkm-error-for="first_name"></span>
-				</div>
-
-				<div class="mkm-feedback-field">
-					<label for="mkm-last-name"><?php esc_html_e( 'Last Name', 'mkm-review-us' ); ?> <span class="mkm-feedback-field__required" aria-hidden="true">*</span></label>
-					<input type="text" id="mkm-last-name" name="last_name" autocomplete="family-name" required aria-describedby="mkm-last-name-error" />
-					<span class="mkm-feedback-field__error" id="mkm-last-name-error" data-mkm-error-for="last_name"></span>
-				</div>
-			</div>
-
-			<div class="mkm-feedback-form__row">
-				<div class="mkm-feedback-field">
-					<label for="mkm-email"><?php esc_html_e( 'Email Address', 'mkm-review-us' ); ?> <span class="mkm-feedback-field__required" aria-hidden="true">*</span></label>
-					<input type="email" id="mkm-email" name="email" autocomplete="email" required aria-describedby="mkm-email-error" />
-					<span class="mkm-feedback-field__error" id="mkm-email-error" data-mkm-error-for="email"></span>
-				</div>
-
-				<div class="mkm-feedback-field">
-					<label for="mkm-phone"><?php esc_html_e( 'Phone Number', 'mkm-review-us' ); ?> <span class="mkm-feedback-field__optional"><?php esc_html_e( '(optional)', 'mkm-review-us' ); ?></span></label>
-					<input type="tel" id="mkm-phone" name="phone" autocomplete="tel" aria-describedby="mkm-phone-error" />
-					<span class="mkm-feedback-field__error" id="mkm-phone-error" data-mkm-error-for="phone"></span>
-				</div>
+			<div class="mkm-feedback-field">
+				<label class="mkm-review-sr" for="mkm-first-name"><?php esc_html_e( 'First Name', 'mkm-review-us' ); ?></label>
+				<input type="text" id="mkm-first-name" name="first_name" placeholder="<?php esc_attr_e( 'First Name', 'mkm-review-us' ); ?>" autocomplete="given-name" required aria-describedby="mkm-first-name-error" />
+				<span class="mkm-feedback-field__error" id="mkm-first-name-error" data-mkm-error-for="first_name"></span>
 			</div>
 
 			<div class="mkm-feedback-field">
-				<label for="mkm-reason"><?php esc_html_e( 'Reason for Rating Us Down', 'mkm-review-us' ); ?> <span class="mkm-feedback-field__required" aria-hidden="true">*</span></label>
-				<select id="mkm-reason" name="reason" required aria-describedby="mkm-reason-error">
-					<option value=""><?php esc_html_e( 'Select an option', 'mkm-review-us' ); ?></option>
-					<?php foreach ( $reasons as $key => $label ) : ?>
+				<label class="mkm-review-sr" for="mkm-last-name"><?php esc_html_e( 'Last Name', 'mkm-review-us' ); ?></label>
+				<input type="text" id="mkm-last-name" name="last_name" placeholder="<?php esc_attr_e( 'Last Name', 'mkm-review-us' ); ?>" autocomplete="family-name" required aria-describedby="mkm-last-name-error" />
+				<span class="mkm-feedback-field__error" id="mkm-last-name-error" data-mkm-error-for="last_name"></span>
+			</div>
+
+			<div class="mkm-feedback-field">
+				<label class="mkm-review-sr" for="mkm-email"><?php esc_html_e( 'Email', 'mkm-review-us' ); ?></label>
+				<input type="email" id="mkm-email" name="email" placeholder="<?php esc_attr_e( 'Email', 'mkm-review-us' ); ?>" autocomplete="email" required aria-describedby="mkm-email-error" />
+				<span class="mkm-feedback-field__error" id="mkm-email-error" data-mkm-error-for="email"></span>
+			</div>
+
+			<div class="mkm-feedback-field">
+				<label class="mkm-review-sr" for="mkm-phone"><?php esc_html_e( 'Phone', 'mkm-review-us' ); ?></label>
+				<input type="tel" id="mkm-phone" name="phone" placeholder="<?php esc_attr_e( 'Phone', 'mkm-review-us' ); ?>" autocomplete="tel" aria-describedby="mkm-phone-error" />
+				<span class="mkm-feedback-field__error" id="mkm-phone-error" data-mkm-error-for="phone"></span>
+			</div>
+
+			<div class="mkm-feedback-field">
+				<label class="mkm-review-sr" for="mkm-client-status"><?php esc_html_e( 'Are you a new client?', 'mkm-review-us' ); ?></label>
+				<select id="mkm-client-status" name="client_status" required aria-describedby="mkm-client-status-error">
+					<option value=""><?php esc_html_e( 'Are you a new client?', 'mkm-review-us' ); ?></option>
+					<?php foreach ( $statuses as $key => $label ) : ?>
 						<option value="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $label ); ?></option>
 					<?php endforeach; ?>
 				</select>
-				<span class="mkm-feedback-field__error" id="mkm-reason-error" data-mkm-error-for="reason"></span>
+				<span class="mkm-feedback-field__error" id="mkm-client-status-error" data-mkm-error-for="client_status"></span>
 			</div>
 
 			<div class="mkm-feedback-field">
-				<label for="mkm-message"><?php esc_html_e( 'What Did You Not Like?', 'mkm-review-us' ); ?> <span class="mkm-feedback-field__required" aria-hidden="true">*</span></label>
-				<textarea id="mkm-message" name="feedback_message" rows="5" required aria-describedby="mkm-message-error"></textarea>
+				<label class="mkm-review-sr" for="mkm-message"><?php esc_html_e( 'Message', 'mkm-review-us' ); ?></label>
+				<textarea id="mkm-message" name="feedback_message" rows="5" placeholder="<?php esc_attr_e( 'Message', 'mkm-review-us' ); ?>" required aria-describedby="mkm-message-error"></textarea>
 				<span class="mkm-feedback-field__error" id="mkm-message-error" data-mkm-error-for="feedback_message"></span>
 			</div>
 
-			<fieldset class="mkm-feedback-fieldset">
-				<legend><?php esc_html_e( 'May we contact you regarding your feedback?', 'mkm-review-us' ); ?></legend>
-				<label class="mkm-feedback-radio">
-					<input type="radio" name="contact_permission" value="yes" checked />
-					<span><?php esc_html_e( 'Yes', 'mkm-review-us' ); ?></span>
+			<div class="mkm-feedback-field mkm-feedback-consent">
+				<label class="mkm-feedback-consent__label" for="mkm-disclaimer">
+					<input type="checkbox" id="mkm-disclaimer" name="disclaimer" value="1" required aria-describedby="mkm-disclaimer-error" />
+					<span class="mkm-feedback-consent__text">
+						<?php esc_html_e( 'The information you obtain at this site is not, nor is it intended to be, legal advice. You should consult an attorney for advice regarding your individual situation. We invite you to contact us and welcome your calls, letters and electronic mail. Contacting us does not create an attorney-client relationship. Please do not send any confidential information to us until such time as an attorney-client relationship has been established.', 'mkm-review-us' ); ?>
+					</span>
 				</label>
-				<label class="mkm-feedback-radio">
-					<input type="radio" name="contact_permission" value="no" />
-					<span><?php esc_html_e( 'No', 'mkm-review-us' ); ?></span>
-				</label>
-			</fieldset>
+				<span class="mkm-feedback-field__error" id="mkm-disclaimer-error" data-mkm-error-for="disclaimer"></span>
+			</div>
 
 			<div class="mkm-feedback-honeypot" aria-hidden="true">
 				<label for="mkm-website"><?php esc_html_e( 'Leave this field empty', 'mkm-review-us' ); ?></label>
@@ -439,13 +436,9 @@ class MKM_Review_Us_Page {
 			</div>
 
 			<button type="submit" class="mkm-review-cta mkm-feedback-submit" data-mkm-submit>
-				<span data-mkm-submit-label><?php esc_html_e( 'Submit Feedback', 'mkm-review-us' ); ?></span>
+				<span data-mkm-submit-label><?php esc_html_e( 'Submit Information', 'mkm-review-us' ); ?></span>
 				<span class="mkm-feedback-spinner" aria-hidden="true" hidden></span>
 			</button>
-
-			<p class="mkm-feedback-form__disclaimer">
-				<?php esc_html_e( 'Contacting us does not create an attorney-client relationship. Please do not send confidential information until such a relationship has been established.', 'mkm-review-us' ); ?>
-			</p>
 		</form>
 		<?php
 	}
