@@ -15,6 +15,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class WL_Style {
 
+	/* Allowed background values, shared by both overlay image layers. */
+	const BG_SIZES = array( 'cover', 'contain', 'auto' );
+
+	const BG_POSITIONS = array(
+		'center',
+		'top',
+		'bottom',
+		'left',
+		'right',
+		'top left',
+		'top right',
+		'bottom left',
+		'bottom right',
+	);
+
+	const BG_REPEATS = array( 'no-repeat', 'repeat', 'repeat-x', 'repeat-y' );
+
 	public static function color( $value ) {
 		$value = trim( (string) $value );
 
@@ -223,6 +240,12 @@ class WL_Style {
 			'hover_overlay_image'   => array( 'var' => '--wl-ov-h-img', 'type' => 'image' ),
 			'overlay_opacity'       => array( 'var' => '--wl-ov-n-op', 'type' => 'opacity' ),
 			'hover_overlay_opacity' => array( 'var' => '--wl-ov-h-op', 'type' => 'opacity' ),
+			'overlay_size'          => array( 'var' => '--wl-ov-n-size', 'type' => 'keyword', 'allowed' => self::BG_SIZES ),
+			'overlay_position'      => array( 'var' => '--wl-ov-n-pos', 'type' => 'keyword', 'allowed' => self::BG_POSITIONS ),
+			'overlay_repeat'        => array( 'var' => '--wl-ov-n-repeat', 'type' => 'keyword', 'allowed' => self::BG_REPEATS ),
+			'hover_overlay_size'     => array( 'var' => '--wl-ov-h-size', 'type' => 'keyword', 'allowed' => self::BG_SIZES ),
+			'hover_overlay_position' => array( 'var' => '--wl-ov-h-pos', 'type' => 'keyword', 'allowed' => self::BG_POSITIONS ),
+			'hover_overlay_repeat'   => array( 'var' => '--wl-ov-h-repeat', 'type' => 'keyword', 'allowed' => self::BG_REPEATS ),
 			'title_color'    => array( 'var' => '--wl-title', 'type' => 'color' ),
 			'title_size'     => array( 'var' => '--wl-title-size', 'type' => 'px', 'min' => 8, 'max' => 80 ),
 			'title_line_height' => array( 'var' => '--wl-title-line-height', 'type' => 'px', 'min' => 8, 'max' => 120 ),

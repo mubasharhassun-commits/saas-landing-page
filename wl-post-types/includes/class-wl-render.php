@@ -39,6 +39,7 @@ class WL_Render {
 			'custom_size'    => 'no',
 			'pause_hover'    => 'yes',
 			'autoscroll'     => 'yes',
+			'overlay_color'  => 'yes',
 			'class'          => '',
 			'items'          => '',
 		);
@@ -103,7 +104,10 @@ class WL_Render {
 
 		$style .= WL_Style::build( WL_Style::cards_schema(), $args );
 
-		$classes = 'wl-cards ' . $layout . $hidet . $fixed;
+		// Images-only overlays: the tinted layers come off entirely.
+		$nocolor = self::to_bool( $args['overlay_color'] ) ? '' : ' wl-no-ov-color';
+
+		$classes = 'wl-cards ' . $layout . $hidet . $fixed . $nocolor;
 		if ( '' !== $args['class'] ) {
 			$classes .= ' ' . sanitize_html_class( $args['class'] );
 		}

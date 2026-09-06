@@ -17,6 +17,12 @@
 	--wl-hover-overlay: rgba(0, 0, 0, 0.55);
 	--wl-ov-n-op: 1;
 	--wl-ov-h-op: 1;
+	--wl-ov-n-size: cover;
+	--wl-ov-n-pos: center;
+	--wl-ov-n-repeat: no-repeat;
+	--wl-ov-h-size: cover;
+	--wl-ov-h-pos: center;
+	--wl-ov-h-repeat: no-repeat;
 	--wl-title: #ffffff;
 	--wl-title-size: 18px;
 	--wl-title-line-height: 1.25;
@@ -146,20 +152,31 @@
 }
 
 /* Optional image layered over the photo. The colour tint stays underneath. */
-.wl-ov-normal-img,
-.wl-ov-hover-img {
-	background-image: var(--wl-ov-img-none, none);
-	background-size: cover;
-	background-position: center;
-	background-repeat: no-repeat;
-}
-
 .wl-ov-normal-img {
 	background-image: var(--wl-ov-n-img, none);
+	background-size: var(--wl-ov-n-size, cover);
+	background-position: var(--wl-ov-n-pos, center);
+	background-repeat: var(--wl-ov-n-repeat, no-repeat);
 	opacity: var(--wl-ov-n-op, 1);
 }
+
 .wl-ov-hover { opacity: 0; background: var(--wl-hover-overlay, rgba(0,0,0,0.55)); }
-.wl-ov-hover-img { background-image: var(--wl-ov-h-img, none); opacity: 0; }
+
+.wl-ov-hover-img {
+	background-image: var(--wl-ov-h-img, none);
+	background-size: var(--wl-ov-h-size, cover);
+	background-position: var(--wl-ov-h-pos, center);
+	background-repeat: var(--wl-ov-h-repeat, no-repeat);
+	opacity: 0;
+}
+
+/* Images only: the tinted layers are dropped entirely rather than made
+   transparent, since the normal one is a gradient whose middle stops are not
+   themeable and would still show through a see-through colour. */
+.wl-cards.wl-no-ov-color .wl-ov-normal,
+.wl-cards.wl-no-ov-color .wl-ov-hover {
+	display: none;
+}
 
 .wl-card:hover .wl-ov-normal,
 .wl-card:hover .wl-ov-normal-img { opacity: 0; }

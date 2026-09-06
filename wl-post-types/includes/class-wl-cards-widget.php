@@ -318,6 +318,16 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'selectors'  => array( '{{WRAPPER}} .wl-cards' => '--wl-ov-h-op: calc({{SIZE}}/100);' ),
 		) );
 
+		$this->add_control( 'overlay_color', array(
+			'label'        => __( 'Show Overlay Colour', 'waterslaw' ),
+			'type'         => \Elementor\Controls_Manager::SWITCHER,
+			'return_value' => 'yes',
+			'default'      => 'yes',
+			'separator'    => 'before',
+			'condition'    => array( 'post_type' => 'cases' ),
+			'description'  => __( 'Off drops both tinted layers so only your own overlay images show.', 'waterslaw' ),
+		) );
+
 		$this->add_control( 'title_source', array(
 			'label'       => __( 'Headings', 'waterslaw' ),
 			'type'        => \Elementor\Controls_Manager::SELECT,
@@ -532,6 +542,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 				'custom_size'      => $s['custom_size'],
 				'pause_hover'      => $s['pause_hover'],
 				'autoscroll'       => isset( $s['autoscroll'] ) ? $s['autoscroll'] : 'yes',
+				'overlay_color'    => isset( $s['overlay_color'] ) ? $s['overlay_color'] : 'yes',
 				'items'            => isset( $s['items'] ) ? $s['items'] : '',
 			)
 		);

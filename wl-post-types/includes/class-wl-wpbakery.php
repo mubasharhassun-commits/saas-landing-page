@@ -59,6 +59,66 @@ class WL_WPBakery {
 		);
 	}
 
+	/**
+	 * Size / position / repeat for one overlay image layer. Offered for Cases
+	 * only, where the overlay is an artwork rather than a tint.
+	 */
+	private static function bg_controls( $label, $prefix, $group ) {
+		$only_cases = array( 'element' => 'source', 'value' => array( 'cases' ) );
+
+		return array(
+			array(
+				'type'             => 'dropdown',
+				'heading'          => sprintf( /* translators: overlay layer name. */ __( '%s - Size', 'waterslaw' ), $label ),
+				'param_name'       => $prefix . 'size',
+				'value'            => array(
+					__( 'Cover', 'waterslaw' )    => 'cover',
+					__( 'Contain', 'waterslaw' )  => 'contain',
+					__( 'Original', 'waterslaw' ) => 'auto',
+				),
+				'std'              => 'cover',
+				'group'            => $group,
+				'edit_field_class' => 'vc_col-sm-4',
+				'dependency'       => $only_cases,
+			),
+			array(
+				'type'             => 'dropdown',
+				'heading'          => sprintf( /* translators: overlay layer name. */ __( '%s - Position', 'waterslaw' ), $label ),
+				'param_name'       => $prefix . 'position',
+				'value'            => array(
+					__( 'Center', 'waterslaw' )       => 'center',
+					__( 'Top', 'waterslaw' )          => 'top',
+					__( 'Bottom', 'waterslaw' )       => 'bottom',
+					__( 'Left', 'waterslaw' )         => 'left',
+					__( 'Right', 'waterslaw' )        => 'right',
+					__( 'Top Left', 'waterslaw' )     => 'top left',
+					__( 'Top Right', 'waterslaw' )    => 'top right',
+					__( 'Bottom Left', 'waterslaw' )  => 'bottom left',
+					__( 'Bottom Right', 'waterslaw' ) => 'bottom right',
+				),
+				'std'              => 'center',
+				'group'            => $group,
+				'edit_field_class' => 'vc_col-sm-4',
+				'dependency'       => $only_cases,
+			),
+			array(
+				'type'             => 'dropdown',
+				'heading'          => sprintf( /* translators: overlay layer name. */ __( '%s - Repeat', 'waterslaw' ), $label ),
+				'param_name'       => $prefix . 'repeat',
+				'value'            => array(
+					__( 'No Repeat', 'waterslaw' )         => 'no-repeat',
+					__( 'Tile', 'waterslaw' )              => 'repeat',
+					__( 'Tile Horizontally', 'waterslaw' ) => 'repeat-x',
+					__( 'Tile Vertically', 'waterslaw' )   => 'repeat-y',
+				),
+				'std'              => 'no-repeat',
+				'group'            => $group,
+				'edit_field_class' => 'vc_col-sm-4',
+				'dependency'       => $only_cases,
+			),
+		);
+	}
+
 	private static function size( $heading, $param, $default, $group, $extra = array() ) {
 		return array_merge(
 			array(
@@ -249,11 +309,23 @@ class WL_WPBakery {
 						'group'       => $overlay,
 						'description' => __( 'Optional image layered over the photo. The colour above stays underneath it.', 'waterslaw' ),
 					),
+					...self::bg_controls( __( 'Overlay Image (normal)', 'waterslaw' ), 'overlay_', $overlay ),
 					array(
 						'type'        => 'attach_image',
 						'heading'     => __( 'Overlay Image (on hover)', 'waterslaw' ),
 						'param_name'  => 'hover_overlay_image',
 						'group'       => $overlay,
+					),
+					...self::bg_controls( __( 'Overlay Image (hover)', 'waterslaw' ), 'hover_overlay_', $overlay ),
+					self::toggle(
+						__( 'Show Overlay Colour', 'waterslaw' ),
+						'overlay_color',
+						'yes',
+						array(
+							'group'       => $overlay,
+							'dependency'  => array( 'element' => 'source', 'value' => array( 'cases' ) ),
+							'description' => __( 'No drops both tinted layers so only your own overlay images show.', 'waterslaw' ),
+						)
 					),
 					self::size( __( 'Overlay Opacity (normal) %', 'waterslaw' ), 'overlay_opacity', '100', $overlay, array( 'description' => __( '0-100.', 'waterslaw' ) ) ),
 					self::size( __( 'Overlay Opacity (hover) %', 'waterslaw' ), 'hover_overlay_opacity', '100', $overlay, array( 'description' => __( '0-100.', 'waterslaw' ) ) ),
