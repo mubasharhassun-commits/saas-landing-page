@@ -354,9 +354,24 @@
 		 */
 		var CONTROLS = 'a, button, input, select, textarea, label, [role="button"], [role="link"]';
 
-		/* A <header> or <footer> inside the page content is an article's own,
-		   not the site's, and must be left alone. */
-		var CONTENT = 'main, article, .entry-content, .entry, .post, .page, .hentry, #content';
+		/*
+		 * A <header> or <footer> inside the page content is an article's own,
+		 * not the site's, and must be left alone.
+		 *
+		 * Only markers that WordPress puts on the content itself are listed.
+		 * "page", "home", "post" and friends are body_class() output, so a
+		 * selector list containing them matched the <body> for every bar on
+		 * the site and quietly filtered out all of them - High Contrast then
+		 * did nothing whatsoever on any Page. insideContent() ignores a match
+		 * on <body> or <html> for that reason.
+		 */
+		var CONTENT = 'main, article, .entry-content, .hentry';
+
+		function insideContent( el ) {
+			var owner = el.closest( CONTENT );
+
+			return !! owner && owner !== document.body && owner !== document.documentElement;
+		}
 
 		var painted = [];
 
@@ -424,7 +439,7 @@
 						if ( el.id === 'wpadminbar' || el.closest( '#wpadminbar' ) ) {
 							continue;
 						}
-						if ( el.closest( CONTENT ) ) {
+						if ( insideContent( el ) ) {
 							continue;
 						}
 
@@ -453,7 +468,7 @@
 			var i;
 
 			for ( i = 0; i < found.length; i++ ) {
-				if ( ! found[ i ].closest( CONTENT ) ) {
+				if ( ! insideContent( found[ i ] ) ) {
 					out.push( found[ i ] );
 				}
 			}
