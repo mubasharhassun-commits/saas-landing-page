@@ -964,7 +964,6 @@
 				);
 			};
 
-			var lastOffset = offset;
 			var started = Date.now();
 
 			window.scrollTo( { top: destination( offset ), behavior: 'smooth' } );
@@ -975,17 +974,28 @@
 				return;
 			}
 
+			/*
+			 * One correction, in one direction, and then done.
+			 *
+			 * A header that sticks and releases around a scroll threshold
+			 * turns any "keep matching the offset" loop into a feedback loop:
+			 * moving up releases the bar, which moves the destination down,
+			 * which sticks it again - the page bounces at the header and never
+			 * settles. Only a bar appearing needs answering, since that is
+			 * what would cover the content; a bar releasing just leaves the
+			 * content lower on screen, which is harmless. Correcting once and
+			 * stopping makes oscillation impossible rather than unlikely.
+			 */
 			( function follow() {
-				// Give up once the page has had time to settle.
-				if ( Date.now() - started > 1500 ) {
+				if ( Date.now() - started > 1200 ) {
 					return;
 				}
 
 				var now = stickyOffset();
 
-				if ( now !== lastOffset ) {
-					lastOffset = now;
+				if ( now > offset + 4 ) {
 					window.scrollTo( { top: destination( now ), behavior: 'smooth' } );
+					return;
 				}
 
 				window.requestAnimationFrame( follow );

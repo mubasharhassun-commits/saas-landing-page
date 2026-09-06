@@ -1,5 +1,5 @@
 === ADA Accessibility ===
-Contributors: mubashar
+Contributors: rustamalirandhawa
 Tags: accessibility, a11y, contrast, elementor, wcag
 Requires at least: 5.8
 Tested up to: 6.8
