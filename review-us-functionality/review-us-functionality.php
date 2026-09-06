@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugin Name:       MKM Review Us Functionality
+ * Plugin Name:       RA Review Us
  * Plugin URI:        https://mkmlaw.net/
  * Description:       Review funnel for the Law Offices of Michael Kevin Murphy: a Review Us page with thumbs up / thumbs down, a two-step Google review popup flow, and a private negative-feedback form stored in WordPress.
  * Version:           1.1.0
  * Requires at least: 5.6
  * Requires PHP:      7.2
- * Author:            Law Offices of Michael Kevin Murphy
+ * Author:            Rustam Ali Randhawa
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       mkm-review-us
