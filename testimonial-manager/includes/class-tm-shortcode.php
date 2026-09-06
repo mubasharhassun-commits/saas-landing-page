@@ -68,7 +68,9 @@ class TM_Shortcode {
 		$defaults['show_rating'] = false;
 		$defaults['arrows']      = true;
 		$defaults['excerpt_words'] = 45;
-		$defaults['salutation']  = '';
+		// Matches what both builders offer, so the shortcode and an element
+		// dropped on a page look the same. Pass salutation="" for none.
+		$defaults['salutation']  = __( 'Sincerely,', 'testimonial-manager' );
 		$defaults['mark_image']  = '';
 		$defaults['client_image'] = '';
 

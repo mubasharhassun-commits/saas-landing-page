@@ -372,7 +372,14 @@ class TM_Renderer {
 		$out .= '<div class="tm-home-person">';
 		$out .= '<div class="tm-home-avatar">';
 		if ( $args['show_image'] ) {
-			$out .= self::avatar( $post, $name, $args );
+			// One image for every slide is deliberate, so it wins over whatever
+			// the individual testimonial carries. Offered on this panel only.
+			$out .= ( ! empty( $args['client_image'] ) )
+				? sprintf(
+					'<img class="tm-avatar" src="%s" alt="" loading="lazy" />',
+					esc_url( $args['client_image'] )
+				)
+				: self::avatar( $post, $name, $args );
 		}
 		$out .= '</div>';
 
@@ -546,15 +553,6 @@ class TM_Renderer {
 	 *   4. a lettered circle, so the layout always holds
 	 */
 	private static function avatar( $post, $name, $args = array() ) {
-		// An image chosen on the element itself is deliberate, so it wins over
-		// whatever the individual testimonial carries.
-		if ( ! empty( $args['client_image'] ) ) {
-			return sprintf(
-				'<img class="tm-avatar" src="%s" alt="" loading="lazy" />',
-				esc_url( $args['client_image'] )
-			);
-		}
-
 		$image_id = (int) get_post_meta( $post->ID, '_tm_image_id', true );
 
 		if ( $image_id ) {

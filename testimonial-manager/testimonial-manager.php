@@ -3,7 +3,7 @@
  * Plugin Name:       Testimonial Manager
  * Plugin URI:        https://waterslaw.com
  * Description:       Create and manage client testimonials from the WordPress dashboard, and display them as a responsive grid with an accessible "read full review" modal. Works via shortcode anywhere, and as native Elementor widgets and WPBakery Page Builder elements when either builder is active.
- * Version:           2.4.1
+ * Version:           2.4.2
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Waters Law Dev
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'TM_VERSION', '2.4.1' );
+define( 'TM_VERSION', '2.4.2' );
 define( 'TM_FILE', __FILE__ );
 define( 'TM_PATH', plugin_dir_path( __FILE__ ) );
 define( 'TM_URL', plugin_dir_url( __FILE__ ) );
