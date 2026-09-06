@@ -146,6 +146,177 @@
 				delete own[ i ].dataset.adaaBase;
 			}
 			root.style.fontSize = '';
+
+			/*
+			 * Menu spacing is always returned to normal first, so each size is
+			 * measured against the theme's own layout rather than the last
+			 * tightened one.
+			 */
+			restoreMenus();
+
+			document.documentElement.classList.toggle( 'adaa-text-scaled', factor !== 1 );
+			document.documentElement.style.setProperty( '--adaa-text-scale', factor );
+
+			if ( factor !== 1 ) {
+				tightenMenus();
+			}
+		}
+
+		/* ---------- menus at a larger text size ----------
+		 *
+		 * Bigger type makes a horizontal menu wider than its bar and it wraps
+		 * onto a second row, which pushes the header down. The words cannot
+		 * shrink - that is the whole point of the button - so the space around
+		 * them gives way instead: the padding either side of each item is
+		 * reduced, a step at a time, only until the menu fits on one row again.
+		 */
+
+		var TIGHTEN_STEPS = [ 0.85, 0.7, 0.55, 0.4, 0.28, 0.18 ];
+		var tightened = [];
+
+		function rowCount( list ) {
+			var tops = [];
+
+			for ( var i = 0; i < list.children.length; i++ ) {
+				var top = Math.round( list.children[ i ].offsetTop );
+
+				if ( -1 === tops.indexOf( top ) ) {
+					tops.push( top );
+				}
+			}
+
+			return tops.length;
+		}
+
+		/* Lists inside the site's own bars that are laid out as a row. */
+		function horizontalMenus() {
+			var bars = contrastRoots();
+			var out = [];
+
+			for ( var i = 0; i < bars.length; i++ ) {
+				var lists = bars[ i ].querySelectorAll( 'ul, ol' );
+
+				for ( var j = 0; j < lists.length; j++ ) {
+					var list = lists[ j ];
+
+					if ( list.children.length < 3 || root.contains( list ) ) {
+						continue;
+					}
+
+					// Side by side, not stacked.
+					if ( Math.round( list.children[ 0 ].offsetTop ) !== Math.round( list.children[ 1 ].offsetTop ) ) {
+						continue;
+					}
+
+					out.push( list );
+				}
+			}
+
+			return out;
+		}
+
+		function captureSpacing( el ) {
+			if ( el.dataset.adaaSpace ) {
+				return;
+			}
+
+			var cs = window.getComputedStyle( el );
+
+			el.dataset.adaaSpace = [
+				parseFloat( cs.paddingLeft ) || 0,
+				parseFloat( cs.paddingRight ) || 0,
+				parseFloat( cs.marginLeft ) || 0,
+				parseFloat( cs.marginRight ) || 0,
+				parseFloat( cs.columnGap ) || 0
+			].join( ',' );
+
+			tightened.push( {
+				el: el,
+				props: [ 'padding-left', 'padding-right', 'margin-left', 'margin-right', 'column-gap' ].map( function ( prop ) {
+					return {
+						prop: prop,
+						value: el.style.getPropertyValue( prop ),
+						priority: el.style.getPropertyPriority( prop )
+					};
+				} )
+			} );
+		}
+
+		function tightenTo( el, factor ) {
+			var base = ( el.dataset.adaaSpace || '' ).split( ',' );
+
+			if ( base.length < 5 ) {
+				return;
+			}
+
+			var props = [ 'padding-left', 'padding-right', 'margin-left', 'margin-right', 'column-gap' ];
+
+			for ( var i = 0; i < props.length; i++ ) {
+				var value = parseFloat( base[ i ] ) || 0;
+
+				// A gap of zero is not a gap; leave it alone.
+				if ( 4 === i && value <= 0 ) {
+					continue;
+				}
+
+				el.style.setProperty( props[ i ], ( value * factor ).toFixed( 2 ) + 'px', 'important' );
+			}
+		}
+
+		function tightenMenus() {
+			var lists = horizontalMenus();
+
+			for ( var i = 0; i < lists.length; i++ ) {
+				var list = lists[ i ];
+
+				if ( rowCount( list ) < 2 ) {
+					continue;
+				}
+
+				// The list itself, its items, and whatever each item wraps.
+				var targets = [ list ];
+
+				for ( var j = 0; j < list.children.length; j++ ) {
+					var item = list.children[ j ];
+					targets.push( item );
+
+					var inner = item.firstElementChild;
+
+					if ( inner && ( 'A' === inner.tagName || 'SPAN' === inner.tagName || 'BUTTON' === inner.tagName ) ) {
+						targets.push( inner );
+					}
+				}
+
+				for ( var t = 0; t < targets.length; t++ ) {
+					captureSpacing( targets[ t ] );
+				}
+
+				for ( var s = 0; s < TIGHTEN_STEPS.length && rowCount( list ) > 1; s++ ) {
+					for ( var k = 0; k < targets.length; k++ ) {
+						tightenTo( targets[ k ], TIGHTEN_STEPS[ s ] );
+					}
+				}
+			}
+		}
+
+		function restoreMenus() {
+			for ( var i = tightened.length - 1; i >= 0; i-- ) {
+				var entry = tightened[ i ];
+
+				for ( var j = 0; j < entry.props.length; j++ ) {
+					var saved = entry.props[ j ];
+
+					if ( saved.value ) {
+						entry.el.style.setProperty( saved.prop, saved.value, saved.priority );
+					} else {
+						entry.el.style.removeProperty( saved.prop );
+					}
+				}
+
+				delete entry.el.dataset.adaaSpace;
+			}
+
+			tightened = [];
 		}
 
 		if ( btn.text ) {
