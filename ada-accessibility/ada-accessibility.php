@@ -3,7 +3,7 @@
  * Plugin Name:       ADA Accessibility
  * Plugin URI:        https://example.com/ada-accessibility
  * Description:       A front-end accessibility toolbar with high contrast, text resizing and skip-to-content. Works standalone, or as an Elementor widget and a WPBakery Page Builder element.
- * Version:           1.26.0
+ * Version:           1.27.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Mubashar
@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'ADAA_VERSION', '1.26.0' );
+define( 'ADAA_VERSION', '1.27.0' );
 define( 'ADAA_FILE', __FILE__ );
 define( 'ADAA_PATH', plugin_dir_path( __FILE__ ) );
 define( 'ADAA_URL', plugin_dir_url( __FILE__ ) );

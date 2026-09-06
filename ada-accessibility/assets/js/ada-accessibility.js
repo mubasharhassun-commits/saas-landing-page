@@ -537,11 +537,69 @@
 				bg: el.style.getPropertyValue( 'background-color' ),
 				bgPri: el.style.getPropertyPriority( 'background-color' ),
 				img: el.style.getPropertyValue( 'background-image' ),
-				imgPri: el.style.getPropertyPriority( 'background-image' )
+				imgPri: el.style.getPropertyPriority( 'background-image' ),
+				minH: el.style.getPropertyValue( 'min-height' ),
+				minHPri: el.style.getPropertyPriority( 'min-height' )
 			} );
 
 			el.style.setProperty( 'background-color', '#000', 'important' );
 			el.style.setProperty( 'background-image', 'none', 'important' );
+		}
+
+		/*
+		 * The wrappers a theme puts around its header bar.
+		 *
+		 * Total wraps the header in #site-header-sticky-wrapper and paints the
+		 * bar's colour and height there, not on the header. Walking only
+		 * downwards left that wrapper its own colour, showing as a band the
+		 * black never covered. Climbing is bounded by height: a wrapper is
+		 * part of the bar, a page wrapper is many times taller and is where
+		 * the climb stops, so the whole page can never be blackened.
+		 */
+		function barWrappers( el ) {
+			var out = [];
+			var limit = el.getBoundingClientRect().height * 1.8 + 24;
+			var parent = el.parentElement;
+
+			while ( parent && parent !== document.body && parent !== document.documentElement ) {
+				if ( root.contains( parent ) || parent.contains( root ) ) {
+					break;
+				}
+
+				if ( parent.getBoundingClientRect().height > limit ) {
+					break;
+				}
+
+				if ( isPainted( parent ) ) {
+					out.push( parent );
+				}
+
+				parent = parent.parentElement;
+			}
+
+			return out;
+		}
+
+		/*
+		 * Make the blacked-out bar as tall as the bar actually is. The colour
+		 * and the height can live on different elements, so the painted header
+		 * can be shorter than the bar around it and leave a strip uncovered.
+		 */
+		function fillBarHeight( el, wrappers ) {
+			var tallest = el.getBoundingClientRect().height;
+			var i;
+
+			for ( i = 0; i < wrappers.length; i++ ) {
+				var h = wrappers[ i ].getBoundingClientRect().height;
+
+				if ( h > tallest ) {
+					tallest = h;
+				}
+			}
+
+			if ( tallest > el.getBoundingClientRect().height + 0.5 ) {
+				el.style.setProperty( 'min-height', Math.round( tallest ) + 'px', 'important' );
+			}
 		}
 
 		/*
@@ -627,6 +685,15 @@
 				// over a hero image still has to become a solid black band.
 				blacken( rootEl );
 
+				// Its wrappers, which may be where the colour and height live.
+				var wrappers = barWrappers( rootEl );
+
+				for ( var w = 0; w < wrappers.length; w++ ) {
+					blacken( wrappers[ w ] );
+				}
+
+				fillBarHeight( rootEl, wrappers );
+
 				var kids = rootEl.querySelectorAll( '*' );
 
 				for ( var k = 0; k < kids.length; k++ ) {
@@ -678,6 +745,12 @@
 					p.el.style.setProperty( 'background-image', p.img, p.imgPri );
 				} else {
 					p.el.style.removeProperty( 'background-image' );
+				}
+
+				if ( p.minH ) {
+					p.el.style.setProperty( 'min-height', p.minH, p.minHPri );
+				} else {
+					p.el.style.removeProperty( 'min-height' );
 				}
 			}
 
