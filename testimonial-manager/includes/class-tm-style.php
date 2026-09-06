@@ -144,6 +144,36 @@ class TM_Style {
 		return ( '' === $key ) ? '' : $presets[ $key ];
 	}
 
+	/**
+	 * An image URL as a CSS url() value. Anything carrying a quote, bracket,
+	 * semicolon or whitespace is rejected outright rather than escaped: no
+	 * media-library URL needs them here, and escaping is easy to get wrong.
+	 */
+	public static function image( $value ) {
+		$url = esc_url_raw( trim( (string) $value ) );
+
+		if ( '' === $url || preg_match( '/["\'();\s]/', $url ) ) {
+			return '';
+		}
+
+		return 'url("' . $url . '")';
+	}
+
+	/**
+	 * A percentage 0-100 expressed as a 0-1 multiplier, for opacity.
+	 */
+	public static function opacity( $value ) {
+		if ( '' === trim( (string) $value ) ) {
+			return '';
+		}
+
+		if ( ! preg_match( '/-?\d+(?:\.\d+)?/', (string) $value, $m ) ) {
+			return '';
+		}
+
+		return (string) round( max( 0, min( 100, (float) $m[0] ) ) / 100, 3 );
+	}
+
 	public static function keyword( $value, $allowed ) {
 		$value = strtolower( trim( (string) $value ) );
 
@@ -216,6 +246,12 @@ class TM_Style {
 					$value = self::shadow( $raw );
 					break;
 
+				case 'image':
+					$value = self::image( $raw );
+					break;
+				case 'opacity':
+					$value = self::opacity( $raw );
+					break;
 				case 'keyword':
 					$value = self::keyword( $raw, $rule['allowed'] );
 					break;
@@ -310,6 +346,15 @@ class TM_Style {
 	public static function home_schema() {
 		return array(
 			'panel_bg'          => array( 'var' => '--tm-home-bg', 'type' => 'color' ),
+			'panel_bg_image'    => array( 'var' => '--tm-home-bg-image', 'type' => 'image' ),
+			'panel_bg_size'     => array( 'var' => '--tm-home-bg-size', 'type' => 'keyword', 'allowed' => array( 'cover', 'contain', 'auto' ) ),
+			'panel_bg_position' => array(
+				'var'     => '--tm-home-bg-position',
+				'type'    => 'keyword',
+				'allowed' => array( 'center', 'top', 'bottom', 'left', 'right', 'top left', 'top right', 'bottom left', 'bottom right' ),
+			),
+			'panel_bg_repeat'   => array( 'var' => '--tm-home-bg-repeat', 'type' => 'keyword', 'allowed' => array( 'no-repeat', 'repeat', 'repeat-x', 'repeat-y' ) ),
+			'panel_bg_opacity'  => array( 'var' => '--tm-home-bg-opacity', 'type' => 'opacity' ),
 			'panel_radius'      => array( 'var' => '--tm-home-radius', 'type' => 'px', 'max' => 80 ),
 			'panel_padding'     => array( 'var' => '--tm-home-padding', 'type' => 'spacing' ),
 			'panel_min_height'  => array( 'var' => '--tm-home-min-height', 'type' => 'px', 'max' => 900 ),

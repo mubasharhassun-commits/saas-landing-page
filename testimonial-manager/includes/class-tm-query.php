@@ -57,6 +57,7 @@ class TM_Query {
 			'salutation'     => '',
 			'mark_image'     => '',
 			'client_image'   => '',
+			'panel_bg_image' => '',
 		);
 	}
 
@@ -108,7 +109,7 @@ class TM_Query {
 		// The builders' image pickers store an attachment ID; a shortcode may
 		// pass a URL. The quote mark is shown at whatever size the element sets,
 		// so it is resolved at full size rather than the avatar thumbnail.
-		foreach ( array( 'fallback_image' => 'tm_avatar', 'client_image' => 'tm_avatar', 'mark_image' => 'full' ) as $key => $size ) {
+		foreach ( array( 'fallback_image' => 'tm_avatar', 'client_image' => 'tm_avatar', 'mark_image' => 'full', 'panel_bg_image' => 'full' ) as $key => $size ) {
 			if ( is_numeric( $args[ $key ] ) ) {
 				$url          = wp_get_attachment_image_url( absint( $args[ $key ] ), $size );
 				$args[ $key ] = $url ? $url : '';

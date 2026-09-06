@@ -694,10 +694,38 @@ body.tm-modal-open { overflow: hidden; }
 	--tm-home-nav-bottom: 78px;
 	--tm-home-nav-right: 48px;
 
-	background: var(--tm-home-bg);
+	--tm-home-bg-image: none;
+	--tm-home-bg-size: cover;
+	--tm-home-bg-position: center;
+	--tm-home-bg-repeat: no-repeat;
+	--tm-home-bg-opacity: 1;
+
+	background-color: var(--tm-home-bg);
 	border-radius: var(--tm-home-radius);
 	color: var(--tm-home-quote-color);
+	overflow: hidden;
 }
+
+/* The background image is its own layer rather than a shorthand on the panel,
+   so it can carry an opacity and let the colour show through behind it. */
+.tm-slider.tm-home::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	background-image: var(--tm-home-bg-image, none);
+	background-size: var(--tm-home-bg-size, cover);
+	background-position: var(--tm-home-bg-position, center);
+	background-repeat: var(--tm-home-bg-repeat, no-repeat);
+	opacity: var(--tm-home-bg-opacity, 1);
+	pointer-events: none;
+}
+
+/* Content clears that layer. The chevrons are positioned, so they are lifted
+   explicitly rather than by a blanket rule that would break their placement. */
+.tm-slider.tm-home > .tm-slider-viewport { position: relative; z-index: 1; }
+.tm-slider.tm-home .tm-home-nav { z-index: 2; }
+.tm-slider.tm-home > .tm-slider-dots { position: relative; z-index: 2; }
 
 .tm-slider.tm-home .tm-slider-viewport {
 	padding: var(--tm-home-padding);

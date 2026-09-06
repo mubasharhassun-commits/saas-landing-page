@@ -325,10 +325,88 @@ class TM_Widget_Home extends \Elementor\Widget_Base {
 		$this->add_control(
 			'panel_bg',
 			array(
-				'label'     => __( 'Panel Background', 'testimonial-manager' ),
+				'label'     => __( 'Panel Background Color', 'testimonial-manager' ),
 				'type'      => \Elementor\Controls_Manager::COLOR,
 				'default'   => '#7ab3af',
 				'selectors' => array( '{{WRAPPER}} .tm-home' => '--tm-home-bg: {{VALUE}};' ),
+			)
+		);
+
+		$this->add_control(
+			'panel_bg_image',
+			array(
+				'label'       => __( 'Panel Background Image', 'testimonial-manager' ),
+				'type'        => \Elementor\Controls_Manager::MEDIA,
+				'description' => __( 'Sits over the colour above. Lower the opacity below to let the colour show through.', 'testimonial-manager' ),
+				'selectors'   => array( '{{WRAPPER}} .tm-home' => '--tm-home-bg-image: url("{{URL}}");' ),
+			)
+		);
+
+		$this->add_control(
+			'panel_bg_opacity',
+			array(
+				'label'      => __( 'Background Image Opacity', 'testimonial-manager' ),
+				'type'       => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => array( '%' ),
+				'range'      => array( '%' => array( 'min' => 0, 'max' => 100 ) ),
+				'default'    => array( 'unit' => '%', 'size' => 100 ),
+				'condition'  => array( 'panel_bg_image[url]!' => '' ),
+				'selectors'  => array( '{{WRAPPER}} .tm-home' => '--tm-home-bg-opacity: calc({{SIZE}}/100);' ),
+			)
+		);
+
+		$this->add_control(
+			'panel_bg_size',
+			array(
+				'label'     => __( 'Background Image Size', 'testimonial-manager' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'cover',
+				'options'   => array(
+					'cover'   => __( 'Cover', 'testimonial-manager' ),
+					'contain' => __( 'Contain', 'testimonial-manager' ),
+					'auto'    => __( 'Original', 'testimonial-manager' ),
+				),
+				'condition' => array( 'panel_bg_image[url]!' => '' ),
+				'selectors' => array( '{{WRAPPER}} .tm-home' => '--tm-home-bg-size: {{VALUE}};' ),
+			)
+		);
+
+		$this->add_control(
+			'panel_bg_position',
+			array(
+				'label'     => __( 'Background Image Position', 'testimonial-manager' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'center',
+				'options'   => array(
+					'center'       => __( 'Center', 'testimonial-manager' ),
+					'top'          => __( 'Top', 'testimonial-manager' ),
+					'bottom'       => __( 'Bottom', 'testimonial-manager' ),
+					'left'         => __( 'Left', 'testimonial-manager' ),
+					'right'        => __( 'Right', 'testimonial-manager' ),
+					'top left'     => __( 'Top Left', 'testimonial-manager' ),
+					'top right'    => __( 'Top Right', 'testimonial-manager' ),
+					'bottom left'  => __( 'Bottom Left', 'testimonial-manager' ),
+					'bottom right' => __( 'Bottom Right', 'testimonial-manager' ),
+				),
+				'condition' => array( 'panel_bg_image[url]!' => '' ),
+				'selectors' => array( '{{WRAPPER}} .tm-home' => '--tm-home-bg-position: {{VALUE}};' ),
+			)
+		);
+
+		$this->add_control(
+			'panel_bg_repeat',
+			array(
+				'label'     => __( 'Background Image Repeat', 'testimonial-manager' ),
+				'type'      => \Elementor\Controls_Manager::SELECT,
+				'default'   => 'no-repeat',
+				'options'   => array(
+					'no-repeat' => __( 'No Repeat', 'testimonial-manager' ),
+					'repeat'    => __( 'Tile', 'testimonial-manager' ),
+					'repeat-x'  => __( 'Tile Horizontally', 'testimonial-manager' ),
+					'repeat-y'  => __( 'Tile Vertically', 'testimonial-manager' ),
+				),
+				'condition' => array( 'panel_bg_image[url]!' => '' ),
+				'selectors' => array( '{{WRAPPER}} .tm-home' => '--tm-home-bg-repeat: {{VALUE}};' ),
 			)
 		);
 

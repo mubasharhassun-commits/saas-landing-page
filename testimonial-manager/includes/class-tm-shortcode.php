@@ -73,6 +73,7 @@ class TM_Shortcode {
 		$defaults['salutation']  = __( 'Sincerely,', 'testimonial-manager' );
 		$defaults['mark_image']  = '';
 		$defaults['client_image'] = '';
+		$defaults['panel_bg_image'] = '';
 
 		$atts = shortcode_atts( $defaults, $atts, 'testimonials_home' );
 
