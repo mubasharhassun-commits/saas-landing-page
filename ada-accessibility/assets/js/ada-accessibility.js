@@ -9,7 +9,7 @@
 
 	// One press enlarges by 10%, the next press returns to normal.
 	var STEPS = [ 1, 1.1 ];
-	var EXCLUDE = '.adaa, .adaa *, script, style, svg, path, circle, br, hr';
+	var EXCLUDE = '.adaa, .adaa *, #wpadminbar, #wpadminbar *, script, style, svg, path, circle, br, hr';
 
 	function init( root ) {
 		if ( root.dataset.adaaReady ) {
@@ -174,6 +174,19 @@
 			'.elementor-location-footer'
 		].join( ',' );
 
+		/*
+		 * Controls keep their own colours: a Review Us button or a coloured
+		 * call to action stays legible on its own terms. Matching on the
+		 * control itself replaces an earlier rule that only recoloured bands
+		 * at least 60% as wide as the header, which quietly skipped the very
+		 * container painting the header on a wide screen.
+		 */
+		var CONTROLS = 'a, button, input, select, textarea, label, [role="button"], [role="link"]';
+
+		/* A <header> or <footer> inside the page content is an article's own,
+		   not the site's, and must be left alone. */
+		var CONTENT = 'main, article, .entry-content, .entry, .post, .page, .hentry, #content';
+
 		var painted = [];
 
 		function isTransparent( value ) {
@@ -197,6 +210,33 @@
 			return parseFloat( parts[ 3 ] ) === 0;
 		}
 
+		/* Painted by a colour or by an image - a gradient bar counts. */
+		function isPainted( el ) {
+			var cs = window.getComputedStyle( el );
+
+			return ! isTransparent( cs.backgroundColor ) || cs.backgroundImage !== 'none';
+		}
+
+		/* The site's own header and footer bars, never an article's. */
+		function contrastRoots() {
+			var found = document.querySelectorAll( HEADER_FOOTER );
+			var out = [];
+			var i;
+
+			for ( i = 0; i < found.length; i++ ) {
+				if ( ! found[ i ].closest( CONTENT ) ) {
+					out.push( found[ i ] );
+				}
+			}
+
+			// Drop any that sit inside another one already in the list.
+			return out.filter( function ( el ) {
+				return ! out.some( function ( other ) {
+					return other !== el && other.contains( el );
+				} );
+			} );
+		}
+
 		function blacken( el ) {
 			painted.push( {
 				el: el,
@@ -211,7 +251,7 @@
 		}
 
 		function contrastOn() {
-			var roots = document.querySelectorAll( HEADER_FOOTER );
+			var roots = contrastRoots();
 
 			for ( var i = 0; i < roots.length; i++ ) {
 				var rootEl = roots[ i ];
@@ -220,33 +260,29 @@
 					continue;
 				}
 
-				var rootWidth = rootEl.getBoundingClientRect().width;
-
-				if ( ! isTransparent( window.getComputedStyle( rootEl ).backgroundColor ) ) {
-					blacken( rootEl );
-				}
+				// The bar itself, painted or not: a header that is transparent
+				// over a hero image still has to become a solid black band.
+				blacken( rootEl );
 
 				var kids = rootEl.querySelectorAll( '*' );
 
 				for ( var k = 0; k < kids.length; k++ ) {
 					var el = kids[ k ];
 
-					if ( el === root || root.contains( el ) || el.tagName === 'IMG' ) {
+					if ( el === root || root.contains( el ) ) {
 						continue;
 					}
 
-					if ( isTransparent( window.getComputedStyle( el ).backgroundColor ) ) {
+					if ( el.tagName === 'IMG' || el.tagName === 'SVG' || el.tagName === 'PICTURE' ) {
 						continue;
 					}
 
-					/*
-					 * Only full-width bands are recoloured. That catches the
-					 * container actually painting the header or footer, while
-					 * leaving buttons, badges and logo blocks exactly as they
-					 * are — the Review Us button keeps its white background
-					 * and its dark text.
-					 */
-					if ( el.getBoundingClientRect().width < rootWidth * 0.6 ) {
+					// Buttons and links keep their own look, however wide.
+					if ( el.closest( CONTROLS ) ) {
+						continue;
+					}
+
+					if ( ! isPainted( el ) ) {
 						continue;
 					}
 
@@ -302,21 +338,60 @@
 
 		if ( btn.skip ) {
 			btn.skip.addEventListener( 'click', function () {
-				close( false );
-
-				// Always returns to the top of the page, from anywhere.
-				window.scrollTo( { top: 0, behavior: 'smooth' } );
-
+				/*
+				 * Skip to content means the content, so this jumps past the
+				 * header rather than to the top of the page, and the panel is
+				 * left open: a visitor reaching for it again should not have
+				 * to reopen it.
+				 */
 				var target =
-					document.querySelector( 'header' ) ||
+					document.querySelector( 'main' ) ||
+					document.querySelector( '[role="main"]' ) ||
 					document.getElementById( 'content' ) ||
-					document.querySelector( 'main' );
+					document.querySelector( '.entry-content' ) ||
+					document.querySelector( 'article' );
 
-				if ( target ) {
-					target.setAttribute( 'tabindex', '-1' );
-					target.focus( { preventScroll: true } );
+				if ( ! target ) {
+					return;
 				}
+
+				target.setAttribute( 'tabindex', '-1' );
+
+				// A sticky or fixed bar would otherwise cover the first lines
+				// of the very content this button exists to reach.
+				target.style.scrollMarginTop = stickyOffset() + 'px';
+
+				target.scrollIntoView( { behavior: 'smooth', block: 'start' } );
+				target.focus( { preventScroll: true } );
 			} );
+		}
+
+		/* The tallest bar pinned to the top of the viewport, if there is one. */
+		function stickyOffset() {
+			var bars = document.querySelectorAll( HEADER_FOOTER );
+			var offset = 0;
+
+			for ( var i = 0; i < bars.length; i++ ) {
+				var el = bars[ i ];
+
+				if ( el === root || el.contains( root ) ) {
+					continue;
+				}
+
+				var cs = window.getComputedStyle( el );
+
+				if ( cs.position !== 'fixed' && cs.position !== 'sticky' ) {
+					continue;
+				}
+
+				var box = el.getBoundingClientRect();
+
+				if ( box.top <= 0 && box.bottom > offset ) {
+					offset = box.bottom;
+				}
+			}
+
+			return Math.round( offset );
 		}
 
 		/* ---------- reset ---------- */
