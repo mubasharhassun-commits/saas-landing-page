@@ -217,6 +217,64 @@
 			return ! isTransparent( cs.backgroundColor ) || cs.backgroundImage !== 'none';
 		}
 
+		/*
+		 * Bars pinned over the page, found by what they do rather than what
+		 * they are called. A theme's sticky header is often a second element
+		 * with a name of its own - wpex-sticky-header-holder, a cloned wrapper,
+		 * an "is-stuck" div - that no selector list can predict, and missing it
+		 * leaves a strip of the original colour across the top. Reading the
+		 * elements actually painting the top of the viewport catches it
+		 * whatever it is called.
+		 */
+		function pinnedBars() {
+			var out = [];
+			var width = window.innerWidth;
+
+			if ( ! document.elementsFromPoint || ! width ) {
+				return out;
+			}
+
+			var xs = [ width * 0.25, width * 0.5, width * 0.75 ];
+
+			for ( var y = 2; y <= 160; y += 8 ) {
+				for ( var i = 0; i < xs.length; i++ ) {
+					var stack = document.elementsFromPoint( xs[ i ], y ) || [];
+
+					for ( var j = 0; j < stack.length; j++ ) {
+						var el = stack[ j ];
+
+						if ( el === root || root.contains( el ) ) {
+							continue;
+						}
+						if ( el === document.body || el === document.documentElement ) {
+							continue;
+						}
+						// The admin bar belongs to WordPress, not the site.
+						if ( el.id === 'wpadminbar' || el.closest( '#wpadminbar' ) ) {
+							continue;
+						}
+						if ( el.closest( CONTENT ) ) {
+							continue;
+						}
+
+						var cs = window.getComputedStyle( el );
+
+						if ( cs.position !== 'fixed' && cs.position !== 'sticky' ) {
+							continue;
+						}
+						if ( el.getBoundingClientRect().width < width * 0.8 ) {
+							continue;
+						}
+						if ( -1 === out.indexOf( el ) ) {
+							out.push( el );
+						}
+					}
+				}
+			}
+
+			return out;
+		}
+
 		/* The site's own header and footer bars, never an article's. */
 		function contrastRoots() {
 			var found = document.querySelectorAll( HEADER_FOOTER );
@@ -229,6 +287,14 @@
 				}
 			}
 
+			var pinned = pinnedBars();
+
+			for ( i = 0; i < pinned.length; i++ ) {
+				if ( -1 === out.indexOf( pinned[ i ] ) ) {
+					out.push( pinned[ i ] );
+				}
+			}
+
 			// Drop any that sit inside another one already in the list.
 			return out.filter( function ( el ) {
 				return ! out.some( function ( other ) {
@@ -237,7 +303,35 @@
 			} );
 		}
 
+		var paintedSet = ( typeof window.Set === 'function' ) ? new window.Set() : null;
+		var watching = false;
+		var painting = false;
+		var observer = null;
+		var queued = false;
+
+		function alreadyPainted( el ) {
+			if ( paintedSet ) {
+				return paintedSet.has( el );
+			}
+
+			for ( var i = 0; i < painted.length; i++ ) {
+				if ( painted[ i ].el === el ) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		function blacken( el ) {
+			if ( alreadyPainted( el ) ) {
+				return;
+			}
+
+			if ( paintedSet ) {
+				paintedSet.add( el );
+			}
+
 			painted.push( {
 				el: el,
 				bg: el.style.getPropertyValue( 'background-color' ),
@@ -250,8 +344,77 @@
 			el.style.setProperty( 'background-image', 'none', 'important' );
 		}
 
+		/*
+		 * Sticky headers are the reason this has to keep running. A theme
+		 * reveals a second bar once the page is scrolled, or swaps one in on a
+		 * class change, and a bar that did not exist when the button was
+		 * pressed would otherwise keep its own colour - which is the strip of
+		 * original background left showing across the top.
+		 */
+		function watch() {
+			if ( watching ) {
+				return;
+			}
+
+			watching = true;
+
+			window.addEventListener( 'scroll', repaint, { passive: true } );
+			window.addEventListener( 'resize', repaint, { passive: true } );
+
+			if ( typeof window.MutationObserver === 'function' ) {
+				observer = new window.MutationObserver( function () {
+					// Our own writes must not feed back into the observer.
+					if ( ! painting ) {
+						repaint();
+					}
+				} );
+
+				observer.observe( document.body, {
+					childList: true,
+					subtree: true,
+					attributes: true,
+					attributeFilter: [ 'class', 'style' ]
+				} );
+			}
+		}
+
+		function unwatch() {
+			if ( ! watching ) {
+				return;
+			}
+
+			watching = false;
+
+			window.removeEventListener( 'scroll', repaint );
+			window.removeEventListener( 'resize', repaint );
+
+			if ( observer ) {
+				observer.disconnect();
+				observer = null;
+			}
+		}
+
+		/* Coalesced to one pass per frame. */
+		function repaint() {
+			if ( ! state.contrast || queued ) {
+				return;
+			}
+
+			queued = true;
+
+			window.requestAnimationFrame( function () {
+				queued = false;
+
+				if ( state.contrast ) {
+					contrastOn();
+				}
+			} );
+		}
+
 		function contrastOn() {
 			var roots = contrastRoots();
+
+			painting = true;
 
 			for ( var i = 0; i < roots.length; i++ ) {
 				var rootEl = roots[ i ];
@@ -291,9 +454,17 @@
 			}
 
 			document.body.classList.add( 'adaa-contrast' );
+
+			painting = false;
+
+			watch();
 		}
 
 		function contrastOff() {
+			unwatch();
+
+			painting = true;
+
 			for ( var i = painted.length - 1; i >= 0; i-- ) {
 				var p = painted[ i ];
 
@@ -311,16 +482,23 @@
 			}
 
 			painted = [];
+
+			if ( paintedSet ) {
+				paintedSet.clear();
+			}
+
 			document.body.classList.remove( 'adaa-contrast' );
+
+			painting = false;
 		}
 
 		function setContrast( on ) {
 			state.contrast = !! on;
 
-			contrastOff();
-
 			if ( state.contrast ) {
 				contrastOn();
+			} else {
+				contrastOff();
 			}
 
 			if ( btn.contrast ) {
@@ -385,9 +563,19 @@
 				var configured = parseInt( root.dataset.skipOffset, 10 );
 				var offset = ( ! isNaN( configured ) && configured > 0 ) ? configured : stickyOffset();
 
-				target.style.scrollMarginTop = offset + 'px';
+				/*
+				 * One computed move rather than scrollIntoView with a
+				 * scroll-margin: writing that margin and letting the browser
+				 * re-resolve the target mid-animation is what made the jump
+				 * stutter on a page whose sticky header changes height.
+				 */
+				var top = window.pageYOffset + target.getBoundingClientRect().top - offset;
 
-				target.scrollIntoView( { behavior: 'smooth', block: 'start' } );
+				window.scrollTo( {
+					top: Math.max( 0, Math.round( top ) ),
+					behavior: 'smooth'
+				} );
+
 				target.focus( { preventScroll: true } );
 			} );
 		}
