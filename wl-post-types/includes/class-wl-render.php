@@ -14,6 +14,45 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class WL_Render {
 
+	/*
+	 * The Cases cards are drawn entirely by two overlay artworks - a soft
+	 * gradient at rest and a dark wash carrying the Read More button on hover -
+	 * so no tint or opacity is involved. These are the ones the site uses.
+	 *
+	 * Resolved in this order, so the plugin travels between sites cleanly:
+	 *   1. an image chosen on the element itself
+	 *   2. a copy shipped in the plugin at assets/img/
+	 *   3. the uploaded URL below
+	 * Drop cases-overlay.png / cases-overlay-hover.png into assets/img/ and the
+	 * plugin stops depending on the media library entirely. The
+	 * "wl_cases_overlay_images" filter overrides all of it.
+	 */
+	const CASES_OVERLAY       = 'https://waterlawvadev.wpenginepowered.com/wp-content/uploads/2026/09/Cover.png';
+	const CASES_OVERLAY_HOVER = 'https://waterlawvadev.wpenginepowered.com/wp-content/uploads/2026/09/Hover.png';
+
+	/**
+	 * The two default Cases overlays, as URLs.
+	 */
+	public static function cases_overlays() {
+		$bundled = array(
+			'overlay_image'       => 'cases-overlay.png',
+			'hover_overlay_image' => 'cases-overlay-hover.png',
+		);
+
+		$out = array(
+			'overlay_image'       => self::CASES_OVERLAY,
+			'hover_overlay_image' => self::CASES_OVERLAY_HOVER,
+		);
+
+		foreach ( $bundled as $key => $file ) {
+			if ( defined( 'WL_PATH' ) && file_exists( WL_PATH . 'assets/img/' . $file ) ) {
+				$out[ $key ] = WL_URL . 'assets/img/' . $file;
+			}
+		}
+
+		return apply_filters( 'wl_cases_overlay_images', $out );
+	}
+
 	/* =============================================================
 	 * WL CARDS
 	 * ============================================================= */
@@ -93,6 +132,27 @@ class WL_Render {
 			$cols_m,
 			$pause
 		);
+
+		/*
+		 * Cases cards are artwork-only: the tinted layers and their opacities
+		 * are dropped so the two overlay images render exactly as supplied,
+		 * whatever an older saved element still carries.
+		 */
+		if ( 'cases' === $source ) {
+			$defaults = self::cases_overlays();
+
+			foreach ( $defaults as $key => $url ) {
+				if ( empty( $args[ $key ] ) ) {
+					$args[ $key ] = $url;
+				}
+			}
+
+			foreach ( array( 'overlay', 'hover_overlay', 'overlay_opacity', 'hover_overlay_opacity' ) as $key ) {
+				$args[ $key ] = '';
+			}
+
+			$args['overlay_color'] = 'no';
+		}
 
 		// The image pickers store attachment IDs; the style layer needs URLs.
 		foreach ( array( 'overlay_image', 'hover_overlay_image' ) as $key ) {

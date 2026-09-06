@@ -148,6 +148,10 @@ class WL_WPBakery {
 	 * ============================================================= */
 
 	private static function map_cards() {
+		// Cases draw their overlay entirely from two artworks, so the tint and
+		// opacity controls are hidden for that source.
+		$not_cases = array( 'element' => 'source', 'value' => array( 'vessels', 'manual' ) );
+
 		$style   = __( 'Style', 'waterslaw' );
 		$overlay = __( 'Overlay & Title', 'waterslaw' );
 		$button  = __( 'Hover Button', 'waterslaw' );
@@ -300,14 +304,14 @@ class WL_WPBakery {
 					self::toggle( __( 'Pause on Hover', 'waterslaw' ), 'pause_hover', 'yes', array( 'group' => __( 'Slider', 'waterslaw' ), 'dependency' => array( 'element' => 'autoscroll', 'value' => array( 'yes' ) ) ) ),
 
 					/* ---------- Overlay & title ---------- */
-					self::color( __( 'Overlay (normal)', 'waterslaw' ), 'overlay', 'rgba(10,25,40,0.85)', $overlay ),
-					self::color( __( 'Overlay (on hover)', 'waterslaw' ), 'hover_overlay', 'rgba(0,0,0,0.55)', $overlay ),
+					self::color( __( 'Overlay (normal)', 'waterslaw' ), 'overlay', 'rgba(10,25,40,0.85)', $overlay, array( 'dependency' => $not_cases ) ),
+					self::color( __( 'Overlay (on hover)', 'waterslaw' ), 'hover_overlay', 'rgba(0,0,0,0.55)', $overlay, array( 'dependency' => $not_cases ) ),
 					array(
 						'type'        => 'attach_image',
 						'heading'     => __( 'Overlay Image (normal)', 'waterslaw' ),
 						'param_name'  => 'overlay_image',
 						'group'       => $overlay,
-						'description' => __( 'Optional image layered over the photo. The colour above stays underneath it.', 'waterslaw' ),
+						'description' => __( 'Layered over the photo. For Cases this artwork is the whole overlay - there is no colour or opacity behind it - and the supplied one is used when this is left empty.', 'waterslaw' ),
 					),
 					...self::bg_controls( __( 'Overlay Image (normal)', 'waterslaw' ), 'overlay_', $overlay ),
 					array(
@@ -317,18 +321,8 @@ class WL_WPBakery {
 						'group'       => $overlay,
 					),
 					...self::bg_controls( __( 'Overlay Image (hover)', 'waterslaw' ), 'hover_overlay_', $overlay ),
-					self::toggle(
-						__( 'Show Overlay Colour', 'waterslaw' ),
-						'overlay_color',
-						'yes',
-						array(
-							'group'       => $overlay,
-							'dependency'  => array( 'element' => 'source', 'value' => array( 'cases' ) ),
-							'description' => __( 'No drops both tinted layers so only your own overlay images show.', 'waterslaw' ),
-						)
-					),
-					self::size( __( 'Overlay Opacity (normal) %', 'waterslaw' ), 'overlay_opacity', '100', $overlay, array( 'description' => __( '0-100.', 'waterslaw' ) ) ),
-					self::size( __( 'Overlay Opacity (hover) %', 'waterslaw' ), 'hover_overlay_opacity', '100', $overlay, array( 'description' => __( '0-100.', 'waterslaw' ) ) ),
+					self::size( __( 'Overlay Opacity (normal) %', 'waterslaw' ), 'overlay_opacity', '100', $overlay, array( 'description' => __( '0-100.', 'waterslaw' ), 'dependency' => $not_cases ) ),
+					self::size( __( 'Overlay Opacity (hover) %', 'waterslaw' ), 'hover_overlay_opacity', '100', $overlay, array( 'description' => __( '0-100.', 'waterslaw' ), 'dependency' => $not_cases ) ),
 					array(
 						'type'        => 'dropdown',
 						'heading'     => __( 'Headings', 'waterslaw' ),

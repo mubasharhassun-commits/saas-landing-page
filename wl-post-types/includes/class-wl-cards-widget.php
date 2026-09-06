@@ -260,10 +260,15 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
 		) );
 
+		/* Cases draw their overlay entirely from two artworks, so the tint and
+		   opacity controls are hidden for that source. */
+		$not_cases = array( 'post_type!' => 'cases' );
+
 		$this->add_control( 'overlay_color', array(
 			'label'     => __( 'Overlay (normal, bottom)', 'waterslaw' ),
 			'type'      => \Elementor\Controls_Manager::COLOR,
 			'default'   => 'rgba(10,25,40,0.85)',
+			'condition' => $not_cases,
 			'selectors' => array( '{{WRAPPER}} .wl-cards' => '--wl-overlay: {{VALUE}};' ),
 		) );
 
@@ -271,6 +276,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'label'     => __( 'Overlay (on hover — black)', 'waterslaw' ),
 			'type'      => \Elementor\Controls_Manager::COLOR,
 			'default'   => 'rgba(0,0,0,0.55)',
+			'condition' => $not_cases,
 			'selectors' => array( '{{WRAPPER}} .wl-cards' => '--wl-hover-overlay: {{VALUE}};' ),
 		) );
 
@@ -278,7 +284,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'label'       => __( 'Overlay Image — Normal', 'waterslaw' ),
 			'type'        => \Elementor\Controls_Manager::HEADING,
 			'separator'   => 'before',
-			'description' => __( 'Optional image layered over the photo (color tint stays underneath).', 'waterslaw' ),
+			'description' => __( 'Layered over the photo. For Cases this artwork is the whole overlay — no colour or opacity behind it — and the supplied one is used when this is left empty.', 'waterslaw' ),
 		) );
 
 		$this->add_group_control( \Elementor\Group_Control_Background::get_type(), array(
@@ -289,6 +295,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 		) );
 
 		$this->add_control( 'ov_normal_img_opacity', array(
+			'condition'  => $not_cases,
 			'label'      => __( 'Image Opacity (normal)', 'waterslaw' ),
 			'type'       => \Elementor\Controls_Manager::SLIDER,
 			'size_units' => array( '%' ),
@@ -310,22 +317,13 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 		) );
 
 		$this->add_control( 'ov_hover_img_opacity', array(
+			'condition'  => $not_cases,
 			'label'      => __( 'Image Opacity (on hover)', 'waterslaw' ),
 			'type'       => \Elementor\Controls_Manager::SLIDER,
 			'size_units' => array( '%' ),
 			'range'      => array( '%' => array( 'min' => 0, 'max' => 100, 'step' => 1 ) ),
 			'default'    => array( 'unit' => '%', 'size' => 100 ),
 			'selectors'  => array( '{{WRAPPER}} .wl-cards' => '--wl-ov-h-op: calc({{SIZE}}/100);' ),
-		) );
-
-		$this->add_control( 'overlay_color', array(
-			'label'        => __( 'Show Overlay Colour', 'waterslaw' ),
-			'type'         => \Elementor\Controls_Manager::SWITCHER,
-			'return_value' => 'yes',
-			'default'      => 'yes',
-			'separator'    => 'before',
-			'condition'    => array( 'post_type' => 'cases' ),
-			'description'  => __( 'Off drops both tinted layers so only your own overlay images show.', 'waterslaw' ),
 		) );
 
 		$this->add_control( 'title_source', array(
@@ -542,7 +540,9 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 				'custom_size'      => $s['custom_size'],
 				'pause_hover'      => $s['pause_hover'],
 				'autoscroll'       => isset( $s['autoscroll'] ) ? $s['autoscroll'] : 'yes',
-				'overlay_color'    => isset( $s['overlay_color'] ) ? $s['overlay_color'] : 'yes',
+				// Colours are applied by Elementor's own selectors; the renderer
+				// forces Cases to artwork-only regardless of what is stored.
+				'overlay_color'    => 'yes',
 				'items'            => isset( $s['items'] ) ? $s['items'] : '',
 			)
 		);
