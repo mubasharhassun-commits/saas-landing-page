@@ -281,14 +281,16 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 		) );
 
 		$this->add_control( 'ov_img_heading', array(
+			'condition'   => $not_cases,
 			'label'       => __( 'Overlay Image — Normal', 'waterslaw' ),
 			'type'        => \Elementor\Controls_Manager::HEADING,
 			'separator'   => 'before',
-			'description' => __( 'Layered over the photo. For Cases this artwork is the whole overlay — no colour or opacity behind it — and the supplied one is used when this is left empty.', 'waterslaw' ),
+			'description' => __( 'Optional image layered over the photo (color tint stays underneath).', 'waterslaw' ),
 		) );
 
 		$this->add_group_control( \Elementor\Group_Control_Background::get_type(), array(
 			'name'     => 'ov_normal_img',
+			'condition' => $not_cases,
 			'types'    => array( 'classic', 'gradient' ),
 			'selector' => '{{WRAPPER}} .wl-ov-normal-img',
 			// Group_Control_Background provides Image, Position, Attachment, Repeat, Size, etc.
@@ -305,6 +307,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 		) );
 
 		$this->add_control( 'ov_img_hover_heading', array(
+			'condition'   => $not_cases,
 			'label'     => __( 'Overlay Image — On Hover', 'waterslaw' ),
 			'type'      => \Elementor\Controls_Manager::HEADING,
 			'separator' => 'before',
@@ -312,6 +315,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 
 		$this->add_group_control( \Elementor\Group_Control_Background::get_type(), array(
 			'name'     => 'ov_hover_img',
+			'condition' => $not_cases,
 			'types'    => array( 'classic', 'gradient' ),
 			'selector' => '{{WRAPPER}} .wl-ov-hover-img',
 		) );
@@ -324,16 +328,6 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'range'      => array( '%' => array( 'min' => 0, 'max' => 100, 'step' => 1 ) ),
 			'default'    => array( 'unit' => '%', 'size' => 100 ),
 			'selectors'  => array( '{{WRAPPER}} .wl-cards' => '--wl-ov-h-op: calc({{SIZE}}/100);' ),
-		) );
-
-		$this->add_control( 'overlay_stack', array(
-			'label'        => __( 'Keep Normal Overlay on Hover', 'waterslaw' ),
-			'type'         => \Elementor\Controls_Manager::SWITCHER,
-			'return_value' => 'yes',
-			'default'      => '',
-			'separator'    => 'before',
-			'condition'    => array( 'post_type' => 'cases' ),
-			'description'  => __( 'Off crossfades the two artworks. On leaves the resting one in place and layers the hover one over it.', 'waterslaw' ),
 		) );
 
 		$this->add_control( 'title_source', array(
@@ -553,7 +547,6 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 				// Colours are applied by Elementor's own selectors; the renderer
 				// forces Cases to artwork-only regardless of what is stored.
 				'overlay_color'    => 'yes',
-				'overlay_stack'    => isset( $s['overlay_stack'] ) ? $s['overlay_stack'] : 'no',
 				'items'            => isset( $s['items'] ) ? $s['items'] : '',
 			)
 		);

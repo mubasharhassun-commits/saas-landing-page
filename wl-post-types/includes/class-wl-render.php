@@ -14,45 +14,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class WL_Render {
 
-	/*
-	 * The Cases cards are drawn entirely by two overlay artworks - a soft
-	 * gradient at rest and a dark wash carrying the Read More button on hover -
-	 * so no tint or opacity is involved. These are the ones the site uses.
-	 *
-	 * Resolved in this order, so the plugin travels between sites cleanly:
-	 *   1. an image chosen on the element itself
-	 *   2. a copy shipped in the plugin at assets/img/
-	 *   3. the uploaded URL below
-	 * Drop cases-overlay.png / cases-overlay-hover.png into assets/img/ and the
-	 * plugin stops depending on the media library entirely. The
-	 * "wl_cases_overlay_images" filter overrides all of it.
-	 */
-	const CASES_OVERLAY       = 'https://waterlawvadev.wpenginepowered.com/wp-content/uploads/2026/09/Cover.png';
-	const CASES_OVERLAY_HOVER = 'https://waterlawvadev.wpenginepowered.com/wp-content/uploads/2026/09/Hover.png';
-
-	/**
-	 * The two default Cases overlays, as URLs.
-	 */
-	public static function cases_overlays() {
-		$bundled = array(
-			'overlay_image'       => 'cases-overlay.png',
-			'hover_overlay_image' => 'cases-overlay-hover.png',
-		);
-
-		$out = array(
-			'overlay_image'       => self::CASES_OVERLAY,
-			'hover_overlay_image' => self::CASES_OVERLAY_HOVER,
-		);
-
-		foreach ( $bundled as $key => $file ) {
-			if ( defined( 'WL_PATH' ) && file_exists( WL_PATH . 'assets/img/' . $file ) ) {
-				$out[ $key ] = WL_URL . 'assets/img/' . $file;
-			}
-		}
-
-		return apply_filters( 'wl_cases_overlay_images', $out );
-	}
-
 	/* =============================================================
 	 * WL CARDS
 	 * ============================================================= */
@@ -135,24 +96,32 @@ class WL_Render {
 		);
 
 		/*
-		 * Cases cards are artwork-only: the tinted layers and their opacities
-		 * are dropped so the two overlay images render exactly as supplied,
-		 * whatever an older saved element still carries.
+		 * Cases cards carry no overlay styling from the plugin: no tints, no
+		 * images, no opacities and no fades, on either state. The four overlay
+		 * layers are still in the markup as hooks, so the overlay is written in
+		 * the site's own CSS. Anything an older saved element still holds is
+		 * cleared here so it cannot leak through.
 		 */
 		if ( 'cases' === $source ) {
-			$defaults = self::cases_overlays();
-
-			foreach ( $defaults as $key => $url ) {
-				if ( empty( $args[ $key ] ) ) {
-					$args[ $key ] = $url;
-				}
-			}
-
-			foreach ( array( 'overlay', 'hover_overlay', 'overlay_opacity', 'hover_overlay_opacity' ) as $key ) {
+			foreach ( array(
+				'overlay',
+				'hover_overlay',
+				'overlay_opacity',
+				'hover_overlay_opacity',
+				'overlay_image',
+				'hover_overlay_image',
+				'overlay_size',
+				'overlay_position',
+				'overlay_repeat',
+				'hover_overlay_size',
+				'hover_overlay_position',
+				'hover_overlay_repeat',
+			) as $key ) {
 				$args[ $key ] = '';
 			}
 
-			$args['overlay_color'] = 'no';
+			$args['overlay_color'] = 'yes';
+			$args['overlay_stack'] = 'no';
 		}
 
 		// The image pickers store attachment IDs; the style layer needs URLs.
@@ -171,7 +140,10 @@ class WL_Render {
 		// Stacked rather than crossfaded overlays.
 		$stack = self::to_bool( $args['overlay_stack'] ) ? ' wl-ov-stack' : '';
 
-		$classes = 'wl-cards ' . $layout . $hidet . $fixed . $nocolor . $stack;
+		// Cases: no overlay styling at all, ready for the site's own CSS.
+		$plain = ( 'cases' === $source ) ? ' wl-ov-plain' : '';
+
+		$classes = 'wl-cards ' . $layout . $hidet . $fixed . $nocolor . $stack . $plain;
 		if ( '' !== $args['class'] ) {
 			$classes .= ' ' . sanitize_html_class( $args['class'] );
 		}

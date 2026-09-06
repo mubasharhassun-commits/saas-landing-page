@@ -188,6 +188,17 @@
 .wl-card:hover .wl-ov-hover { opacity: 1; }
 .wl-card:hover .wl-ov-hover-img { opacity: var(--wl-ov-h-op, 1); }
 
+/* Cases: the plugin paints no overlay at all - no colour, no image, no
+   opacity and no fade, at rest or on hover. The four layers stay in the
+   markup as styling hooks so the overlay can be written in the site's own
+   CSS without fighting anything here. */
+.wl-cards.wl-ov-plain .wl-card-ov,
+.wl-cards.wl-ov-plain .wl-card:hover .wl-card-ov {
+	background: none;
+	opacity: 1;
+	transition: none;
+}
+
 .wl-card-title {
 	position: relative;
 	z-index: 2;
