@@ -190,11 +190,11 @@
 
 		/* Lists inside the site's own bars that are laid out as a row. */
 		function horizontalMenus() {
-			var bars = contrastRoots();
-			var out = [];
+			var roots = contrastRoots();
+			var out = { lists: [], bars: [] };
 
-			for ( var i = 0; i < bars.length; i++ ) {
-				var lists = bars[ i ].querySelectorAll( 'ul, ol' );
+			for ( var i = 0; i < roots.length; i++ ) {
+				var lists = roots[ i ].querySelectorAll( 'ul, ol' );
 
 				for ( var j = 0; j < lists.length; j++ ) {
 					var list = lists[ j ];
@@ -208,7 +208,8 @@
 						continue;
 					}
 
-					out.push( list );
+					out.lists.push( list );
+					out.bars.push( roots[ i ] );
 				}
 			}
 
@@ -264,7 +265,9 @@
 		}
 
 		function tightenMenus() {
-			var lists = horizontalMenus();
+			var found = horizontalMenus();
+			var lists = found.lists;
+			var bars = found.bars;
 
 			for ( var i = 0; i < lists.length; i++ ) {
 				var list = lists[ i ];
@@ -273,19 +276,30 @@
 					continue;
 				}
 
-				// The list itself, its items, and whatever each item wraps.
+				/*
+				 * Everything inside the list, at any depth, plus the wrappers
+				 * around it up to the bar.
+				 *
+				 * Themes do not agree on where menu spacing lives. Total puts
+				 * it on a span inside the link - li > a > span.link-inner - so
+				 * reaching only the item and its first child left the padding
+				 * untouched and the menu still wrapped. Whatever holds it is
+				 * now included, and the header row's own padding gives way too
+				 * when the menu alone cannot free enough room.
+				 */
 				var targets = [ list ];
+				var inside = list.querySelectorAll( '*' );
+				var j;
 
-				for ( var j = 0; j < list.children.length; j++ ) {
-					var item = list.children[ j ];
-					targets.push( item );
-
-					var inner = item.firstElementChild;
-
-					if ( inner && ( 'A' === inner.tagName || 'SPAN' === inner.tagName || 'BUTTON' === inner.tagName ) ) {
-						targets.push( inner );
-					}
+				for ( j = 0; j < inside.length; j++ ) {
+					targets.push( inside[ j ] );
 				}
+
+				for ( var up = list.parentElement; up && up !== bars[ i ]; up = up.parentElement ) {
+					targets.push( up );
+				}
+
+				targets.push( bars[ i ] );
 
 				for ( var t = 0; t < targets.length; t++ ) {
 					captureSpacing( targets[ t ] );
@@ -706,8 +720,10 @@
 		 * take the button down with it.
 		 */
 		function configuredTarget() {
-			var selector = ( root.dataset.skipTarget || '' ).trim();
+			return find( ( root.dataset.skipTarget || '' ).trim() );
+		}
 
+		function find( selector ) {
 			if ( ! selector ) {
 				return null;
 			}
@@ -717,6 +733,42 @@
 			} catch ( e ) {
 				return null;
 			}
+		}
+
+		/*
+		 * The target the theme itself nominates.
+		 *
+		 * Nearly every theme ships a "Skip to content" link as its first
+		 * focusable element, and its href is the one element the theme
+		 * considers the start of the content. Reading it is better than any
+		 * guess: on a theme whose <main> also wraps the page banner, guessing
+		 * "main" lands a few pixels down and looks like nothing happened,
+		 * while the theme's own link points past the banner to the content.
+		 */
+		function themeSkipTarget() {
+			var links = document.querySelectorAll(
+				'a.skip-link, a.skip-to-content, a.screen-reader-shortcut, a[href^="#"][class*="skip"]'
+			);
+
+			for ( var i = 0; i < links.length; i++ ) {
+				if ( root.contains( links[ i ] ) ) {
+					continue;
+				}
+
+				var href = links[ i ].getAttribute( 'href' ) || '';
+
+				if ( '#' !== href.charAt( 0 ) || href.length < 2 ) {
+					continue;
+				}
+
+				var el = find( href );
+
+				if ( el ) {
+					return el;
+				}
+			}
+
+			return null;
 		}
 
 		if ( btn.skip ) {
@@ -729,9 +781,10 @@
 				 */
 				var target =
 					configuredTarget() ||
+					themeSkipTarget() ||
+					document.getElementById( 'content' ) ||
 					document.querySelector( 'main' ) ||
 					document.querySelector( '[role="main"]' ) ||
-					document.getElementById( 'content' ) ||
 					document.querySelector( '.entry-content' ) ||
 					document.querySelector( 'article' );
 
@@ -780,6 +833,24 @@
 				}
 			}
 
+			/*
+			 * A pinned bar does not have to start at zero. The WordPress admin
+			 * bar occupies the first 32 pixels for a logged-in visitor, so the
+			 * site header sits below it and a "top must be 0" test missed it
+			 * entirely - the content then landed underneath the header for
+			 * exactly the people most likely to be testing.
+			 */
+			var admin = document.getElementById( 'wpadminbar' );
+			var ceiling = 1;
+
+			if ( admin ) {
+				var adminBox = admin.getBoundingClientRect();
+
+				if ( adminBox.bottom > ceiling ) {
+					ceiling = adminBox.bottom + 2;
+				}
+			}
+
 			for ( i = 0; i < bars.length; i++ ) {
 				var el = bars[ i ];
 
@@ -795,7 +866,7 @@
 
 				var box = el.getBoundingClientRect();
 
-				if ( box.top <= 1 && box.bottom > offset ) {
+				if ( box.top <= ceiling && box.bottom > offset ) {
 					offset = box.bottom;
 				}
 			}
