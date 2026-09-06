@@ -326,6 +326,16 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'selectors'  => array( '{{WRAPPER}} .wl-cards' => '--wl-ov-h-op: calc({{SIZE}}/100);' ),
 		) );
 
+		$this->add_control( 'overlay_stack', array(
+			'label'        => __( 'Keep Normal Overlay on Hover', 'waterslaw' ),
+			'type'         => \Elementor\Controls_Manager::SWITCHER,
+			'return_value' => 'yes',
+			'default'      => '',
+			'separator'    => 'before',
+			'condition'    => array( 'post_type' => 'cases' ),
+			'description'  => __( 'Off crossfades the two artworks. On leaves the resting one in place and layers the hover one over it.', 'waterslaw' ),
+		) );
+
 		$this->add_control( 'title_source', array(
 			'label'       => __( 'Headings', 'waterslaw' ),
 			'type'        => \Elementor\Controls_Manager::SELECT,
@@ -543,6 +553,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 				// Colours are applied by Elementor's own selectors; the renderer
 				// forces Cases to artwork-only regardless of what is stored.
 				'overlay_color'    => 'yes',
+				'overlay_stack'    => isset( $s['overlay_stack'] ) ? $s['overlay_stack'] : 'no',
 				'items'            => isset( $s['items'] ) ? $s['items'] : '',
 			)
 		);

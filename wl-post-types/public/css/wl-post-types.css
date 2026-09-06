@@ -180,6 +180,11 @@
 
 .wl-card:hover .wl-ov-normal,
 .wl-card:hover .wl-ov-normal-img { opacity: 0; }
+
+/* Stacked overlays: the resting artwork stays put and the hover one is
+   layered over it, rather than the two crossfading. */
+.wl-cards.wl-ov-stack .wl-card:hover .wl-ov-normal { opacity: 1; }
+.wl-cards.wl-ov-stack .wl-card:hover .wl-ov-normal-img { opacity: var(--wl-ov-n-op, 1); }
 .wl-card:hover .wl-ov-hover { opacity: 1; }
 .wl-card:hover .wl-ov-hover-img { opacity: var(--wl-ov-h-op, 1); }
 

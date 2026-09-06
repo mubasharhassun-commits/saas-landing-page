@@ -79,6 +79,7 @@ class WL_Render {
 			'pause_hover'    => 'yes',
 			'autoscroll'     => 'yes',
 			'overlay_color'  => 'yes',
+			'overlay_stack'  => 'no',
 			'class'          => '',
 			'items'          => '',
 		);
@@ -167,7 +168,10 @@ class WL_Render {
 		// Images-only overlays: the tinted layers come off entirely.
 		$nocolor = self::to_bool( $args['overlay_color'] ) ? '' : ' wl-no-ov-color';
 
-		$classes = 'wl-cards ' . $layout . $hidet . $fixed . $nocolor;
+		// Stacked rather than crossfaded overlays.
+		$stack = self::to_bool( $args['overlay_stack'] ) ? ' wl-ov-stack' : '';
+
+		$classes = 'wl-cards ' . $layout . $hidet . $fixed . $nocolor . $stack;
 		if ( '' !== $args['class'] ) {
 			$classes .= ' ' . sanitize_html_class( $args['class'] );
 		}

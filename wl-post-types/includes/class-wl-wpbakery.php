@@ -321,6 +321,16 @@ class WL_WPBakery {
 						'group'       => $overlay,
 					),
 					...self::bg_controls( __( 'Overlay Image (hover)', 'waterslaw' ), 'hover_overlay_', $overlay ),
+					self::toggle(
+						__( 'Keep Normal Overlay on Hover', 'waterslaw' ),
+						'overlay_stack',
+						'no',
+						array(
+							'group'       => $overlay,
+							'dependency'  => array( 'element' => 'source', 'value' => array( 'cases' ) ),
+							'description' => __( 'No crossfades the two artworks. Yes leaves the resting one in place and layers the hover one over it.', 'waterslaw' ),
+						)
+					),
 					self::size( __( 'Overlay Opacity (normal) %', 'waterslaw' ), 'overlay_opacity', '100', $overlay, array( 'description' => __( '0-100.', 'waterslaw' ), 'dependency' => $not_cases ) ),
 					self::size( __( 'Overlay Opacity (hover) %', 'waterslaw' ), 'hover_overlay_opacity', '100', $overlay, array( 'description' => __( '0-100.', 'waterslaw' ), 'dependency' => $not_cases ) ),
 					array(
