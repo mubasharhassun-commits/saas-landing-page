@@ -38,6 +38,7 @@ class WL_Render {
 			'hide_title_hover' => 'yes',
 			'custom_size'    => 'no',
 			'pause_hover'    => 'yes',
+			'autoscroll'     => 'yes',
 			'class'          => '',
 			'items'          => '',
 		);
@@ -110,8 +111,13 @@ class WL_Render {
 		$out = sprintf( '<div class="%s" style="%s">', esc_attr( $classes ), esc_attr( $style ) );
 
 		if ( 'carousel' === $layout ) {
-			// The set is duplicated so the marquee loops seamlessly.
-			$out .= '<div class="wl-marquee-wrap"><div class="wl-marquee">' . $cards . $cards . '</div></div>';
+			if ( self::to_bool( $args['autoscroll'] ) ) {
+				// The set is duplicated so the marquee loops seamlessly.
+				$out .= '<div class="wl-marquee-wrap"><div class="wl-marquee">' . $cards . $cards . '</div></div>';
+			} else {
+				// Standing still, a second copy would only be dead weight.
+				$out .= '<div class="wl-marquee-wrap"><div class="wl-marquee wl-static">' . $cards . '</div></div>';
+			}
 		} else {
 			$out .= '<div class="wl-grid">' . $cards . '</div>';
 		}

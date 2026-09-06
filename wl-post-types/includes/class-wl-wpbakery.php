@@ -218,6 +218,16 @@ class WL_WPBakery {
 					self::size( __( 'Card Height', 'waterslaw' ), 'card_height', '520', __( 'Layout', 'waterslaw' ), array( 'dependency' => array( 'element' => 'custom_size', 'value' => array( 'yes' ) ) ) ),
 
 					/* ---------- Slider ---------- */
+					self::toggle(
+						__( 'Auto Scroll', 'waterslaw' ),
+						'autoscroll',
+						'yes',
+						array(
+							'group'       => __( 'Slider', 'waterslaw' ),
+							'dependency'  => array( 'element' => 'layout', 'value' => array( 'carousel' ) ),
+							'description' => __( 'No holds the row still. Set Number of Items and Columns - Desktop to the same number to show exactly that many, side by side.', 'waterslaw' ),
+						)
+					),
 					array(
 						'type'        => 'textfield',
 						'heading'     => __( 'Scroll Duration (seconds)', 'waterslaw' ),
@@ -225,9 +235,9 @@ class WL_WPBakery {
 						'value'       => '30',
 						'group'       => __( 'Slider', 'waterslaw' ),
 						'description' => __( 'Higher is slower. Increase for more items.', 'waterslaw' ),
-						'dependency'  => array( 'element' => 'layout', 'value' => array( 'carousel' ) ),
+						'dependency'  => array( 'element' => 'autoscroll', 'value' => array( 'yes' ) ),
 					),
-					self::toggle( __( 'Pause on Hover', 'waterslaw' ), 'pause_hover', 'yes', array( 'group' => __( 'Slider', 'waterslaw' ), 'dependency' => array( 'element' => 'layout', 'value' => array( 'carousel' ) ) ) ),
+					self::toggle( __( 'Pause on Hover', 'waterslaw' ), 'pause_hover', 'yes', array( 'group' => __( 'Slider', 'waterslaw' ), 'dependency' => array( 'element' => 'autoscroll', 'value' => array( 'yes' ) ) ) ),
 
 					/* ---------- Overlay & title ---------- */
 					self::color( __( 'Overlay (normal)', 'waterslaw' ), 'overlay', 'rgba(10,25,40,0.85)', $overlay ),

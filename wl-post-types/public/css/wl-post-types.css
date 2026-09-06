@@ -78,6 +78,25 @@
 	margin-right: var(--wl-gap, 8px);
 }
 
+/* Auto-scroll off: the same row of cards, standing still.
+
+   The looping row sizes each card as one column minus a gap and gives every
+   card a trailing margin, which only comes out even when the strip repeats
+   forever. Standing still the row has two ends, so the gaps move onto the
+   flex container and each card takes an exact share of what is left. Wrapping
+   is allowed so the smaller breakpoints stack instead of clipping. */
+.wl-marquee.wl-static {
+	width: 100%;
+	animation: none;
+	flex-wrap: wrap;
+	gap: var(--wl-gap, 8px);
+}
+
+.wl-marquee.wl-static .wl-card {
+	flex: 0 0 calc((100% - (var(--active-cols, 4) - 1) * var(--wl-gap, 8px)) / var(--active-cols, 4));
+	margin-right: 0;
+}
+
 @keyframes wl-scroll {
 	from { transform: translateX(0); }
 	to   { transform: translateX(-50%); }

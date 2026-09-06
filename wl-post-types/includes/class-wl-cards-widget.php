@@ -469,6 +469,14 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'condition' => array( 'layout' => 'carousel' ),
 		) );
 
+		$this->add_control( 'autoscroll', array(
+			'label'        => __( 'Auto Scroll', 'waterslaw' ),
+			'type'         => \Elementor\Controls_Manager::SWITCHER,
+			'return_value' => 'yes',
+			'default'      => 'yes',
+			'description'  => __( 'Off holds the row still. Set Number of Items and Columns — Desktop to the same number to show exactly that many, side by side.', 'waterslaw' ),
+		) );
+
 		$this->add_control( 'duration', array(
 			'label'       => __( 'Scroll Duration (seconds)', 'waterslaw' ),
 			'type'        => \Elementor\Controls_Manager::NUMBER,
@@ -476,6 +484,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'min'         => 5,
 			'max'         => 120,
 			'description' => __( 'Higher = slower. Increase for more items.', 'waterslaw' ),
+			'condition'   => array( 'autoscroll' => 'yes' ),
 		) );
 
 		$this->add_control( 'pause_hover', array(
@@ -483,6 +492,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 			'type'         => \Elementor\Controls_Manager::SWITCHER,
 			'return_value' => 'yes',
 			'default'      => 'yes',
+			'condition'    => array( 'autoscroll' => 'yes' ),
 		) );
 
 		$this->end_controls_section();
@@ -521,6 +531,7 @@ class WL_Cards_Widget extends \Elementor\Widget_Base {
 				'links'            => isset( $s['links'] ) ? $s['links'] : '',
 				'custom_size'      => $s['custom_size'],
 				'pause_hover'      => $s['pause_hover'],
+				'autoscroll'       => isset( $s['autoscroll'] ) ? $s['autoscroll'] : 'yes',
 				'items'            => isset( $s['items'] ) ? $s['items'] : '',
 			)
 		);
