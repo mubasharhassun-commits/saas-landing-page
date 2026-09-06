@@ -11,7 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class WL_Assets {
 
-	const STYLE = 'wl-post-types';
+	const STYLE  = 'wl-post-types';
+	const SCRIPT = 'wl-post-types';
 
 	public static function init() {
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register' ), 5 );
@@ -43,6 +44,12 @@ class WL_Assets {
 			|| has_shortcode( $post->post_content, 'wl_news' ) ) {
 			self::enqueue();
 		}
+
+		// Only the Cases cards need the script, and only they ask for it.
+		if ( has_shortcode( $post->post_content, 'wl_cards' )
+			&& false !== strpos( $post->post_content, 'source="cases"' ) ) {
+			self::enqueue_script();
+		}
 	}
 
 	public static function register() {
@@ -56,6 +63,25 @@ class WL_Assets {
 			array(),
 			WL_VERSION
 		);
+
+		wp_register_script(
+			self::SCRIPT,
+			WL_URL . 'public/js/wl-post-types.js',
+			array(),
+			WL_VERSION,
+			true
+		);
+	}
+
+	/**
+	 * The hover-class helper, used by the Cases cards only.
+	 */
+	public static function enqueue_script() {
+		if ( ! wp_script_is( self::SCRIPT, 'registered' ) ) {
+			self::register();
+		}
+
+		wp_enqueue_script( self::SCRIPT );
 	}
 
 	public static function enqueue() {

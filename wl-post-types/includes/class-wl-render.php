@@ -78,9 +78,16 @@ class WL_Render {
 
 		WL_Assets::enqueue();
 
+		// Cases render a bare card: one overlay layer, styled by the site.
+		$plain = ( 'cases' === $source );
+
+		if ( $plain ) {
+			WL_Assets::enqueue_script();
+		}
+
 		$cards = ( 'manual' === $source )
-			? self::manual_cards( $args, $btn, $linked )
-			: self::post_cards( $args, $source, $btn, $linked );
+			? self::manual_cards( $args, $btn, $linked, $plain )
+			: self::post_cards( $args, $source, $btn, $linked, $plain );
 
 		if ( '' === $cards ) {
 			return '';
@@ -168,7 +175,7 @@ class WL_Render {
 	/**
 	 * One card. An empty $href renders a non-clickable card.
 	 */
-	private static function card_html( $img, $text, $href, $btn, $attrs = '' ) {
+	private static function card_html( $img, $text, $href, $btn, $attrs = '', $plain = false ) {
 		$open  = ( '' !== $href )
 			? '<a class="wl-card" href="' . esc_url( $href ) . '"' . $attrs . '>'
 			: '<div class="wl-card wl-card-static">';
@@ -176,10 +183,21 @@ class WL_Render {
 
 		$out  = $open;
 		$out .= '<div class="wl-card-img" style="background-image:url(\'' . esc_url( $img ) . '\');">';
-		$out .= '<div class="wl-card-ov wl-ov-normal"></div>';
-		$out .= '<div class="wl-card-ov wl-ov-normal-img"></div>';
-		$out .= '<div class="wl-card-ov wl-ov-hover"></div>';
-		$out .= '<div class="wl-card-ov wl-ov-hover-img"></div>';
+
+		if ( $plain ) {
+			/*
+			 * Cases are styled in the site's own CSS, so the card carries one
+			 * overlay layer and nothing else. The hover state is a class added
+			 * to the image wrapper by the script, which CSS cannot do for
+			 * itself and which :hover alone could not express here.
+			 */
+			$out .= '<div class="wl-card-ov wl-ov-normal-img"></div>';
+		} else {
+			$out .= '<div class="wl-card-ov wl-ov-normal"></div>';
+			$out .= '<div class="wl-card-ov wl-ov-normal-img"></div>';
+			$out .= '<div class="wl-card-ov wl-ov-hover"></div>';
+			$out .= '<div class="wl-card-ov wl-ov-hover-img"></div>';
+		}
 
 		if ( '' !== $btn ) {
 			$out .= '<span class="wl-card-btn">' . esc_html( $btn ) . '</span>';
@@ -194,7 +212,7 @@ class WL_Render {
 	/**
 	 * Cards pulled from the Vessels / Cases post types.
 	 */
-	private static function post_cards( $args, $type, $btn, $linked ) {
+	private static function post_cards( $args, $type, $btn, $linked, $plain = false ) {
 		$titles  = self::lines( isset( $args['titles'] ) ? $args['titles'] : '' );
 		$links   = self::lines( isset( $args['links'] ) ? $args['links'] : '' );
 		$source  = in_array( $args['title_source'], array( 'custom', 'none' ), true ) ? $args['title_source'] : 'post';
@@ -246,7 +264,9 @@ class WL_Render {
 				(string) get_the_post_thumbnail_url( $id, 'large' ),
 				$text,
 				$href,
-				$btn
+				$btn,
+				'',
+				$plain
 			);
 
 			$index++;
@@ -284,7 +304,7 @@ class WL_Render {
 	 *
 	 * The repeater arrives as a base64-encoded, url-encoded JSON string.
 	 */
-	private static function manual_cards( $args, $btn, $linked ) {
+	private static function manual_cards( $args, $btn, $linked, $plain = false ) {
 		$items = self::decode_param_group( $args['items'] );
 		$out   = '';
 
@@ -311,7 +331,7 @@ class WL_Render {
 				}
 			}
 
-			$out .= self::card_html( $img, $text, $href, $btn, $attrs );
+			$out .= self::card_html( $img, $text, $href, $btn, $attrs, $plain );
 		}
 
 		return $out;
