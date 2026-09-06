@@ -561,7 +561,8 @@
 				 * on the settings screen wins; otherwise the bar is measured.
 				 */
 				var configured = parseInt( root.dataset.skipOffset, 10 );
-				var offset = ( ! isNaN( configured ) && configured > 0 ) ? configured : stickyOffset();
+				var fixedOffset = ( ! isNaN( configured ) && configured > 0 );
+				var offset = fixedOffset ? configured : stickyOffset();
 
 				/*
 				 * One computed move rather than scrollIntoView with a
@@ -569,23 +570,31 @@
 				 * re-resolve the target mid-animation is what made the jump
 				 * stutter on a page whose sticky header changes height.
 				 */
-				var top = window.pageYOffset + target.getBoundingClientRect().top - offset;
-
-				window.scrollTo( {
-					top: Math.max( 0, Math.round( top ) ),
-					behavior: 'smooth'
-				} );
+				scrollToTarget( target, offset, fixedOffset );
 
 				target.focus( { preventScroll: true } );
 			} );
 		}
 
-		/* The tallest bar pinned to the top of the viewport, if there is one. */
+		/*
+		 * The tallest bar pinned over the top of the viewport. Both sources are
+		 * consulted: the named header and footer elements, and the bars found
+		 * by reading what is actually painting the top - a theme's sticky
+		 * header often answers to neither name.
+		 */
 		function stickyOffset() {
-			var bars = document.querySelectorAll( HEADER_FOOTER );
+			var bars = Array.prototype.slice.call( document.querySelectorAll( HEADER_FOOTER ) );
 			var offset = 0;
+			var pinned = pinnedBars();
+			var i;
 
-			for ( var i = 0; i < bars.length; i++ ) {
+			for ( i = 0; i < pinned.length; i++ ) {
+				if ( -1 === bars.indexOf( pinned[ i ] ) ) {
+					bars.push( pinned[ i ] );
+				}
+			}
+
+			for ( i = 0; i < bars.length; i++ ) {
 				var el = bars[ i ];
 
 				if ( el === root || el.contains( root ) ) {
@@ -600,12 +609,57 @@
 
 				var box = el.getBoundingClientRect();
 
-				if ( box.top <= 0 && box.bottom > offset ) {
+				if ( box.top <= 1 && box.bottom > offset ) {
 					offset = box.bottom;
 				}
 			}
 
 			return Math.round( offset );
+		}
+
+		/*
+		 * Scroll to the target, and follow it if a sticky bar appears on the
+		 * way down. A bar revealed at a scroll threshold has no height at the
+		 * moment the button is pressed, so the first sum lands the content
+		 * underneath it. Rather than correcting afterwards - which would be
+		 * the jerk of scrolling back up - the destination is moved up the
+		 * instant the bar appears, while the page is still travelling towards
+		 * it, so the browser simply stops earlier.
+		 */
+		function scrollToTarget( target, offset, fixedOffset ) {
+			var destination = function ( off ) {
+				return Math.max(
+					0,
+					Math.round( window.pageYOffset + target.getBoundingClientRect().top - off )
+				);
+			};
+
+			var lastOffset = offset;
+			var started = Date.now();
+
+			window.scrollTo( { top: destination( offset ), behavior: 'smooth' } );
+
+			// A figure typed on the settings screen is a deliberate choice and
+			// is never second-guessed; only a measured one is followed.
+			if ( fixedOffset ) {
+				return;
+			}
+
+			( function follow() {
+				// Give up once the page has had time to settle.
+				if ( Date.now() - started > 1500 ) {
+					return;
+				}
+
+				var now = stickyOffset();
+
+				if ( now !== lastOffset ) {
+					lastOffset = now;
+					window.scrollTo( { top: destination( now ), behavior: 'smooth' } );
+				}
+
+				window.requestAnimationFrame( follow );
+			} )();
 		}
 
 		/* ---------- reset ---------- */
