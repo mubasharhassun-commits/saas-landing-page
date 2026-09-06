@@ -336,6 +336,25 @@
 
 		/* ---------- skip to content ---------- */
 
+		/*
+		 * The selector typed on the settings screen, when it matches something.
+		 * querySelector throws on a malformed selector, so a typo there must not
+		 * take the button down with it.
+		 */
+		function configuredTarget() {
+			var selector = ( root.dataset.skipTarget || '' ).trim();
+
+			if ( ! selector ) {
+				return null;
+			}
+
+			try {
+				return document.querySelector( selector );
+			} catch ( e ) {
+				return null;
+			}
+		}
+
 		if ( btn.skip ) {
 			btn.skip.addEventListener( 'click', function () {
 				/*
@@ -345,6 +364,7 @@
 				 * to reopen it.
 				 */
 				var target =
+					configuredTarget() ||
 					document.querySelector( 'main' ) ||
 					document.querySelector( '[role="main"]' ) ||
 					document.getElementById( 'content' ) ||
@@ -357,9 +377,15 @@
 
 				target.setAttribute( 'tabindex', '-1' );
 
-				// A sticky or fixed bar would otherwise cover the first lines
-				// of the very content this button exists to reach.
-				target.style.scrollMarginTop = stickyOffset() + 'px';
+				/*
+				 * A sticky or fixed bar would otherwise cover the first lines
+				 * of the very content this button exists to reach. A figure set
+				 * on the settings screen wins; otherwise the bar is measured.
+				 */
+				var configured = parseInt( root.dataset.skipOffset, 10 );
+				var offset = ( ! isNaN( configured ) && configured > 0 ) ? configured : stickyOffset();
+
+				target.style.scrollMarginTop = offset + 'px';
 
 				target.scrollIntoView( { behavior: 'smooth', block: 'start' } );
 				target.focus( { preventScroll: true } );

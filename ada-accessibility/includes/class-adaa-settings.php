@@ -101,8 +101,13 @@ class ADAA_Settings {
 		$target = preg_replace( '/[^A-Za-z0-9 _\-#.\[\]=":>~+]/', '', $target );
 		$clean['skip_target'] = substr( trim( $target ), 0, 200 );
 
-		$clean['skip_offset'] = isset( $input['skip_offset'] ) ? max( 0, min( 500, absint( $input['skip_offset'] ) ) ) : 0;
-		$clean['z_index']     = isset( $input['z_index'] ) ? max( 1, min( 2147483646, absint( $input['z_index'] ) ) ) : $defaults['z_index'];
+		/*
+		 * Cast, then clamp. absint() would turn -999 into 999 and the clamp
+		 * would then hand back the maximum, so typing a negative offset gave
+		 * the largest one instead of none.
+		 */
+		$clean['skip_offset'] = isset( $input['skip_offset'] ) ? max( 0, min( 500, (int) $input['skip_offset'] ) ) : 0;
+		$clean['z_index']     = isset( $input['z_index'] ) ? max( 1, min( 2147483646, (int) $input['z_index'] ) ) : $defaults['z_index'];
 
 		// Button labels.
 		foreach ( array( 'label_skip', 'label_contrast', 'label_text', 'label_reset', 'label_close' ) as $key ) {
