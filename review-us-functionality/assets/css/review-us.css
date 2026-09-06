@@ -1,0 +1,584 @@
+/**
+ * MKM Review Us — front end styles.
+ *
+ * Typography is inherited from the theme on purpose. The only values to adjust
+ * for a different brand are the custom properties in this first block.
+ */
+
+.mkm-review-page,
+.mkm-review-popup-overlay {
+	--mkm-review-navy: #0d2240;
+	--mkm-review-navy-dark: #081729;
+	--mkm-review-gold: #c8a44d;
+	--mkm-review-gold-dark: #b08f3c;
+	--mkm-review-text: #24303f;
+	--mkm-review-muted: #5b6672;
+	--mkm-review-border: #d9dee5;
+	--mkm-review-surface: #ffffff;
+	--mkm-review-surface-alt: #f3f5f7;
+	--mkm-review-error: #b3261e;
+	--mkm-review-radius: 8px;
+	--mkm-review-radius-lg: 14px;
+	--mkm-review-shadow: 0 18px 45px rgba(8, 23, 41, 0.22);
+	--mkm-review-z: 99000;
+}
+
+/* Screen reader helper, scoped so it never collides with the theme. */
+.mkm-review-sr {
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* -------------------------------------------------------------------------
+ * Review page
+ * ---------------------------------------------------------------------- */
+
+.mkm-review-page {
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 10px 0 40px;
+	text-align: center;
+	color: var(--mkm-review-text);
+}
+
+.mkm-review-page__heading {
+	margin: 0 0 12px;
+	color: var(--mkm-review-navy);
+}
+
+.mkm-review-page__intro {
+	margin: 0 auto 34px;
+	max-width: 620px;
+	color: var(--mkm-review-muted);
+}
+
+.mkm-review-options {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 28px;
+}
+
+.mkm-review-option {
+	flex: 1 1 260px;
+	max-width: 320px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12px;
+	padding: 38px 26px;
+	background: var(--mkm-review-surface-alt);
+	border: 2px solid transparent;
+	border-radius: var(--mkm-review-radius-lg);
+	color: var(--mkm-review-navy);
+	font: inherit;
+	font-weight: 600;
+	cursor: pointer;
+	transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+}
+
+.mkm-review-option:hover,
+.mkm-review-option:focus-visible {
+	background: var(--mkm-review-surface);
+	border-color: var(--mkm-review-gold);
+	box-shadow: 0 12px 28px rgba(8, 23, 41, 0.14);
+	transform: translateY(-4px);
+}
+
+.mkm-review-option:focus-visible {
+	outline: 3px solid var(--mkm-review-navy);
+	outline-offset: 3px;
+}
+
+.mkm-review-option__icon svg {
+	width: 68px;
+	height: 68px;
+	fill: var(--mkm-review-navy);
+	transition: fill 0.25s ease;
+}
+
+.mkm-review-option:hover .mkm-review-option__icon svg,
+.mkm-review-option:focus-visible .mkm-review-option__icon svg {
+	fill: var(--mkm-review-gold-dark);
+}
+
+.mkm-review-option__label {
+	font-size: 1.15em;
+	letter-spacing: 0.02em;
+}
+
+.mkm-review-option__hint {
+	font-weight: 400;
+	font-size: 0.9em;
+	color: var(--mkm-review-muted);
+}
+
+/* -------------------------------------------------------------------------
+ * Popups
+ * ---------------------------------------------------------------------- */
+
+.mkm-review-popup-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: var(--mkm-review-z);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	background: rgba(8, 23, 41, 0.72);
+	opacity: 0;
+	transition: opacity 0.2s ease;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	-webkit-overflow-scrolling: touch;
+}
+
+.mkm-review-popup-overlay[hidden] {
+	display: none;
+}
+
+.mkm-review-popup-overlay.is-visible {
+	opacity: 1;
+}
+
+.mkm-review-popup {
+	position: relative;
+	width: 100%;
+	max-width: 620px;
+	max-height: calc(100vh - 40px);
+	overflow-y: auto;
+	background: var(--mkm-review-surface);
+	border-radius: var(--mkm-review-radius-lg);
+	box-shadow: var(--mkm-review-shadow);
+	color: var(--mkm-review-text);
+	transform: translateY(12px);
+	transition: transform 0.2s ease;
+}
+
+.mkm-review-popup--narrow {
+	max-width: 480px;
+}
+
+.mkm-review-popup-overlay.is-visible .mkm-review-popup {
+	transform: translateY(0);
+}
+
+.mkm-review-popup__body {
+	padding: 42px 34px 34px;
+	text-align: center;
+}
+
+.mkm-review-popup__title {
+	margin: 0 0 10px;
+	color: var(--mkm-review-navy);
+	font-size: 1.5em;
+}
+
+.mkm-review-popup__text {
+	margin: 0 0 22px;
+	color: var(--mkm-review-muted);
+}
+
+.mkm-review-popup__notice {
+	margin: 0;
+	color: var(--mkm-review-error);
+}
+
+.mkm-review-popup__close {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	width: 42px;
+	height: 42px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	background: transparent;
+	border: 0;
+	border-radius: 50%;
+	color: var(--mkm-review-navy);
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.mkm-review-popup__close:hover,
+.mkm-review-popup__close:focus-visible {
+	background: var(--mkm-review-surface-alt);
+}
+
+.mkm-review-popup__close:focus-visible {
+	outline: 3px solid var(--mkm-review-navy);
+	outline-offset: 2px;
+}
+
+.mkm-review-popup__close svg {
+	width: 20px;
+	height: 20px;
+	fill: currentColor;
+}
+
+.mkm-review-steps {
+	margin: 0 0 26px;
+	padding: 0;
+	list-style: none;
+	color: var(--mkm-review-muted);
+}
+
+.mkm-review-steps li + li {
+	margin-top: 4px;
+}
+
+/* Google logo button in popup 1. */
+.mkm-review-google-button {
+	display: inline-flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	max-width: 320px;
+	padding: 26px 20px;
+	background: var(--mkm-review-surface);
+	border: 1px solid var(--mkm-review-border);
+	border-radius: var(--mkm-review-radius);
+	font: inherit;
+	color: var(--mkm-review-navy);
+	cursor: pointer;
+	transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.mkm-review-google-button:hover,
+.mkm-review-google-button:focus-visible {
+	border-color: var(--mkm-review-gold);
+	box-shadow: 0 10px 24px rgba(8, 23, 41, 0.16);
+	transform: translateY(-2px);
+}
+
+.mkm-review-google-button:focus-visible {
+	outline: 3px solid var(--mkm-review-navy);
+	outline-offset: 2px;
+}
+
+.mkm-review-google-button__logo {
+	display: block;
+	width: 100%;
+	max-width: 210px;
+	height: auto;
+}
+
+.mkm-review-google-button__caption {
+	font-weight: 600;
+	letter-spacing: 0.02em;
+}
+
+/* Primary call to action, matched to the site's button shape. */
+.mkm-review-cta {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 52px;
+	padding: 14px 34px;
+	background: var(--mkm-review-navy);
+	border: 2px solid var(--mkm-review-navy);
+	border-radius: 40px;
+	color: #fff;
+	font: inherit;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	text-decoration: none;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.mkm-review-cta:hover,
+.mkm-review-cta:focus-visible {
+	background: var(--mkm-review-gold);
+	border-color: var(--mkm-review-gold);
+	color: var(--mkm-review-navy-dark);
+	text-decoration: none;
+}
+
+.mkm-review-cta:focus-visible {
+	outline: 3px solid var(--mkm-review-navy);
+	outline-offset: 3px;
+}
+
+.mkm-review-cta--ghost {
+	background: transparent;
+	color: var(--mkm-review-navy);
+}
+
+.mkm-review-cta[aria-busy="true"] {
+	opacity: 0.75;
+	cursor: progress;
+}
+
+/* -------------------------------------------------------------------------
+ * Feedback form
+ * ---------------------------------------------------------------------- */
+
+.mkm-feedback-form {
+	text-align: left;
+}
+
+.mkm-feedback-form__row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+}
+
+.mkm-feedback-form__row > .mkm-feedback-field {
+	flex: 1 1 200px;
+}
+
+.mkm-feedback-field {
+	margin-bottom: 16px;
+}
+
+.mkm-feedback-field label {
+	display: block;
+	margin-bottom: 6px;
+	font-weight: 600;
+	font-size: 0.95em;
+	color: var(--mkm-review-navy);
+}
+
+.mkm-feedback-field__required {
+	color: var(--mkm-review-error);
+}
+
+.mkm-feedback-field__optional {
+	font-weight: 400;
+	color: var(--mkm-review-muted);
+}
+
+.mkm-feedback-field input,
+.mkm-feedback-field select,
+.mkm-feedback-field textarea {
+	width: 100%;
+	padding: 12px 14px;
+	background: var(--mkm-review-surface);
+	border: 1px solid var(--mkm-review-border);
+	border-radius: var(--mkm-review-radius);
+	font: inherit;
+	color: var(--mkm-review-text);
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mkm-feedback-field input:focus,
+.mkm-feedback-field select:focus,
+.mkm-feedback-field textarea:focus {
+	border-color: var(--mkm-review-navy);
+	box-shadow: 0 0 0 3px rgba(13, 34, 64, 0.12);
+	outline: none;
+}
+
+.mkm-feedback-field textarea {
+	min-height: 120px;
+	resize: vertical;
+}
+
+.mkm-feedback-field.has-error input,
+.mkm-feedback-field.has-error select,
+.mkm-feedback-field.has-error textarea {
+	border-color: var(--mkm-review-error);
+}
+
+.mkm-feedback-field__error {
+	display: none;
+	margin-top: 5px;
+	font-size: 0.85em;
+	color: var(--mkm-review-error);
+}
+
+.mkm-feedback-field.has-error .mkm-feedback-field__error {
+	display: block;
+}
+
+.mkm-feedback-fieldset {
+	margin: 0 0 20px;
+	padding: 0;
+	border: 0;
+}
+
+.mkm-feedback-fieldset legend {
+	margin-bottom: 8px;
+	padding: 0;
+	font-weight: 600;
+	font-size: 0.95em;
+	color: var(--mkm-review-navy);
+}
+
+.mkm-feedback-radio {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin-right: 20px;
+	cursor: pointer;
+}
+
+.mkm-feedback-radio input {
+	width: auto;
+	margin: 0;
+}
+
+.mkm-feedback-form__error {
+	margin: 0 0 16px;
+	padding: 12px 14px;
+	background: #fdecea;
+	border-left: 4px solid var(--mkm-review-error);
+	border-radius: var(--mkm-review-radius);
+	color: var(--mkm-review-error);
+	font-size: 0.95em;
+}
+
+.mkm-feedback-form__disclaimer {
+	margin: 16px 0 0;
+	font-size: 0.8em;
+	font-style: italic;
+	color: var(--mkm-review-muted);
+}
+
+.mkm-feedback-submit {
+	width: 100%;
+	gap: 10px;
+}
+
+.mkm-feedback-spinner {
+	width: 16px;
+	height: 16px;
+	border: 2px solid rgba(255, 255, 255, 0.45);
+	border-top-color: #fff;
+	border-radius: 50%;
+	animation: mkm-review-spin 0.7s linear infinite;
+}
+
+.mkm-feedback-spinner[hidden] {
+	display: none;
+}
+
+@keyframes mkm-review-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* Honeypot: hidden from people, reachable for bots. */
+.mkm-feedback-honeypot {
+	position: absolute !important;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+.mkm-feedback-success {
+	text-align: center;
+}
+
+.mkm-feedback-success[hidden] {
+	display: none;
+}
+
+.mkm-feedback-success__title {
+	margin: 0 0 10px;
+	color: var(--mkm-review-navy);
+}
+
+.mkm-feedback-success__text {
+	margin: 0 0 22px;
+	color: var(--mkm-review-muted);
+}
+
+/* Keep third party form plugins inside the popup width. */
+.mkm-feedback-form-wrap .gform_wrapper,
+.mkm-feedback-form-wrap .wpcf7 {
+	text-align: left;
+	max-width: 100%;
+}
+
+.mkm-feedback-form-wrap input[type="submit"] {
+	max-width: 100%;
+}
+
+/* Body scroll lock while a popup is open. */
+html.mkm-review-locked,
+body.mkm-review-locked {
+	overflow: hidden;
+}
+
+/* -------------------------------------------------------------------------
+ * Responsive
+ * ---------------------------------------------------------------------- */
+
+@media (max-width: 782px) {
+	.mkm-review-options {
+		gap: 18px;
+	}
+
+	.mkm-review-option {
+		flex: 1 1 100%;
+		max-width: 100%;
+		padding: 28px 20px;
+	}
+
+	.mkm-review-option__icon svg {
+		width: 54px;
+		height: 54px;
+	}
+
+	.mkm-review-popup-overlay {
+		padding: 12px;
+		align-items: flex-start;
+	}
+
+	.mkm-review-popup {
+		max-height: calc(100vh - 24px);
+	}
+
+	.mkm-review-popup__body {
+		padding: 46px 20px 26px;
+	}
+
+	.mkm-feedback-form__row {
+		gap: 0;
+	}
+
+	.mkm-feedback-form__row > .mkm-feedback-field {
+		flex: 1 1 100%;
+	}
+}
+
+@media (max-width: 480px) {
+	.mkm-review-cta {
+		width: 100%;
+		padding: 14px 20px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.mkm-review-option,
+	.mkm-review-popup,
+	.mkm-review-popup-overlay,
+	.mkm-review-google-button,
+	.mkm-review-cta {
+		transition: none;
+	}
+
+	.mkm-review-option:hover,
+	.mkm-review-google-button:hover {
+		transform: none;
+	}
+
+	.mkm-feedback-spinner {
+		animation-duration: 2s;
+	}
+}
