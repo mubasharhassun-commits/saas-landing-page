@@ -229,7 +229,7 @@ class ADAA_Widget extends Widget_Base {
 			'skip_target',
 			array(
 				'label'       => __( 'Skip to content target', 'ada-accessibility' ),
-				'description' => __( 'CSS selector to jump to, e.g. #main. Leave empty to auto-detect.', 'ada-accessibility' ),
+				'description' => __( 'CSS selector to jump to, e.g. #main. Leave empty to return to the top of the page.', 'ada-accessibility' ),
 				'type'        => Controls_Manager::TEXT,
 				'default'     => '',
 				'condition'   => array( 'show_skip' => 'yes' ),
@@ -240,7 +240,7 @@ class ADAA_Widget extends Widget_Base {
 			'skip_offset',
 			array(
 				'label'       => __( 'Scroll offset (px)', 'ada-accessibility' ),
-				'description' => __( 'Stops a sticky header covering the target.', 'ada-accessibility' ),
+				'description' => __( 'Pixels to leave above the target. Only used when a target is set above.', 'ada-accessibility' ),
 				'type'        => Controls_Manager::NUMBER,
 				'min'         => 0,
 				'max'         => 500,

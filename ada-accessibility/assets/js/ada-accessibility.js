@@ -537,9 +537,7 @@
 				bg: el.style.getPropertyValue( 'background-color' ),
 				bgPri: el.style.getPropertyPriority( 'background-color' ),
 				img: el.style.getPropertyValue( 'background-image' ),
-				imgPri: el.style.getPropertyPriority( 'background-image' ),
-				minH: el.style.getPropertyValue( 'min-height' ),
-				minHPri: el.style.getPropertyPriority( 'min-height' )
+				imgPri: el.style.getPropertyPriority( 'background-image' )
 			} );
 
 			el.style.setProperty( 'background-color', '#000', 'important' );
@@ -578,28 +576,6 @@
 			}
 
 			return out;
-		}
-
-		/*
-		 * Make the blacked-out bar as tall as the bar actually is. The colour
-		 * and the height can live on different elements, so the painted header
-		 * can be shorter than the bar around it and leave a strip uncovered.
-		 */
-		function fillBarHeight( el, wrappers ) {
-			var tallest = el.getBoundingClientRect().height;
-			var i;
-
-			for ( i = 0; i < wrappers.length; i++ ) {
-				var h = wrappers[ i ].getBoundingClientRect().height;
-
-				if ( h > tallest ) {
-					tallest = h;
-				}
-			}
-
-			if ( tallest > el.getBoundingClientRect().height + 0.5 ) {
-				el.style.setProperty( 'min-height', Math.round( tallest ) + 'px', 'important' );
-			}
 		}
 
 		/*
@@ -685,14 +661,20 @@
 				// over a hero image still has to become a solid black band.
 				blacken( rootEl );
 
-				// Its wrappers, which may be where the colour and height live.
+				/*
+				 * Its wrappers, which is where the bar's own colour and height
+				 * live. Painting them is enough; nothing here sets a height.
+				 * Writing one made the header taller, the theme measured it and
+				 * republished a larger --wpex-sticky-header-height, the next
+				 * repaint read that back and grew it again - 61px became
+				 * 110.61px. The bar already has the height its own CSS gives
+				 * it, so the plugin only ever changes colour.
+				 */
 				var wrappers = barWrappers( rootEl );
 
 				for ( var w = 0; w < wrappers.length; w++ ) {
 					blacken( wrappers[ w ] );
 				}
-
-				fillBarHeight( rootEl, wrappers );
 
 				var kids = rootEl.querySelectorAll( '*' );
 
@@ -745,12 +727,6 @@
 					p.el.style.setProperty( 'background-image', p.img, p.imgPri );
 				} else {
 					p.el.style.removeProperty( 'background-image' );
-				}
-
-				if ( p.minH ) {
-					p.el.style.setProperty( 'min-height', p.minH, p.minHPri );
-				} else {
-					p.el.style.removeProperty( 'min-height' );
 				}
 			}
 
@@ -808,198 +784,47 @@
 			}
 		}
 
-		/*
-		 * The target the theme itself nominates.
-		 *
-		 * Nearly every theme ships a "Skip to content" link as its first
-		 * focusable element, and its href is the one element the theme
-		 * considers the start of the content. Reading it is better than any
-		 * guess: on a theme whose <main> also wraps the page banner, guessing
-		 * "main" lands a few pixels down and looks like nothing happened,
-		 * while the theme's own link points past the banner to the content.
-		 */
-		function themeSkipTarget() {
-			var links = document.querySelectorAll(
-				'a.skip-link, a.skip-to-content, a.screen-reader-shortcut, a[href^="#"][class*="skip"]'
-			);
-
-			for ( var i = 0; i < links.length; i++ ) {
-				if ( root.contains( links[ i ] ) ) {
-					continue;
-				}
-
-				var href = links[ i ].getAttribute( 'href' ) || '';
-
-				if ( '#' !== href.charAt( 0 ) || href.length < 2 ) {
-					continue;
-				}
-
-				var el = find( href );
-
-				if ( el ) {
-					return el;
-				}
-			}
-
-			return null;
-		}
 
 		if ( btn.skip ) {
 			btn.skip.addEventListener( 'click', function () {
 				/*
-				 * Skip to content means the content, so this jumps past the
-				 * header rather than to the top of the page, and the panel is
-				 * left open: a visitor reaching for it again should not have
-				 * to reopen it.
+				 * One smooth move to the top of the page, and nothing after it.
+				 *
+				 * Measuring a sticky bar and correcting for it is what made
+				 * this stutter: the bar's height changes as the page moves, so
+				 * every correction invited another. The top of the page is a
+				 * fixed number that nothing on the page can move, so the scroll
+				 * is issued once and simply arrives. A selector set on the
+				 * settings screen still wins, for a site that wants somewhere
+				 * else.
 				 */
-				var target =
-					configuredTarget() ||
-					themeSkipTarget() ||
-					document.getElementById( 'content' ) ||
+				var target = configuredTarget();
+				var top = 0;
+
+				if ( target ) {
+					var configured = parseInt( root.dataset.skipOffset, 10 );
+					var offset = isNaN( configured ) ? 0 : Math.max( 0, configured );
+
+					top = Math.max(
+						0,
+						Math.round( window.pageYOffset + target.getBoundingClientRect().top - offset )
+					);
+				}
+
+				window.scrollTo( { top: top, behavior: 'smooth' } );
+
+				// Focus the content for screen readers without moving the page
+				// again; the panel is left open so it can be used once more.
+				var landmark = target ||
 					document.querySelector( 'main' ) ||
 					document.querySelector( '[role="main"]' ) ||
-					document.querySelector( '.entry-content' ) ||
-					document.querySelector( 'article' );
+					document.getElementById( 'content' );
 
-				if ( ! target ) {
-					return;
+				if ( landmark ) {
+					landmark.setAttribute( 'tabindex', '-1' );
+					landmark.focus( { preventScroll: true } );
 				}
-
-				target.setAttribute( 'tabindex', '-1' );
-
-				/*
-				 * A sticky or fixed bar would otherwise cover the first lines
-				 * of the very content this button exists to reach. A figure set
-				 * on the settings screen wins; otherwise the bar is measured.
-				 */
-				var configured = parseInt( root.dataset.skipOffset, 10 );
-				var fixedOffset = ( ! isNaN( configured ) && configured > 0 );
-				var offset = fixedOffset ? configured : stickyOffset();
-
-				/*
-				 * One computed move rather than scrollIntoView with a
-				 * scroll-margin: writing that margin and letting the browser
-				 * re-resolve the target mid-animation is what made the jump
-				 * stutter on a page whose sticky header changes height.
-				 */
-				scrollToTarget( target, offset, fixedOffset );
-
-				target.focus( { preventScroll: true } );
 			} );
-		}
-
-		/*
-		 * The tallest bar pinned over the top of the viewport. Both sources are
-		 * consulted: the named header and footer elements, and the bars found
-		 * by reading what is actually painting the top - a theme's sticky
-		 * header often answers to neither name.
-		 */
-		function stickyOffset() {
-			var bars = Array.prototype.slice.call( document.querySelectorAll( HEADER_FOOTER ) );
-			var offset = 0;
-			var pinned = pinnedBars();
-			var i;
-
-			for ( i = 0; i < pinned.length; i++ ) {
-				if ( -1 === bars.indexOf( pinned[ i ] ) ) {
-					bars.push( pinned[ i ] );
-				}
-			}
-
-			/*
-			 * A pinned bar does not have to start at zero. The WordPress admin
-			 * bar occupies the first 32 pixels for a logged-in visitor, so the
-			 * site header sits below it and a "top must be 0" test missed it
-			 * entirely - the content then landed underneath the header for
-			 * exactly the people most likely to be testing.
-			 */
-			var admin = document.getElementById( 'wpadminbar' );
-			var ceiling = 1;
-
-			if ( admin ) {
-				var adminBox = admin.getBoundingClientRect();
-
-				if ( adminBox.bottom > ceiling ) {
-					ceiling = adminBox.bottom + 2;
-				}
-			}
-
-			for ( i = 0; i < bars.length; i++ ) {
-				var el = bars[ i ];
-
-				if ( el === root || el.contains( root ) ) {
-					continue;
-				}
-
-				var cs = window.getComputedStyle( el );
-
-				if ( cs.position !== 'fixed' && cs.position !== 'sticky' ) {
-					continue;
-				}
-
-				var box = el.getBoundingClientRect();
-
-				if ( box.top <= ceiling && box.bottom > offset ) {
-					offset = box.bottom;
-				}
-			}
-
-			return Math.round( offset );
-		}
-
-		/*
-		 * Scroll to the target, and follow it if a sticky bar appears on the
-		 * way down. A bar revealed at a scroll threshold has no height at the
-		 * moment the button is pressed, so the first sum lands the content
-		 * underneath it. Rather than correcting afterwards - which would be
-		 * the jerk of scrolling back up - the destination is moved up the
-		 * instant the bar appears, while the page is still travelling towards
-		 * it, so the browser simply stops earlier.
-		 */
-		function scrollToTarget( target, offset, fixedOffset ) {
-			var destination = function ( off ) {
-				return Math.max(
-					0,
-					Math.round( window.pageYOffset + target.getBoundingClientRect().top - off )
-				);
-			};
-
-			var started = Date.now();
-
-			window.scrollTo( { top: destination( offset ), behavior: 'smooth' } );
-
-			// A figure typed on the settings screen is a deliberate choice and
-			// is never second-guessed; only a measured one is followed.
-			if ( fixedOffset ) {
-				return;
-			}
-
-			/*
-			 * One correction, in one direction, and then done.
-			 *
-			 * A header that sticks and releases around a scroll threshold
-			 * turns any "keep matching the offset" loop into a feedback loop:
-			 * moving up releases the bar, which moves the destination down,
-			 * which sticks it again - the page bounces at the header and never
-			 * settles. Only a bar appearing needs answering, since that is
-			 * what would cover the content; a bar releasing just leaves the
-			 * content lower on screen, which is harmless. Correcting once and
-			 * stopping makes oscillation impossible rather than unlikely.
-			 */
-			( function follow() {
-				if ( Date.now() - started > 1200 ) {
-					return;
-				}
-
-				var now = stickyOffset();
-
-				if ( now > offset + 4 ) {
-					window.scrollTo( { top: destination( now ), behavior: 'smooth' } );
-					return;
-				}
-
-				window.requestAnimationFrame( follow );
-			} )();
 		}
 
 		/* ---------- reset ---------- */

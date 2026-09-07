@@ -4,7 +4,7 @@ Tags: accessibility, a11y, contrast, elementor, wcag
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.18.0
+Stable tag: 1.29.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,6 +57,21 @@ Content injected after page load (lazy sliders, AJAX forms) is not scaled
 until the option is toggled again.
 
 == Changelog ==
+
+= 1.29.0 =
+* High contrast no longer sets a height on anything. It used to stretch the
+  header to match the bar around it, the theme measured the taller header and
+  republished --wpex-sticky-header-height, and each repaint grew it again -
+  61px became 110.61px. Only colours are changed now, so the header keeps the
+  height its own CSS gives it (78px on the Total header wrapper, desktop and
+  mobile alike), and the bar still reads solid black because the wrapper behind
+  it is painted.
+* Skip to Content makes one smooth move to the top of the page and stops.
+  Measuring a sticky bar and correcting for it was what made the page stutter
+  and sometimes stop short at the banner: the bar's height changes as the page
+  moves, so every correction invited another. The top of the page is a fixed
+  number nothing can move, so the scroll is issued once and simply arrives. A
+  target set on the settings screen still wins.
 
 = 1.18.0 =
 * Floating button redrawn to match the reference design: a disc in the icon

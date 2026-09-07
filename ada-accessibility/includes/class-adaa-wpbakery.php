@@ -202,7 +202,7 @@ class ADAA_WPBakery {
 						'group'       => __( 'Buttons', 'ada-accessibility' ),
 						'description' => __( 'CSS selector to jump to, e.g. #main. Leave empty to auto-detect.', 'ada-accessibility' ),
 					),
-					$this->size( __( 'Skip Offset', 'ada-accessibility' ), 'skip_offset', __( 'Buttons', 'ada-accessibility' ), __( 'Pixels to leave above the target, for a sticky header.', 'ada-accessibility' ) ),
+					$this->size( __( 'Skip Offset', 'ada-accessibility' ), 'skip_offset', __( 'Buttons', 'ada-accessibility' ), __( 'Pixels to leave above the target, for a sticky header. Only used when a Skip Target is set.', 'ada-accessibility' ) ),
 
 					/* ---------------- Launcher ---------------- */
 					$this->color( __( 'Background', 'ada-accessibility' ), 'launcher_bg', $launcher ),

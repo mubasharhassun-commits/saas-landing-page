@@ -134,8 +134,8 @@ class ADAA_Admin {
 			)
 		);
 
-		$this->field( 'skip_target', __( 'Skip to content target', 'ada-accessibility' ), 'text', 'adaa_appearance', __( 'CSS selector for the element “Skip to Content” should jump to, e.g. #main or .elementor-location-single. Leave empty to auto-detect.', 'ada-accessibility' ) );
-		$this->field( 'skip_offset', __( 'Scroll offset (px)', 'ada-accessibility' ), 'number', 'adaa_appearance', __( 'Stops a sticky header covering the target. Try the header height.', 'ada-accessibility' ) );
+		$this->field( 'skip_target', __( 'Skip to content target', 'ada-accessibility' ), 'text', 'adaa_appearance', __( 'CSS selector for the element “Skip to Content” should jump to, e.g. #main or .elementor-location-single. Leave empty to return to the top of the page.', 'ada-accessibility' ) );
+		$this->field( 'skip_offset', __( 'Scroll offset (px)', 'ada-accessibility' ), 'number', 'adaa_appearance', __( 'Pixels to leave above the target, so a sticky header does not cover it. Only used when a target is set above.', 'ada-accessibility' ) );
 		$this->field( 'z_index', __( 'Layer (z-index)', 'ada-accessibility' ), 'number', 'adaa_appearance', __( 'Raise this if a sticky header or chat widget sits on top of the toolbar.', 'ada-accessibility' ) );
 
 		$this->field( 'label_close', __( 'Close label', 'ada-accessibility' ), 'text', 'adaa_buttons' );
