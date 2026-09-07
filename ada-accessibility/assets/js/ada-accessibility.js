@@ -1046,6 +1046,7 @@
 	 * no figure is published, so there is no number left to drift.
 	 */
 	var pinning = false;
+	var pinQueued = false;
 
 	function stickyWrapper() {
 		return document.querySelector( '#site-header-sticky-wrapper, .wpex-sticky-header-holder' );
@@ -1105,22 +1106,41 @@
 	function holdHeader() {
 		pinHeader();
 
-		window.addEventListener( 'scroll', pinHeader, { passive: true } );
-		window.addEventListener( 'resize', pinHeader, { passive: true } );
-		window.addEventListener( 'load', pinHeader );
+		window.addEventListener( 'scroll', queuePin, { passive: true } );
+		window.addEventListener( 'resize', queuePin, { passive: true } );
+		window.addEventListener( 'load', queuePin );
 
-		// Total republishes the variable on its own schedule; put it back.
+		/*
+		 * Total rewrites the variable on its own schedule, so watch for it -
+		 * but never react inside the mutation callback.
+		 *
+		 * A theme that republishes in response to a DOM change turns a direct
+		 * call into a synchronous ping-pong: it writes, this strips, that
+		 * counts as another change, it writes again. That locked the page up
+		 * solid. Coalescing to one pass per animation frame breaks the cycle:
+		 * however many times the theme writes, this answers at most once a
+		 * frame, and stops as soon as the theme does.
+		 */
 		if ( typeof window.MutationObserver === 'function' ) {
-			new window.MutationObserver( function () {
-				if ( ! pinning ) {
-					pinHeader();
-				}
-			} ).observe( document.documentElement, {
+			new window.MutationObserver( queuePin ).observe( document.documentElement, {
 				subtree: true,
 				attributes: true,
 				attributeFilter: [ 'style', 'class' ]
 			} );
 		}
+	}
+
+	function queuePin() {
+		if ( pinning || pinQueued ) {
+			return;
+		}
+
+		pinQueued = true;
+
+		window.requestAnimationFrame( function () {
+			pinQueued = false;
+			pinHeader();
+		} );
 	}
 
 	function boot() {
