@@ -59,13 +59,17 @@ until the option is toggled again.
 == Changelog ==
 
 = 1.29.0 =
-* High contrast no longer sets a height on anything. It used to stretch the
-  header to match the bar around it, the theme measured the taller header and
-  republished --wpex-sticky-header-height, and each repaint grew it again -
-  61px became 110.61px. Only colours are changed now, so the header keeps the
-  height its own CSS gives it (78px on the Total header wrapper, desktop and
-  mobile alike), and the bar still reads solid black because the wrapper behind
-  it is painted.
+* The black header bar is a fixed 78px on every screen, from a 320px phone to
+  a 1920px desktop. Nothing is measured any more: the height used to be read
+  off the header, which fed back into the theme - it republished a larger
+  --wpex-sticky-header-height, the next repaint read that back and grew again,
+  turning 61px into 110.61px. 78 is now a constant in the script, written to
+  the element the black is actually seen on (the header wrapper, not the inner
+  header), so re-applying it can never change anything and the theme's own
+  variable is left alone. Once the page is scrolled and the header detaches
+  into a pinned bar, that pinned bar is given the same 78px, since it is then
+  the one on screen. The footer keeps its own height, and switching contrast
+  off returns the bar to whatever the theme gives it.
 * Skip to Content makes one smooth move to the top of the page and stops.
   Measuring a sticky bar and correcting for it was what made the page stutter
   and sometimes stop short at the banner: the bar's height changes as the page

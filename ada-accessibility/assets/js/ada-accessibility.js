@@ -9,6 +9,19 @@
 
 	// One press enlarges by 10%, the next press returns to normal.
 	var STEPS = [ 1, 1.1 ];
+
+	/*
+	 * The height of the black bar, in pixels.
+	 *
+	 * A fixed number on purpose. Measuring the header is what went wrong
+	 * before: the measurement fed back into the theme, which republished a
+	 * bigger --wpex-sticky-header-height, and the next pass measured that and
+	 * grew again. This is the site's real header height and it is the same on
+	 * every screen, so the bar is simply told to be it - nothing is measured,
+	 * and re-applying it can never change anything. One line to change if the
+	 * header is ever redesigned.
+	 */
+	var BAR_HEIGHT = 78;
 	var EXCLUDE = '.adaa, .adaa *, #wpadminbar, #wpadminbar *, script, style, svg, path, circle, br, hr';
 
 	function init( root ) {
@@ -504,6 +517,8 @@
 		}
 
 		var paintedSet = ( typeof window.Set === 'function' ) ? new window.Set() : null;
+		var sized = [];
+		var sizedSet = ( typeof window.Set === 'function' ) ? new window.Set() : null;
 		var watching = false;
 		var painting = false;
 		var observer = null;
@@ -576,6 +591,80 @@
 			}
 
 			return out;
+		}
+
+		/*
+		 * The bar that sits across the top of the screen, as opposed to the
+		 * footer. Its own top edge is at the top of the page, or pinned there,
+		 * which is true whether the page is scrolled or not.
+		 */
+		// A bar held across the top of the viewport right now, rather than
+		// sitting in the flow of the page.
+		function pinned( el ) {
+			var position = window.getComputedStyle( el ).position;
+
+			if ( 'fixed' !== position && 'sticky' !== position ) {
+				return false;
+			}
+
+			var admin = document.getElementById( 'wpadminbar' );
+			var ceiling = 2;
+
+			if ( admin ) {
+				var adminBox = admin.getBoundingClientRect();
+
+				if ( adminBox.bottom > ceiling ) {
+					ceiling = adminBox.bottom + 2;
+				}
+			}
+
+			return el.getBoundingClientRect().top <= ceiling;
+		}
+
+		function topBar( el ) {
+			if ( pinned( el ) ) {
+				return true;
+			}
+
+			/*
+			 * Otherwise, a bar that starts at the top of the document. Measured
+			 * against the document rather than the viewport so it still reads
+			 * as the header once the page is scrolled, and with room above it
+			 * for an admin bar and a utility row.
+			 */
+			return ( el.getBoundingClientRect().top + ( window.pageYOffset || 0 ) ) <= 300;
+		}
+
+		/*
+		 * Give the black bar its height: BAR_HEIGHT, on every screen, always.
+		 *
+		 * The colour and the height can live on different elements, so painting
+		 * alone can leave the black shorter than the bar it is meant to cover.
+		 * Nothing here reads a height off the page - the number is fixed, so
+		 * running this again on the next repaint writes the same value and the
+		 * bar can never creep.
+		 */
+		function setBarHeight( el ) {
+			if ( sizedSet ? sizedSet.has( el ) : sized.some( function ( r ) { return r.el === el; } ) ) {
+				return;
+			}
+
+			if ( sizedSet ) {
+				sizedSet.add( el );
+			}
+
+			sized.push( {
+				el: el,
+				h: el.style.getPropertyValue( 'height' ),
+				hPri: el.style.getPropertyPriority( 'height' ),
+				min: el.style.getPropertyValue( 'min-height' ),
+				minPri: el.style.getPropertyPriority( 'min-height' )
+			} );
+
+			// height pins it, whichever side the theme's own figure falls on;
+			// min-height holds the floor if a later rule frees the height again.
+			el.style.setProperty( 'height', BAR_HEIGHT + 'px', 'important' );
+			el.style.setProperty( 'min-height', BAR_HEIGHT + 'px', 'important' );
 		}
 
 		/*
@@ -676,6 +765,27 @@
 					blacken( wrappers[ w ] );
 				}
 
+				/*
+				 * The header bar is a fixed BAR_HEIGHT tall, on every screen.
+				 *
+				 * Which element the black is actually seen on depends on where
+				 * the page is. Sitting at the top, it is the outermost wrapper
+				 * - Total paints the bar on #site-header-sticky-wrapper and the
+				 * header inside it is shorter. Scrolled down, the header
+				 * detaches to position:fixed and becomes the bar you see, while
+				 * that wrapper stays behind in the flow as a spacer. So the
+				 * wrapper is sized always, and the bar itself as well once it
+				 * is pinned. The footer is left alone: it is as tall as its own
+				 * content.
+				 */
+				if ( topBar( rootEl ) ) {
+					setBarHeight( wrappers.length ? wrappers[ wrappers.length - 1 ] : rootEl );
+
+					if ( pinned( rootEl ) ) {
+						setBarHeight( rootEl );
+					}
+				}
+
 				var kids = rootEl.querySelectorAll( '*' );
 
 				for ( var k = 0; k < kids.length; k++ ) {
@@ -730,10 +840,31 @@
 				}
 			}
 
+			for ( var h = sized.length - 1; h >= 0; h-- ) {
+				var q = sized[ h ];
+
+				if ( q.h ) {
+					q.el.style.setProperty( 'height', q.h, q.hPri );
+				} else {
+					q.el.style.removeProperty( 'height' );
+				}
+
+				if ( q.min ) {
+					q.el.style.setProperty( 'min-height', q.min, q.minPri );
+				} else {
+					q.el.style.removeProperty( 'min-height' );
+				}
+			}
+
 			painted = [];
+			sized = [];
 
 			if ( paintedSet ) {
 				paintedSet.clear();
+			}
+
+			if ( sizedSet ) {
+				sizedSet.clear();
 			}
 
 			document.body.classList.remove( 'adaa-contrast' );
