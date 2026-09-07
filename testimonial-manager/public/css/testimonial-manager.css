@@ -832,6 +832,22 @@ body.tm-modal-open { overflow: hidden; }
 	gap: var(--tm-home-nav-gap);
 }
 
+/*
+ * The chevrons line up with the signature row - the photo and the client's
+ * name - at every width.
+ *
+ * A hand-set offset from the bottom of the panel cannot do that: the panel's
+ * height moves with the length of the quote, so the row it is meant to match
+ * moves with it. The signature row is the last thing in the panel, so the
+ * bottom padding plus the photo's own height puts the chevrons on its centre
+ * line wherever it lands, with no figure to keep re-tuning per breakpoint.
+ */
+.tm-slider.tm-home .tm-home-nav {
+	bottom: var(--tm-home-padding);
+	height: var(--tm-avatar-size);
+	align-items: center;
+}
+
 .tm-slider.tm-home .tm-home-nav .tm-slider-nav {
 	position: static !important;
 	transform: none !important;
@@ -856,6 +872,28 @@ body.tm-modal-open { overflow: hidden; }
 
 /* ---------- Responsive ---------- */
 
+/*
+ * Laptop widths. The quote drops to 16px, and the space it used to leave
+ * comes down with it: the mark is what set the height of that first row, so
+ * a smaller mark and a tighter row gap close the band between the quote and
+ * the signature rather than just moving it.
+ */
+@media (min-width: 1200px) and (max-width: 1368px) {
+	.tm-slider.tm-home {
+		--tm-home-padding: 38px;
+		--tm-home-col: 104px;
+		--tm-home-col-gap: 22px;
+		--tm-home-row-gap: 22px;
+		--tm-home-mark-size: 72px;
+		--tm-home-mark-img-width: 72px;
+		--tm-home-quote-size: 16px;
+		--tm-avatar-size: 82px;
+		--tm-home-nav-right: 38px;
+	}
+
+	.tm-home-rating { margin-bottom: -14px; }
+}
+
 @media (max-width: 1024px) {
 	.tm-slider.tm-home {
 		--tm-home-padding: 38px;
@@ -875,30 +913,31 @@ body.tm-modal-open { overflow: hidden; }
 @media (max-width: 767px) {
 	.tm-slider.tm-home {
 		--tm-home-padding: 26px;
-		--tm-home-mark-size: 62px;
-		--tm-home-mark-img-width: 62px;
 		--tm-home-quote-size: 16px;
-		--tm-home-row-gap: 26px;
+		--tm-home-row-gap: 18px;
 		--tm-avatar-size: 66px;
 		--tm-home-nav-size: 26px;
-		--tm-home-nav-gap: 34px;
+		--tm-home-nav-gap: 26px;
+		--tm-home-nav-right: 26px;
 	}
 
+	/* The quote mark goes: on one column it sat on its own line and cost more
+	   height than it earned. */
+	.tm-slider.tm-home .tm-home-mark { display: none; }
+
 	.tm-home-inner { grid-template-columns: minmax(0, 1fr); }
-	.tm-home-mark,
 	.tm-home-rating,
 	.tm-slider.tm-home .tm-home-quote { grid-column: 1; }
 
+	/* The chevrons stay on the signature row here too, so they read against
+	   the client's name. The row keeps clear of them rather than running
+	   underneath. */
 	.tm-home-person {
 		grid-template-columns: auto minmax(0, 1fr);
 		column-gap: 16px;
-	}
-
-	.tm-slider.tm-home .tm-slider-viewport { padding-bottom: 84px; }
-
-	.tm-home-nav {
-		right: auto;
-		bottom: 26px;
-		left: 26px;
+		padding-right: calc(
+			( var(--tm-home-nav-size) * 2 ) + var(--tm-home-nav-gap)
+			+ var(--tm-home-nav-right) - var(--tm-home-padding) + 14px
+		);
 	}
 }
