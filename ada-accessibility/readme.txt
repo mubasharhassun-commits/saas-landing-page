@@ -59,17 +59,17 @@ until the option is toggled again.
 == Changelog ==
 
 = 1.29.0 =
-* The black header bar is a fixed 78px on every screen, from a 320px phone to
-  a 1920px desktop. Nothing is measured any more: the height used to be read
-  off the header, which fed back into the theme - it republished a larger
-  --wpex-sticky-header-height, the next repaint read that back and grew again,
-  turning 61px into 110.61px. 78 is now a constant in the script, written to
-  the element the black is actually seen on (the header wrapper, not the inner
-  header), so re-applying it can never change anything and the theme's own
-  variable is left alone. Once the page is scrolled and the header detaches
-  into a pinned bar, that pinned bar is given the same 78px, since it is then
-  the one on screen. The footer keeps its own height, and switching contrast
-  off returns the bar to whatever the theme gives it.
+* The header is a static 78px, on every screen and at all times - phone,
+  tablet and desktop, sitting at the top of the page or pinned after a scroll.
+  78 is a constant in the script; nothing is measured.
+* --wpex-sticky-header-height is removed from the <body> tag. Total writes that
+  variable by measuring its own header, which is where the 61px came from, and
+  where 1.28.0's 110.61px came from once the plugin's own measurement fed back
+  into it. The declaration is now stripped off the body tag and stripped again
+  every time the theme writes it back, so no calculated figure is left on the
+  page at all.
+* High contrast paints the full 78px of the bar black, in both the in-flow and
+  the pinned state, and leaves the footer at its own height.
 * Skip to Content makes one smooth move to the top of the page and stops.
   Measuring a sticky bar and correcting for it was what made the page stutter
   and sometimes stop short at the banner: the bar's height changes as the page

@@ -11,7 +11,7 @@
 	var STEPS = [ 1, 1.1 ];
 
 	/*
-	 * The height of the black bar, in pixels.
+	 * The height of the header bar, in pixels.
 	 *
 	 * A fixed number on purpose. Measuring the header is what went wrong
 	 * before: the measurement fed back into the theme, which republished a
@@ -1032,7 +1032,100 @@
 		}
 	}
 
+	/*
+	 * Hold the header at BAR_HEIGHT, on every page and for every visitor.
+	 *
+	 * This is not part of high contrast - it runs whether the toolbar has been
+	 * touched or not, because the height is meant to be the same at all times.
+	 *
+	 * Total measures its own header and publishes the figure as
+	 * --wpex-sticky-header-height on <body> - that is where the 61px, and
+	 * before it the 110.61px, came from. That declaration is stripped off the
+	 * body tag here and put back off every time the theme writes it again, and
+	 * the header is given a flat BAR_HEIGHT instead. Nothing is measured and
+	 * no figure is published, so there is no number left to drift.
+	 */
+	var pinning = false;
+
+	function stickyWrapper() {
+		return document.querySelector( '#site-header-sticky-wrapper, .wpex-sticky-header-holder' );
+	}
+
+	function hold( el ) {
+		if ( ! el ) {
+			return;
+		}
+
+		if ( el.style.getPropertyValue( 'height' ) !== BAR_HEIGHT + 'px' ) {
+			el.style.setProperty( 'height', BAR_HEIGHT + 'px', 'important' );
+		}
+
+		if ( el.style.getPropertyValue( 'min-height' ) !== BAR_HEIGHT + 'px' ) {
+			el.style.setProperty( 'min-height', BAR_HEIGHT + 'px', 'important' );
+		}
+	}
+
+	function pinHeader() {
+		if ( pinning ) {
+			return;
+		}
+
+		pinning = true;
+
+		var body = document.body;
+
+		if ( body ) {
+			if ( body.style.getPropertyValue( '--wpex-sticky-header-height' ) ) {
+				body.style.removeProperty( '--wpex-sticky-header-height' );
+			}
+
+			// Leave the tag clean rather than carrying an empty attribute.
+			if ( body.hasAttribute( 'style' ) && '' === body.getAttribute( 'style' ).trim() ) {
+				body.removeAttribute( 'style' );
+			}
+		}
+
+		// The placeholder that holds the bar's space in the flow, and the
+		// header itself, which is the bar you see once it goes sticky.
+		hold( stickyWrapper() );
+
+		var header = document.getElementById( 'site-header' );
+
+		if ( header ) {
+			var position = window.getComputedStyle( header ).position;
+
+			if ( 'fixed' === position || 'sticky' === position ) {
+				hold( header );
+			}
+		}
+
+		pinning = false;
+	}
+
+	function holdHeader() {
+		pinHeader();
+
+		window.addEventListener( 'scroll', pinHeader, { passive: true } );
+		window.addEventListener( 'resize', pinHeader, { passive: true } );
+		window.addEventListener( 'load', pinHeader );
+
+		// Total republishes the variable on its own schedule; put it back.
+		if ( typeof window.MutationObserver === 'function' ) {
+			new window.MutationObserver( function () {
+				if ( ! pinning ) {
+					pinHeader();
+				}
+			} ).observe( document.documentElement, {
+				subtree: true,
+				attributes: true,
+				attributeFilter: [ 'style', 'class' ]
+			} );
+		}
+	}
+
 	function boot() {
+		holdHeader();
+
 		var roots = document.querySelectorAll( '.adaa' );
 		for ( var i = 0; i < roots.length; i++ ) {
 			init( roots[ i ] );
