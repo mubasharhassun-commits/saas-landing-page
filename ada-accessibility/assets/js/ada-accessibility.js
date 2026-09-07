@@ -1103,8 +1103,26 @@
 		pinning = false;
 	}
 
+	var holding = false;
+
 	function holdHeader() {
+		if ( holding ) {
+			return;
+		}
+
+		holding = true;
+
 		pinHeader();
+
+		/*
+		 * A plain timer as well as the observer below. The observer depends on
+		 * the theme's write being a mutation this script is still watching for;
+		 * the timer depends on nothing at all, so the declaration cannot
+		 * survive on the body tag however or whenever it is put back.
+		 */
+		window.setInterval( pinHeader, 200 );
+
+		document.addEventListener( 'readystatechange', pinHeader );
 
 		window.addEventListener( 'scroll', queuePin, { passive: true } );
 		window.addEventListener( 'resize', queuePin, { passive: true } );
@@ -1150,6 +1168,11 @@
 		for ( var i = 0; i < roots.length; i++ ) {
 			init( roots[ i ] );
 		}
+	}
+
+	// The height work starts immediately - it must not wait for the toolbar.
+	if ( document.body ) {
+		holdHeader();
 	}
 
 	if ( document.readyState === 'loading' ) {

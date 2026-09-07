@@ -4,7 +4,7 @@ Tags: accessibility, a11y, contrast, elementor, wcag
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.29.0
+Stable tag: 1.29.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -58,7 +58,7 @@ until the option is toggled again.
 
 == Changelog ==
 
-= 1.29.0 =
+= 1.29.1 =
 * The header is a static 78px, on every screen and at all times - phone,
   tablet and desktop, sitting at the top of the page or pinned after a scroll.
   78 is a constant in the script; nothing is measured.
