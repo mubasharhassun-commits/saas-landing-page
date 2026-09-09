@@ -279,6 +279,9 @@
 	--wl-news-meta-wrap: wrap;
 	--wl-news-title-space: 8px;
 	--wl-news-meta-space: 10px;
+	--wl-news-excerpt-color: #5b6b7a;
+	--wl-news-excerpt-size: 14px;
+	--wl-news-excerpt-space: 10px;
 	--wl-news-btn-color: #1a2b3c;
 	--wl-news-btn-bg: transparent;
 	--wl-news-btn-border: #d9d9d9;
@@ -387,6 +390,13 @@
 	line-height: 1.3;
 	color: var(--wl-news-meta-color);
 	margin-bottom: var(--wl-news-meta-space, 10px);
+}
+
+.wl-news-excerpt {
+	margin: 0 0 var(--wl-news-excerpt-space, 10px);
+	font-size: var(--wl-news-excerpt-size, 14px);
+	line-height: 1.5;
+	color: var(--wl-news-excerpt-color, #5b6b7a);
 }
 
 /* One line means one line: the items stay put and their text stops wrapping,

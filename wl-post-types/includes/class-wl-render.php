@@ -422,6 +422,23 @@ class WL_Render {
 			'source'        => 'news',
 			'category'      => '',
 			'count'         => 3,
+
+			/*
+			 * Sorted by when the post was added to the site, not by the date
+			 * printed on the card.
+			 *
+			 * Those are two different things whenever an article is
+			 * back-dated: a piece from 2012 uploaded today is the newest thing
+			 * on the site and the oldest thing by publish date. Sorting by
+			 * publish date buried it at the bottom of the list, which is why a
+			 * freshly added article never reached the featured slot.
+			 */
+			'orderby'       => 'added',
+			'order'         => 'DESC',
+
+			'show_excerpt'  => 'yes',
+			'excerpt_words' => 15,
+
 			'show_date'     => 'yes',
 			'show_category' => 'yes',
 			'show_author'   => 'yes',
@@ -429,6 +446,25 @@ class WL_Render {
 			'button_text'   => 'READ MORE',
 			'class'         => '',
 		);
+	}
+
+	/**
+	 * Trim post text to a word count, falling back to the content when no
+	 * excerpt has been written.
+	 */
+	private static function news_excerpt( $post, $words ) {
+		$text = has_excerpt( $post->ID )
+			? get_the_excerpt( $post )
+			: strip_shortcodes( $post->post_content );
+
+		$text = wp_strip_all_tags( (string) $text, true );
+		$text = trim( preg_replace( '/\s+/', ' ', $text ) );
+
+		if ( '' === $text ) {
+			return '';
+		}
+
+		return wp_trim_words( $text, $words, '...' );
 	}
 
 	/**
@@ -441,13 +477,41 @@ class WL_Render {
 		$btn   = sanitize_text_field( $args['button_text'] );
 		$btn   = ( '' === $btn ) ? __( 'READ MORE', 'waterslaw' ) : $btn;
 		$count = max( 2, min( 10, (int) $args['count'] ) );
+		$words = max( 1, min( 100, (int) $args['excerpt_words'] ) );
+
+		$order = ( 'ASC' === strtoupper( trim( (string) $args['order'] ) ) ) ? 'ASC' : 'DESC';
 
 		$query = array(
 			'post_type'      => $type,
 			'post_status'    => 'publish',
 			'posts_per_page' => $count,
 			'no_found_rows'  => true,
+			'order'          => $order,
 		);
+
+		switch ( strtolower( trim( (string) $args['orderby'] ) ) ) {
+			case 'date':
+				$query['orderby'] = 'date';
+				break;
+
+			case 'modified':
+				$query['orderby'] = 'modified';
+				break;
+
+			case 'title':
+				$query['orderby'] = 'title';
+				break;
+
+			case 'menu_order':
+				$query['orderby'] = 'menu_order date';
+				break;
+
+			default:
+				// Added to the site: the ID rises with every new post, so this
+				// is creation order whatever date the article itself carries.
+				$query['orderby'] = 'ID';
+				break;
+		}
 
 		if ( '' !== trim( (string) $args['category'] ) ) {
 			$slug = sanitize_title( $args['category'] );
@@ -514,6 +578,15 @@ class WL_Render {
 			$out .= '<div class="wl-news-body">';
 			$out .= '<a class="wl-news-title" href="' . esc_url( $link ) . '">' . esc_html( get_the_title( $post->ID ) ) . '</a>';
 			$out .= '<div class="wl-news-meta">' . self::meta_html( $post, $args ) . '</div>';
+
+			if ( self::to_bool( $args['show_excerpt'] ) ) {
+				$excerpt = self::news_excerpt( $post, $words );
+
+				if ( '' !== $excerpt ) {
+					$out .= '<p class="wl-news-excerpt">' . esc_html( $excerpt ) . '</p>';
+				}
+			}
+
 			$out .= '<a class="wl-news-readmore" href="' . esc_url( $link ) . '">' . esc_html( $btn ) . '</a>';
 			$out .= '</div></div>';
 		}
