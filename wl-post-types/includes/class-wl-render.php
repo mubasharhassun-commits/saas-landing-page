@@ -436,8 +436,12 @@ class WL_Render {
 			'orderby'       => 'added',
 			'order'         => 'DESC',
 
-			'show_excerpt'  => 'yes',
-			'excerpt_words' => 15,
+			/*
+			 * Headings are trimmed rather than carrying a summary underneath.
+			 * A long title wrapped to three lines and pushed the cards out of
+			 * step with each other; a word limit keeps them level.
+			 */
+			'title_words'   => 15,
 
 			'show_date'     => 'yes',
 			'show_category' => 'yes',
@@ -449,22 +453,16 @@ class WL_Render {
 	}
 
 	/**
-	 * Trim post text to a word count, falling back to the content when no
-	 * excerpt has been written.
+	 * Trim a heading to a word count. 0 keeps it whole.
 	 */
-	private static function news_excerpt( $post, $words ) {
-		$text = has_excerpt( $post->ID )
-			? get_the_excerpt( $post )
-			: strip_shortcodes( $post->post_content );
+	private static function news_title( $post, $words ) {
+		$title = wp_strip_all_tags( (string) get_the_title( $post->ID ) );
 
-		$text = wp_strip_all_tags( (string) $text, true );
-		$text = trim( preg_replace( '/\s+/', ' ', $text ) );
-
-		if ( '' === $text ) {
-			return '';
+		if ( $words < 1 ) {
+			return $title;
 		}
 
-		return wp_trim_words( $text, $words, '...' );
+		return wp_trim_words( $title, $words, '...' );
 	}
 
 	/**
@@ -477,7 +475,7 @@ class WL_Render {
 		$btn   = sanitize_text_field( $args['button_text'] );
 		$btn   = ( '' === $btn ) ? __( 'READ MORE', 'waterslaw' ) : $btn;
 		$count = max( 2, min( 10, (int) $args['count'] ) );
-		$words = max( 1, min( 100, (int) $args['excerpt_words'] ) );
+		$words = max( 0, min( 100, (int) $args['title_words'] ) );
 
 		$order = ( 'ASC' === strtoupper( trim( (string) $args['order'] ) ) ) ? 'ASC' : 'DESC';
 
@@ -576,17 +574,8 @@ class WL_Render {
 			$out .= '<a class="wl-news-thumb" href="' . esc_url( $link ) . '"'
 				. ' style="background-image:url(\'' . esc_url( (string) $timg ) . '\');"></a>';
 			$out .= '<div class="wl-news-body">';
-			$out .= '<a class="wl-news-title" href="' . esc_url( $link ) . '">' . esc_html( get_the_title( $post->ID ) ) . '</a>';
+			$out .= '<a class="wl-news-title" href="' . esc_url( $link ) . '">' . esc_html( self::news_title( $post, $words ) ) . '</a>';
 			$out .= '<div class="wl-news-meta">' . self::meta_html( $post, $args ) . '</div>';
-
-			if ( self::to_bool( $args['show_excerpt'] ) ) {
-				$excerpt = self::news_excerpt( $post, $words );
-
-				if ( '' !== $excerpt ) {
-					$out .= '<p class="wl-news-excerpt">' . esc_html( $excerpt ) . '</p>';
-				}
-			}
-
 			$out .= '<a class="wl-news-readmore" href="' . esc_url( $link ) . '">' . esc_html( $btn ) . '</a>';
 			$out .= '</div></div>';
 		}
