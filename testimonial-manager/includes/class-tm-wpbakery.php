@@ -764,15 +764,10 @@ class TM_WPBakery {
 					),
 
 					/* ---------- Layout ---------- */
-					array(
-						'type'             => 'textfield',
-						'heading'          => __( 'Panel Padding', 'testimonial-manager' ),
-						'param_name'       => 'panel_padding',
-						'value'            => '48',
-						'group'            => $layout,
-						'edit_field_class' => 'vc_col-sm-6',
-						'description'      => __( 'One to four pixel values.', 'testimonial-manager' ),
-					),
+					// Split in two: the chevrons anchor to the vertical figure,
+					// which a one-to-four-value shorthand cannot supply.
+					self::size( __( 'Panel Padding (top & bottom)', 'testimonial-manager' ), 'panel_pad_y', '67', $layout ),
+					self::size( __( 'Panel Padding (left & right)', 'testimonial-manager' ), 'panel_pad_x', '55', $layout ),
 					self::size( __( 'Panel Minimum Height', 'testimonial-manager' ), 'panel_min_height', '0', $layout ),
 					self::size( __( 'Panel Corner Radius', 'testimonial-manager' ), 'panel_radius', '0', $layout ),
 					self::size( __( 'Left Column Width', 'testimonial-manager' ), 'column_width', '128', $layout, array( 'description' => __( 'Holds the quote mark and the photo below it.', 'testimonial-manager' ) ) ),

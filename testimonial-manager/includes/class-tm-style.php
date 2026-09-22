@@ -357,6 +357,8 @@ class TM_Style {
 			'panel_bg_opacity'  => array( 'var' => '--tm-home-bg-opacity', 'type' => 'opacity' ),
 			'panel_radius'      => array( 'var' => '--tm-home-radius', 'type' => 'px', 'max' => 80 ),
 			'panel_padding'     => array( 'var' => '--tm-home-padding', 'type' => 'spacing' ),
+			'panel_pad_y'       => array( 'var' => '--tm-home-pad-y', 'type' => 'px', 'max' => 300 ),
+			'panel_pad_x'       => array( 'var' => '--tm-home-pad-x', 'type' => 'px', 'max' => 300 ),
 			'panel_min_height'  => array( 'var' => '--tm-home-min-height', 'type' => 'px', 'max' => 900 ),
 			'column_width'      => array( 'var' => '--tm-home-col', 'type' => 'px', 'min' => 40, 'max' => 320 ),
 			'column_gap'        => array( 'var' => '--tm-home-col-gap', 'type' => 'px', 'max' => 120 ),

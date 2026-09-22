@@ -655,7 +655,10 @@ body.tm-modal-open { overflow: hidden; }
 .tm-slider.tm-home {
 	--tm-home-bg: #7ab3af;
 	--tm-home-radius: 0px;
-	--tm-home-padding: 48px;
+	/* Vertical and horizontal are separate: the chevrons anchor to the
+	   vertical figure, and a two-value shorthand cannot be used for that. */
+	--tm-home-pad-y: 67px;
+	--tm-home-pad-x: 55px;
 	--tm-home-min-height: 0px;
 
 	/* Left column: wide enough for the quote mark and the photo below it. */
@@ -728,8 +731,35 @@ body.tm-modal-open { overflow: hidden; }
 .tm-slider.tm-home > .tm-slider-dots { position: relative; z-index: 2; }
 
 .tm-slider.tm-home .tm-slider-viewport {
-	padding: var(--tm-home-padding);
+	padding: var(--tm-home-pad-y) var(--tm-home-pad-x);
 	min-height: var(--tm-home-min-height);
+
+	/* The track fills the panel, however tall the panel is told to be. */
+	display: flex;
+	flex-direction: column;
+}
+
+/*
+ * Every slide is the full height of the track, and the signature row sits on
+ * the floor of it.
+ *
+ * Slides share one grid cell, so the cell is as tall as the LONGEST
+ * testimonial. Left top-aligned, a two-word review put its photo and name
+ * near the top of that cell while the chevrons stayed at the bottom - the
+ * shorter the review, the wider the gap. Stretching the slide and pushing the
+ * signature to the bottom puts it on the same line for every slide, which is
+ * the line the chevrons are on.
+ */
+.tm-slider.tm-home .tm-slides {
+	flex: 1;
+	align-items: stretch;
+}
+
+.tm-slider.tm-home .tm-slide { display: flex; }
+
+.tm-slider.tm-home .tm-home-inner {
+	flex: 1;
+	align-content: space-between;
 }
 
 /* Two columns: the mark sits over the photo, the text over the signature, so
@@ -843,7 +873,7 @@ body.tm-modal-open { overflow: hidden; }
  * line wherever it lands, with no figure to keep re-tuning per breakpoint.
  */
 .tm-slider.tm-home .tm-home-nav {
-	bottom: var(--tm-home-padding);
+	bottom: var(--tm-home-pad-y);
 	height: var(--tm-avatar-size);
 	align-items: center;
 }
@@ -880,7 +910,8 @@ body.tm-modal-open { overflow: hidden; }
  */
 @media (min-width: 1200px) and (max-width: 1368px) {
 	.tm-slider.tm-home {
-		--tm-home-padding: 38px;
+		--tm-home-pad-y: 50px;
+		--tm-home-pad-x: 40px;
 		--tm-home-col: 104px;
 		--tm-home-col-gap: 22px;
 		--tm-home-row-gap: 22px;
@@ -896,7 +927,8 @@ body.tm-modal-open { overflow: hidden; }
 
 @media (max-width: 1024px) {
 	.tm-slider.tm-home {
-		--tm-home-padding: 38px;
+		--tm-home-pad-y: 50px;
+		--tm-home-pad-x: 40px;
 		--tm-home-col: 104px;
 		--tm-home-mark-size: 76px;
 		--tm-home-mark-img-width: 76px;
@@ -912,7 +944,8 @@ body.tm-modal-open { overflow: hidden; }
    overlapping it. */
 @media (max-width: 767px) {
 	.tm-slider.tm-home {
-		--tm-home-padding: 26px;
+		--tm-home-pad-y: 34px;
+		--tm-home-pad-x: 26px;
 		--tm-home-quote-size: 16px;
 		--tm-home-row-gap: 18px;
 		--tm-avatar-size: 66px;
@@ -937,7 +970,7 @@ body.tm-modal-open { overflow: hidden; }
 		column-gap: 16px;
 		padding-right: calc(
 			( var(--tm-home-nav-size) * 2 ) + var(--tm-home-nav-gap)
-			+ var(--tm-home-nav-right) - var(--tm-home-padding) + 14px
+			+ var(--tm-home-nav-right) - var(--tm-home-pad-x) + 14px
 		);
 	}
 }
