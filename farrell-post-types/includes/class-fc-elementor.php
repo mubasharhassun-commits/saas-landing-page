@@ -2,20 +2,20 @@
 /**
  * Elementor integration.
  *
- * Sits alongside the WPBakery elements: both builders are supported, and both
+ * Sits alongside the WPBakery element: both builders are supported and both
  * render the same markup, so a page built in either looks identical.
  *
  * Every hook is guarded, so with Elementor absent nothing is registered and
- * the shortcodes and WPBakery elements carry on working.
+ * the shortcode and WPBakery element carry on working.
  *
- * @package waterslaw
+ * @package farrell
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class WL_Elementor {
+class FC_Elementor {
 
 	/**
 	 * Guards against double registration when both the modern and the legacy
@@ -29,7 +29,7 @@ class WL_Elementor {
 		add_action( 'elementor/elements/categories_registered', array( __CLASS__, 'category' ) );
 		add_action( 'elementor/widgets/register', array( __CLASS__, 'register_widgets' ) );
 		add_action( 'elementor/widgets/widgets_registered', array( __CLASS__, 'register_widgets' ) );
-		add_action( 'elementor/preview/enqueue_scripts', array( 'WL_Assets', 'enqueue' ) );
+		add_action( 'elementor/preview/enqueue_scripts', array( 'FC_Assets', 'enqueue' ) );
 	}
 
 	public static function is_available() {
@@ -38,10 +38,10 @@ class WL_Elementor {
 
 	public static function category( $manager ) {
 		$manager->add_category(
-			'waterslaw',
+			'farrell',
 			array(
-				'title' => __( 'Waters Law', 'waterslaw' ),
-				'icon'  => 'fa fa-anchor',
+				'title' => __( 'Farrell', 'farrell' ),
+				'icon'  => 'fa fa-newspaper-o',
 			)
 		);
 	}
@@ -59,31 +59,24 @@ class WL_Elementor {
 			return;
 		}
 
-		$widgets = array(
-			'WL_Cards_Widget' => 'includes/class-wl-cards-widget.php',
-			'WL_News_Widget'  => 'includes/class-wl-news-widget.php',
-		);
+		$file = FC_PT_DIR . 'includes/class-fc-topics-widget.php';
 
-		foreach ( $widgets as $class => $relative ) {
-			$file = WL_PATH . $relative;
+		if ( ! file_exists( $file ) ) {
+			return;
+		}
 
-			if ( ! file_exists( $file ) ) {
-				continue;
-			}
+		require_once $file;
 
-			require_once $file;
+		if ( ! class_exists( 'FC_Topics_Widget' ) ) {
+			return;
+		}
 
-			if ( ! class_exists( $class ) ) {
-				continue;
-			}
+		$widget = new FC_Topics_Widget();
 
-			$widget = new $class();
-
-			if ( method_exists( $widgets_manager, 'register' ) ) {
-				$widgets_manager->register( $widget );
-			} elseif ( method_exists( $widgets_manager, 'register_widget_type' ) ) {
-				$widgets_manager->register_widget_type( $widget );
-			}
+		if ( method_exists( $widgets_manager, 'register' ) ) {
+			$widgets_manager->register( $widget );
+		} elseif ( method_exists( $widgets_manager, 'register_widget_type' ) ) {
+			$widgets_manager->register_widget_type( $widget );
 		}
 
 		self::$registered = true;
