@@ -39,6 +39,7 @@
 	--fc-item-media-pct: 52;
 	--fc-item-gap: 22px;
 	--fc-media-radius: 0px;
+	--fc-empty-bg: #eef0f3;
 
 	/* Date badge */
 	--fc-date-bg: var(--fc-gold);
@@ -136,7 +137,7 @@
 	display: block;
 	width: 100%;
 	aspect-ratio: var(--fc-media-ratio);
-	background: #eef0f3;
+	background: var(--fc-empty-bg, #eef0f3);
 }
 
 .fc-topic-item .fc-topic-media-empty { aspect-ratio: var(--fc-item-media-ratio); }

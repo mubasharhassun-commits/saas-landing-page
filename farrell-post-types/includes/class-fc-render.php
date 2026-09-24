@@ -172,9 +172,18 @@ class FC_Render {
 		$css = FC_Style::image( (string) $img );
 
 		if ( '' === $css ) {
-			// An empty frame rather than nothing: the photos in the two
-			// columns have to start on the same line.
-			return '<span class="fc-topic-media-empty" aria-hidden="true"></span>';
+			/*
+			 * An empty frame rather than nothing: the photos in the two
+			 * columns have to start on the same line.
+			 *
+			 * The date rides the frame as well as the photo. It used to live
+			 * inside the picture's link, so a story with no featured image
+			 * lost its date along with its picture - which is not what the
+			 * date switch says it does.
+			 */
+			return '<span class="fc-topic-media fc-topic-media-empty">'
+				. self::date_badge( $post, $args )
+				. '</span>';
 		}
 
 		return '<a class="fc-topic-media" href="' . esc_url( $link ) . '" tabindex="-1" aria-hidden="true">'

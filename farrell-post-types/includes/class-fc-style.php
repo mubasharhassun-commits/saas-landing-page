@@ -241,6 +241,7 @@ class FC_Style {
 			'item_media_pct'    => array( 'var' => '--fc-item-media-pct', 'type' => 'number', 'min' => 20, 'max' => 80 ),
 			'item_gap'          => array( 'var' => '--fc-item-gap', 'type' => 'px', 'max' => 100 ),
 			'media_radius'      => array( 'var' => '--fc-media-radius', 'type' => 'px', 'max' => 60 ),
+			'empty_bg'          => array( 'var' => '--fc-empty-bg', 'type' => 'color' ),
 
 			/* Date badge */
 			'date_bg'           => array( 'var' => '--fc-date-bg', 'type' => 'color' ),

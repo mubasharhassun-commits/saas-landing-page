@@ -3,7 +3,7 @@
  * Plugin Name:       Farrell Post Types
  * Plugin URI:        https://farrellcroft.com
  * Description:       Renders your posts as a featured story beside a list - the Trending Topics section - through the "Trending Topics" WPBakery element, an Elementor widget, or the [fc_topics] shortcode.
- * Version:           1.5.0
+ * Version:           1.5.1
  * Requires PHP:      7.4
  * Author:            Rustam Ali Randhawa
  * Text Domain:       farrell
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'FC_PT_VERSION', '1.5.0' );
+define( 'FC_PT_VERSION', '1.5.1' );
 define( 'FC_PT_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FC_PT_URL', plugin_dir_url( __FILE__ ) );
 

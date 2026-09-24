@@ -253,6 +253,7 @@ class FC_WPBakery {
 						'description'      => __( 'Width / height, e.g. 16 / 10.', 'farrell' ),
 					),
 					self::size( __( 'Photo Corner Radius', 'farrell' ), 'media_radius', '0', $layout ),
+					self::color( __( 'Placeholder Colour', 'farrell' ), 'empty_bg', '#eef0f3', $layout, array( 'description' => __( 'Shown in place of a photo when a post has no featured image.', 'farrell' ) ) ),
 
 					/* ---------- Date badge ---------- */
 					self::toggle( __( 'Show Date Badge', 'farrell' ), 'show_date', 'yes', array( 'group' => $date ) ),

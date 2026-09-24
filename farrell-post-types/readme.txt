@@ -4,7 +4,7 @@ Tags: post types, news, wpbakery, elementor
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,13 @@ written at all. Every value that reaches the document is escaped at the point
 of output.
 
 == Changelog ==
+
+= 1.5.1 =
+* Fixed: a post with no featured image lost its date. The badge sat inside
+  the picture's link, so it disappeared along with the picture. It now rides
+  the placeholder frame as well, gold and inset the same 20px.
+* The placeholder colour is a control, for anyone who would rather it were
+  not grey.
 
 = 1.5.0 =
 * List headings and paragraphs are exactly three lines deep, so two rows
