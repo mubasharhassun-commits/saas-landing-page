@@ -13,7 +13,7 @@ class FC_Render {
 
 	public static function defaults() {
 		return array(
-			'source'        => 'news',
+			'source'        => 'post',
 			'category'      => '',
 			'count'         => 3,
 
@@ -119,11 +119,21 @@ class FC_Render {
 		$bits = array();
 
 		if ( self::to_bool( $args['show_category'] ) ) {
-			foreach ( array( 'news_category', 'category' ) as $taxonomy ) {
+			// Whatever category-like taxonomy this post's type actually has,
+			// rather than a hard-coded name.
+			$taxonomies = get_object_taxonomies( $post->post_type, 'names' );
+			usort(
+				$taxonomies,
+				function ( $a, $b ) {
+					return ( false !== strpos( $b, 'categor' ) ) <=> ( false !== strpos( $a, 'categor' ) );
+				}
+			);
+
+			foreach ( $taxonomies as $taxonomy ) {
 				$terms = get_the_terms( $post->ID, $taxonomy );
 
 				if ( $terms && ! is_wp_error( $terms ) ) {
-					$names = wp_list_pluck( $terms, 'name' );
+					$names  = wp_list_pluck( $terms, 'name' );
 					$bits[] = '<span class="fc-topic-meta-item">' . esc_html( implode( ', ', $names ) ) . '</span>';
 					break;
 				}
@@ -208,7 +218,20 @@ class FC_Render {
 	public static function topics( $args ) {
 		$args = wp_parse_args( $args, self::defaults() );
 
-		$type  = ( 'post' === $args['source'] ) ? 'post' : 'news';
+		/*
+		 * Ordinary posts unless something else is asked for by name, and
+		 * ordinary posts again if that name is not a registered type.
+		 *
+		 * The fallback is the point: an element saved while this plugin still
+		 * had a post type of its own carries source="news", and without it
+		 * that element would quietly render nothing.
+		 */
+		$type = sanitize_key( (string) $args['source'] );
+
+		if ( '' === $type || ! post_type_exists( $type ) ) {
+			$type = 'post';
+		}
+
 		$count = max( 2, min( 12, (int) $args['count'] ) );
 		$order = ( 'ASC' === strtoupper( trim( (string) $args['order'] ) ) ) ? 'ASC' : 'DESC';
 
@@ -243,16 +266,33 @@ class FC_Render {
 		if ( '' !== trim( (string) $args['category'] ) ) {
 			$slug = sanitize_title( $args['category'] );
 
-			if ( 'news' === $type ) {
-				$query['tax_query'] = array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
-					array(
-						'taxonomy' => 'news_category',
-						'field'    => 'slug',
-						'terms'    => $slug,
-					),
-				);
-			} else {
+			if ( 'post' === $type ) {
 				$query['category_name'] = $slug;
+			} else {
+				// Whichever category-like taxonomy that type actually has.
+				$taxonomies = get_object_taxonomies( $type, 'names' );
+				$taxonomy   = '';
+
+				foreach ( $taxonomies as $candidate ) {
+					if ( false !== strpos( $candidate, 'categor' ) ) {
+						$taxonomy = $candidate;
+						break;
+					}
+				}
+
+				if ( '' === $taxonomy && $taxonomies ) {
+					$taxonomy = reset( $taxonomies );
+				}
+
+				if ( '' !== $taxonomy ) {
+					$query['tax_query'] = array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+						array(
+							'taxonomy' => $taxonomy,
+							'field'    => 'slug',
+							'terms'    => $slug,
+						),
+					);
+				}
 			}
 		}
 

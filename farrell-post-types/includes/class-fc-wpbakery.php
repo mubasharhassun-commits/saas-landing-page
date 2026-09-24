@@ -110,20 +110,10 @@ class FC_WPBakery {
 
 					/* ---------- Content ---------- */
 					array(
-						'type'       => 'dropdown',
-						'heading'    => __( 'Source', 'farrell' ),
-						'param_name' => 'source',
-						'value'      => array(
-							__( 'Trending Topics (CPT)', 'farrell' ) => 'news',
-							__( 'Blog Posts', 'farrell' )            => 'post',
-						),
-						'std'        => 'news',
-					),
-					array(
 						'type'        => 'textfield',
 						'heading'     => __( 'Category Slug', 'farrell' ),
 						'param_name'  => 'category',
-						'description' => __( 'Filter to one category term slug. Blank shows all.', 'farrell' ),
+						'description' => __( 'Filter to one post category slug. Blank shows all posts.', 'farrell' ),
 					),
 					array(
 						'type'        => 'textfield',
@@ -144,7 +134,7 @@ class FC_WPBakery {
 							__( 'Menu Order', 'farrell' )     => 'menu_order',
 						),
 						'std'         => 'added',
-						'description' => __( 'Recently Added uses the order posts were added to the site, so an article back-dated to an older year still shows first when you upload it. Publish Date uses the date printed on the badge.', 'farrell' ),
+						'description' => __( 'Recently Added uses the order posts were added to the site, so a post back-dated to an older year still shows first when you publish it. Publish Date uses the date printed on the badge.', 'farrell' ),
 					),
 					array(
 						'type'        => 'dropdown',

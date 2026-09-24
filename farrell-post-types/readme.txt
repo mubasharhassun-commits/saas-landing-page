@@ -4,18 +4,22 @@ Tags: post types, news, wpbakery, elementor
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.2.1
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Registers the Trending Topics post type and renders a featured story beside
-a list of recent ones.
+Renders your posts as a featured story beside a list - the Trending Topics
+section.
 
 == Description ==
 
 One element, three ways to place it: the "Trending Topics" WPBakery element,
 an Elementor widget of the same name, or the [fc_topics] shortcode. All three
 call the same renderer, so a page built in either builder looks identical.
+
+Stories are ordinary WordPress posts - the plugin registers no post type of
+its own. The shortcode's source attribute can point it at another registered
+post type, and falls back to posts when that type is not registered.
 
 Ordering defaults to Recently Added, which sorts on the order posts were
 added to the site rather than the date printed on the badge. The two differ
@@ -24,6 +28,16 @@ is the newest thing on the site and the oldest thing by publish date, and
 sorting on publish date would bury it.
 
 == Changelog ==
+
+= 1.3.0 =
+* No post type of its own. Stories are ordinary WordPress posts, so the
+  Trending Topics item is gone from the admin menu and the Source control is
+  gone from both builders.
+* An element saved while the post type still existed carries source="news".
+  Rather than rendering nothing, an unregistered type now falls back to posts,
+  so nothing has to be reconfigured.
+* Category filtering and the category meta line read whichever category-like
+  taxonomy the post's type actually has, instead of a hard-coded name.
 
 = 1.2.1 =
 * Type sizes now hold against a theme that forces its own. This site's

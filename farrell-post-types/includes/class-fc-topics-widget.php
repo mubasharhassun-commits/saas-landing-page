@@ -80,24 +80,11 @@ class FC_Topics_Widget extends \Elementor\Widget_Base {
 		);
 
 		$this->add_control(
-			'source',
-			array(
-				'label'   => __( 'Source', 'farrell' ),
-				'type'    => \Elementor\Controls_Manager::SELECT,
-				'options' => array(
-					'news' => __( 'Trending Topics (CPT)', 'farrell' ),
-					'post' => __( 'Blog Posts', 'farrell' ),
-				),
-				'default' => 'news',
-			)
-		);
-
-		$this->add_control(
 			'category',
 			array(
 				'label'       => __( 'Category Slug', 'farrell' ),
 				'type'        => \Elementor\Controls_Manager::TEXT,
-				'description' => __( 'Blank shows all.', 'farrell' ),
+				'description' => __( 'Filter to one post category slug. Blank shows all posts.', 'farrell' ),
 			)
 		);
 
