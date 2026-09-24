@@ -105,7 +105,7 @@ class FC_Render {
 			return '';
 		}
 
-		$format = trim( (string) $args['date_format'] );
+		$format = sanitize_text_field( (string) $args['date_format'] );
 		$format = ( '' === $format ) ? 'M d, Y' : $format;
 
 		return '<span class="fc-topic-date">' . esc_html( get_the_date( $format, $post->ID ) ) . '</span>';
@@ -155,14 +155,26 @@ class FC_Render {
 		$img  = get_the_post_thumbnail_url( $post->ID, 'large' );
 		$link = get_permalink( $post->ID );
 
-		if ( ! $img ) {
+		/*
+		 * The URL is validated as a CSS value, not merely escaped as one.
+		 *
+		 * esc_url turns a quote into &#039;, and the browser turns that back
+		 * into a quote while reading the attribute - before any CSS is
+		 * parsed. A url() built that way can therefore be closed early by a
+		 * crafted filename. FC_Style::image rejects a URL containing a quote,
+		 * bracket, semicolon or space outright, and esc_attr then keeps the
+		 * finished declaration inside the attribute.
+		 */
+		$css = FC_Style::image( (string) $img );
+
+		if ( '' === $css ) {
 			// An empty frame rather than nothing: the photos in the two
 			// columns have to start on the same line.
 			return '<span class="fc-topic-media-empty" aria-hidden="true"></span>';
 		}
 
 		return '<a class="fc-topic-media" href="' . esc_url( $link ) . '" tabindex="-1" aria-hidden="true">'
-			. '<span class="fc-topic-img" style="background-image:url(\'' . esc_url( (string) $img ) . '\');"></span>'
+			. '<span class="fc-topic-img" style="' . esc_attr( 'background-image:' . $css ) . '"></span>'
 			. self::date_badge( $post, $args )
 			. '</a>';
 	}

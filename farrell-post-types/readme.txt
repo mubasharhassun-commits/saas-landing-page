@@ -4,7 +4,7 @@ Tags: post types, news, wpbakery, elementor
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,7 +27,36 @@ whenever an article is back-dated: a piece from an older year uploaded today
 is the newest thing on the site and the oldest thing by publish date, and
 sorting on publish date would bury it.
 
+== Security ==
+
+The plugin has no admin screens, no forms, no AJAX or REST endpoints, and
+reads no superglobals, so it presents no authenticated surface to protect
+with nonces or capability checks. It runs no direct database queries; posts
+are fetched through WP_Query with a whitelisted orderby, a two-value order, a
+capped post count, a slugged category and a post type checked against the
+registered list.
+
+Every value that reaches a style attribute is type-checked by FC_Style and
+dropped if it does not match - colours, lengths, ratios, keywords and image
+URLs each have their own validator, and an unrecognised parameter is not
+written at all. Every value that reaches the document is escaped at the point
+of output.
+
 == Changelog ==
+
+= 1.4.0 =
+* Fixed: a crafted featured-image URL could close the CSS string in the
+  photo's style attribute and add declarations of its own. esc_url encodes a
+  quote as &#039;, and the browser turns that back into a quote while reading
+  the attribute, before any CSS is parsed - so escaping alone was not enough.
+  The URL is now validated as a CSS value and rejected outright if it carries
+  a quote, bracket, semicolon or space; a URL that cannot be made safe renders
+  the empty frame instead. Four attack strings that got through before are
+  now blocked.
+* Hardened: index.php in every directory, an uninstall.php that documents
+  that the plugin stores nothing, and the date format passed through
+  sanitize_text_field.
+* Translations are loaded on init.
 
 = 1.3.0 =
 * No post type of its own. Stories are ordinary WordPress posts, so the
