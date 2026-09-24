@@ -4,7 +4,7 @@ Tags: post types, news, wpbakery, elementor
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.4.0
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,21 @@ written at all. Every value that reaches the document is escaped at the point
 of output.
 
 == Changelog ==
+
+= 1.5.0 =
+* List headings and paragraphs are exactly three lines deep, so two rows
+  beside each other always measure the same. A word limit could never do
+  this on its own: the same 13 words wrap to three lines or four depending
+  on how long the words are. A short heading is held open to the full depth
+  and a long one is clamped to it, so a one-word title and a twenty-five
+  word title produce rows of identical height, with the buttons at the same
+  place in each.
+* Both line counts are controls. 0 lets a row be its own height.
+* Headings are capped at 13 words as well, which is what the longest of the
+  current titles runs to.
+* Stacked on tablet and phone the fixed depth is dropped - the rows are full
+  width there and no longer sit beside each other, so it would only leave
+  gaps.
 
 = 1.4.0 =
 * Fixed: a crafted featured-image URL could close the CSS string in the

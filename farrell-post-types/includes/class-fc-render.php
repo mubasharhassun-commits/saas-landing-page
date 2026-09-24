@@ -35,9 +35,13 @@ class FC_Render {
 			 * Word limits, kept separate for the two shapes: the featured
 			 * story has a wide column and can carry more than a list row can.
 			 * 0 means no limit.
+			 *
+			 * Headings are capped at 13 so that two of them beside each other
+			 * come out the same depth. Left uncapped, an 8-word title and a
+			 * 13-word one sat at three lines and four.
 			 */
-			'title_words'        => 0,
-			'item_title_words'   => 0,
+			'title_words'        => 13,
+			'item_title_words'   => 13,
 			'show_excerpt'       => 'yes',
 			'excerpt_words'      => 28,
 			'item_excerpt_words' => 18,

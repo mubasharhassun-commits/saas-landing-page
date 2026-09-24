@@ -263,6 +263,8 @@ class FC_Style {
 			'title_lh'          => array( 'var' => '--fc-title-lh', 'type' => 'px', 'min' => 10, 'max' => 120 ),
 			'item_title_size'   => array( 'var' => '--fc-item-title-size', 'type' => 'px', 'min' => 10, 'max' => 90 ),
 			'item_title_lh'     => array( 'var' => '--fc-item-title-lh', 'type' => 'px', 'min' => 10, 'max' => 120 ),
+			'item_title_lines'  => array( 'var' => '--fc-item-title-lines', 'type' => 'number', 'min' => 0, 'max' => 12 ),
+			'item_text_lines'   => array( 'var' => '--fc-item-text-lines', 'type' => 'number', 'min' => 0, 'max' => 12 ),
 			'title_weight'      => array(
 				'var'     => '--fc-title-weight',
 				'type'    => 'keyword',

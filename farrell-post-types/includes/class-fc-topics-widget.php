@@ -133,8 +133,8 @@ class FC_Topics_Widget extends \Elementor\Widget_Base {
 		$this->switcher( 'show_excerpt', __( 'Show Excerpt', 'farrell' ), 'yes' );
 		$this->number( 'excerpt_words', __( 'Featured Excerpt Words', 'farrell' ), 28, 0, 200 );
 		$this->number( 'item_excerpt_words', __( 'List Excerpt Words', 'farrell' ), 18, 0, 200 );
-		$this->number( 'title_words', __( 'Featured Title Words', 'farrell' ), 0, 0, 100 );
-		$this->number( 'item_title_words', __( 'List Title Words', 'farrell' ), 0, 0, 100 );
+		$this->number( 'title_words', __( 'Featured Title Words', 'farrell' ), 13, 0, 100 );
+		$this->number( 'item_title_words', __( 'List Title Words', 'farrell' ), 13, 0, 100 );
 		$this->switcher( 'show_date', __( 'Show Date Badge', 'farrell' ), 'yes' );
 		$this->switcher( 'show_category', __( 'Show Category', 'farrell' ), '' );
 		$this->switcher( 'show_author', __( 'Show Author', 'farrell' ), '' );
@@ -170,6 +170,8 @@ class FC_Topics_Widget extends \Elementor\Widget_Base {
 		$this->number( 'title_lh', __( 'Featured Title Line Height', 'farrell' ), 40, 10, 120 );
 		$this->number( 'item_title_size', __( 'List Title Size', 'farrell' ), 26, 10, 90 );
 		$this->number( 'item_title_lh', __( 'List Title Line Height', 'farrell' ), 32, 10, 120 );
+		$this->number( 'item_title_lines', __( 'List Title Lines', 'farrell' ), 3, 0, 12 );
+		$this->number( 'item_text_lines', __( 'List Text Lines', 'farrell' ), 3, 0, 12 );
 		$this->number( 'text_size', __( 'Text Size', 'farrell' ), 18, 8, 48 );
 		$this->number( 'text_lh', __( 'Text Line Height', 'farrell' ), 30, 8, 80 );
 		$this->number( 'featured_width', __( 'Featured Column Width (%)', 'farrell' ), 50, 20, 80 );

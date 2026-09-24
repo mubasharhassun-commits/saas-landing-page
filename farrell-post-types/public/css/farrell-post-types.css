@@ -57,6 +57,10 @@
 	--fc-title-lh: 40px;
 	--fc-item-title-size: 26px;
 	--fc-item-title-lh: 32px;
+	/* Lines, not words: two list headings beside each other have to occupy
+	   the same depth whatever their titles happen to be. */
+	--fc-item-title-lines: 3;
+	--fc-item-text-lines: 3;
 	--fc-title-weight: 400;
 	--fc-title-space: 14px;
 
@@ -282,14 +286,42 @@
 
 .fc-topic-item .fc-topic-body { padding-top: 0; }
 
+/*
+ * The list rows are locked to a fixed depth.
+ *
+ * A word limit gets two headings close to each other but never equal: the
+ * same 13 words wrap to three lines or four depending on how long the words
+ * are, and the rows below then sit at different heights. A line count is
+ * exact. min-height holds a short heading open to the full depth, and the
+ * clamp stops a long one from exceeding it, so every row measures the same
+ * whatever the titles are.
+ */
 .fc-topics .fc-topic-item .fc-topic-title {
 	font-size: var(--fc-item-title-size) !important;
 	line-height: var(--fc-item-title-lh) !important;
+	min-height: calc( var(--fc-item-title-lh) * var(--fc-item-title-lines) );
+	display: -webkit-box;
+	-webkit-line-clamp: var(--fc-item-title-lines);
+	-webkit-box-orient: vertical;
+	overflow: hidden;
 }
 
 .fc-topics .fc-topic-item .fc-topic-excerpt {
 	font-size: var(--fc-item-text-size) !important;
 	line-height: var(--fc-item-text-lh) !important;
+	min-height: calc( var(--fc-item-text-lh) * var(--fc-item-text-lines) );
+	display: -webkit-box;
+	-webkit-line-clamp: var(--fc-item-text-lines);
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+/* 0 lines means "as tall as it needs to be", for anyone who wants that. */
+.fc-topics[style*="--fc-item-title-lines:0"] .fc-topic-item .fc-topic-title,
+.fc-topics[style*="--fc-item-text-lines:0"] .fc-topic-item .fc-topic-excerpt {
+	min-height: 0;
+	display: block;
+	overflow: visible;
 }
 
 /* A list photo is a taller crop than the featured one, so the row does not
@@ -324,6 +356,15 @@
 	 * each width rather than inherited, so a change to one does not silently
 	 * move the other.
 	 */
+	/* Stacked, the rows are full width and no longer sit beside each other,
+	   so a fixed depth would only leave gaps. */
+	.fc-topics .fc-topic-item .fc-topic-title,
+	.fc-topics .fc-topic-item .fc-topic-excerpt {
+		min-height: 0;
+		display: block;
+		overflow: visible;
+	}
+
 	.fc-topics {
 		--fc-title-size: 30px;
 		--fc-title-lh: 36px;
