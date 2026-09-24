@@ -318,11 +318,21 @@
 	.fc-topic-item .fc-topic-img { aspect-ratio: var(--fc-media-ratio); }
 	.fc-topic-item .fc-topic-body { padding-top: 4px; }
 
+	/*
+	 * On one column the two shapes read as one list, so the right-hand
+	 * headings take the same figures as the featured one - set explicitly at
+	 * each width rather than inherited, so a change to one does not silently
+	 * move the other.
+	 */
 	.fc-topics {
-		--fc-item-title-size: var(--fc-title-size);
-		--fc-item-title-lh: var(--fc-title-lh);
-		--fc-item-text-size: var(--fc-text-size);
-		--fc-item-text-lh: var(--fc-text-lh);
+		--fc-title-size: 30px;
+		--fc-title-lh: 36px;
+		--fc-item-title-size: 30px;
+		--fc-item-title-lh: 36px;
+		--fc-text-size: 17px;
+		--fc-text-lh: 28px;
+		--fc-item-text-size: 17px;
+		--fc-item-text-lh: 28px;
 	}
 }
 
@@ -332,8 +342,12 @@
 		--fc-heading-lh: 34px;
 		--fc-title-size: 24px;
 		--fc-title-lh: 30px;
+		--fc-item-title-size: 24px;
+		--fc-item-title-lh: 30px;
 		--fc-text-size: 16px;
 		--fc-text-lh: 26px;
+		--fc-item-text-size: 16px;
+		--fc-item-text-lh: 26px;
 		--fc-date-right: 12px;
 		--fc-date-bottom: 12px;
 	}
