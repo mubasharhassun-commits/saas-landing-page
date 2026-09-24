@@ -26,7 +26,9 @@ class FC_Render {
 			'orderby'       => 'added',
 			'order'         => 'DESC',
 
-			'heading'       => 'Trending Topics',
+			// Blank by default: pages usually carry their own heading already,
+			// and two of them is worse than none.
+			'heading'       => '',
 			'heading_tag'   => 'h2',
 
 			/*

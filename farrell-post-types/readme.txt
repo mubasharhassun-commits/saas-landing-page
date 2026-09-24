@@ -4,7 +4,7 @@ Tags: post types, news, wpbakery, elementor
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,17 @@ is the newest thing on the site and the oldest thing by publish date, and
 sorting on publish date would bury it.
 
 == Changelog ==
+
+= 1.2.0 =
+* Type sizes now hold against a theme that forces its own. This site's
+  custom.css carries h3 { font-size: 30px !important } and p { font-size:
+  17px !important }, which flattened the featured title, the list titles and
+  both paragraphs to one size. Every type declaration here is forced too, and
+  every forced value is still a custom property, so the builder stays in
+  charge of what it is forced to.
+* The section heading is blank by default. A page usually carries its own
+  heading above the element, and two of them is worse than none. Type
+  something into Heading Text to bring one back.
 
 = 1.1.0 =
 * Photo sizes taken from the comp: the featured photo is 750 x 310 and the

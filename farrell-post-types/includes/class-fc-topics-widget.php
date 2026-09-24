@@ -136,9 +136,10 @@ class FC_Topics_Widget extends \Elementor\Widget_Base {
 		$this->add_control(
 			'heading',
 			array(
-				'label'   => __( 'Heading Text', 'farrell' ),
-				'type'    => \Elementor\Controls_Manager::TEXT,
-				'default' => 'Trending Topics',
+				'label'       => __( 'Heading Text', 'farrell' ),
+				'type'        => \Elementor\Controls_Manager::TEXT,
+				'default'     => '',
+				'description' => __( 'Blank renders no heading.', 'farrell' ),
 			)
 		);
 

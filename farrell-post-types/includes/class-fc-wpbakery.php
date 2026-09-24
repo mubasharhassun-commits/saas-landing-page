@@ -204,9 +204,9 @@ class FC_WPBakery {
 						'type'        => 'textfield',
 						'heading'     => __( 'Heading Text', 'farrell' ),
 						'param_name'  => 'heading',
-						'value'       => 'Trending Topics',
+						'value'       => '',
 						'group'       => $heading,
-						'description' => __( 'Leave blank to render no heading.', 'farrell' ),
+						'description' => __( 'Blank renders no heading, which is usually right when the page already has one above the element.', 'farrell' ),
 					),
 					array(
 						'type'             => 'dropdown',
