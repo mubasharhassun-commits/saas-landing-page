@@ -4,7 +4,7 @@ Tags: post types, news, wpbakery, elementor
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,22 @@ is the newest thing on the site and the oldest thing by publish date, and
 sorting on publish date would bury it.
 
 == Changelog ==
+
+= 1.1.0 =
+* Photo sizes taken from the comp: the featured photo is 750 x 310 and the
+  list photo 375 x 310 - half the width, the same height. Both are held as
+  proportions rather than pixels, so the pair keeps that relationship at any
+  container width and the two photos always start on the same line.
+* The date badge sits 20px in from the right and bottom of the photo, at
+  16px on a 20px line in #162542.
+* The gap between the featured story and the list, and between list rows,
+  is 30px.
+* Desktop and laptop share one layout at one set of figures. Tablet and
+  phone get the stacked version: one column, photo above the words.
+* Word limits for headings and paragraphs, counted separately for the
+  featured story and the list rows.
+* A story with no photo renders an empty frame rather than nothing, so the
+  row below it cannot ride up and break the alignment.
 
 = 1.0.0 =
 * First release, replacing WL Post Types.

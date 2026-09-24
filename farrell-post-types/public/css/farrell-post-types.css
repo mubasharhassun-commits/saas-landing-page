@@ -20,19 +20,34 @@
 	--fc-heading-align: center;
 
 	/* Layout */
-	--fc-col-gap: 34px;
-	--fc-row-gap: 34px;
-	--fc-featured-width: 48;
-	--fc-media-ratio: 16 / 10;
-	--fc-item-media-w: 196px;
+	/* The gap between the featured story and the list, and between the list
+	   rows. 30px is the ceiling asked for. */
+	--fc-col-gap: 30px;
+	--fc-row-gap: 30px;
+	--fc-featured-width: 50;
+	/*
+	 * Straight off the comp: the featured photo is 750 x 310 and the list
+	 * photo 375 x 310 - half the width, the same height.
+	 *
+	 * Both are held as proportions rather than pixels, so the pair keeps that
+	 * relationship at any container width. The list photo's share of its own
+	 * row is the figure that keeps the two heights level; it is a percentage
+	 * for the same reason.
+	 */
+	--fc-media-ratio: 750 / 310;
+	--fc-item-media-ratio: 375 / 310;
+	--fc-item-media-pct: 52;
 	--fc-item-gap: 22px;
 	--fc-media-radius: 0px;
 
 	/* Date badge */
 	--fc-date-bg: var(--fc-gold);
-	--fc-date-color: var(--fc-navy);
-	--fc-date-size: 13px;
-	--fc-date-padding: 5px 12px;
+	--fc-date-color: #162542;
+	--fc-date-size: 16px;
+	--fc-date-lh: 20px;
+	--fc-date-padding: 7px 12px;
+	--fc-date-right: 20px;
+	--fc-date-bottom: 20px;
 
 	/* Titles */
 	--fc-title-font: serif;
@@ -96,6 +111,23 @@
 	align-items: start;
 }
 
+/*
+ * The featured photo and the first list photo start on the same line.
+ *
+ * Both are the first thing in their column, so the only way they can drift
+ * apart is a story with no photo at all: the text would begin where the
+ * picture should have, and every row below it would sit high. An empty frame
+ * holds the line instead, and the ratio keeps its height honest.
+ */
+.fc-topic-media-empty {
+	display: block;
+	width: 100%;
+	aspect-ratio: var(--fc-media-ratio);
+	background: #eef0f3;
+}
+
+.fc-topic-item .fc-topic-media-empty { aspect-ratio: var(--fc-item-media-ratio); }
+
 .fc-topics-list {
 	display: flex;
 	flex-direction: column;
@@ -130,13 +162,13 @@
    the positioning context rather than the card. */
 .fc-topic-date {
 	position: absolute;
-	right: 0;
-	bottom: 0;
+	right: var(--fc-date-right);
+	bottom: var(--fc-date-bottom);
 	padding: var(--fc-date-padding);
 	background: var(--fc-date-bg);
 	color: var(--fc-date-color);
 	font-size: var(--fc-date-size);
-	line-height: 1.3;
+	line-height: var(--fc-date-lh);
 	letter-spacing: 0.01em;
 	white-space: nowrap;
 }
@@ -163,6 +195,16 @@
 
 .fc-topic-title a:hover,
 .fc-topic-title a:focus-visible { color: var(--fc-title-hover); }
+
+/* Both the heading and the button are real links; nothing is allowed to sit
+   over them or switch their pointer events off. */
+.fc-topics .fc-topic-title a,
+.fc-topics .fc-topic-btn {
+	position: relative;
+	z-index: 1;
+	pointer-events: auto !important;
+	cursor: pointer;
+}
 
 .fc-topic-meta {
 	display: flex;
@@ -219,7 +261,7 @@
    Photo beside the text rather than above it, and the smaller type scale. */
 .fc-topic-item {
 	display: grid;
-	grid-template-columns: var(--fc-item-media-w) minmax(0, 1fr);
+	grid-template-columns: calc( var(--fc-item-media-pct) * 1% ) minmax(0, 1fr);
 	column-gap: var(--fc-item-gap);
 	align-items: start;
 }
@@ -238,29 +280,36 @@
 
 /* A list photo is a taller crop than the featured one, so the row does not
    stretch to the height of four lines of heading. */
-.fc-topic-item .fc-topic-img { aspect-ratio: 4 / 3; }
+.fc-topic-item .fc-topic-img { aspect-ratio: var(--fc-item-media-ratio); }
 
 /* ---------- Responsive ---------- */
 
-/* The headline figures hold down to a small laptop; only below that does the
-   type step down, and by then the columns are about to stack anyway. */
-@media (max-width: 1024px) {
-	.fc-topics {
-		--fc-title-size: 30px;
-		--fc-title-lh: 36px;
-		--fc-item-title-size: 22px;
-		--fc-item-title-lh: 28px;
-		--fc-item-media-w: 160px;
-	}
-}
+/* ---------- Responsive ----------
+   Desktop and laptop are the same layout at the same figures. Everything at
+   tablet width and below gets the stacked version instead: one column, the
+   photo above the words. */
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
 	.fc-topics-grid {
 		grid-template-columns: minmax(0, 1fr);
 		row-gap: var(--fc-row-gap);
 	}
 
-	.fc-topics { --fc-title-size: 28px; --fc-title-lh: 34px; }
+	/* The list rows stack too, so a tablet reads the same way a phone does. */
+	.fc-topic-item {
+		grid-template-columns: minmax(0, 1fr);
+		row-gap: 14px;
+	}
+
+	.fc-topic-item .fc-topic-img { aspect-ratio: var(--fc-media-ratio); }
+	.fc-topic-item .fc-topic-body { padding-top: 4px; }
+
+	.fc-topics {
+		--fc-item-title-size: var(--fc-title-size);
+		--fc-item-title-lh: var(--fc-title-lh);
+		--fc-item-text-size: var(--fc-text-size);
+		--fc-item-text-lh: var(--fc-text-lh);
+	}
 }
 
 @media (max-width: 600px) {
@@ -269,13 +318,9 @@
 		--fc-heading-lh: 34px;
 		--fc-title-size: 24px;
 		--fc-title-lh: 30px;
-		--fc-item-title-size: 20px;
-		--fc-item-title-lh: 26px;
 		--fc-text-size: 16px;
 		--fc-text-lh: 26px;
+		--fc-date-right: 12px;
+		--fc-date-bottom: 12px;
 	}
-
-	/* One column: the photo goes back on top, where it has room to be seen. */
-	.fc-topic-item { grid-template-columns: minmax(0, 1fr); row-gap: 14px; }
-	.fc-topic-item .fc-topic-img { aspect-ratio: var(--fc-media-ratio); }
 }

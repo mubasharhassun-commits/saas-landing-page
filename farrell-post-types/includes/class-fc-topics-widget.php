@@ -143,8 +143,10 @@ class FC_Topics_Widget extends \Elementor\Widget_Base {
 		);
 
 		$this->switcher( 'show_excerpt', __( 'Show Excerpt', 'farrell' ), 'yes' );
-		$this->number( 'excerpt_words', __( 'Excerpt Word Limit', 'farrell' ), 20, 0, 200 );
-		$this->number( 'title_words', __( 'Title Word Limit', 'farrell' ), 0, 0, 100 );
+		$this->number( 'excerpt_words', __( 'Featured Excerpt Words', 'farrell' ), 28, 0, 200 );
+		$this->number( 'item_excerpt_words', __( 'List Excerpt Words', 'farrell' ), 18, 0, 200 );
+		$this->number( 'title_words', __( 'Featured Title Words', 'farrell' ), 0, 0, 100 );
+		$this->number( 'item_title_words', __( 'List Title Words', 'farrell' ), 0, 0, 100 );
 		$this->switcher( 'show_date', __( 'Show Date Badge', 'farrell' ), 'yes' );
 		$this->switcher( 'show_category', __( 'Show Category', 'farrell' ), '' );
 		$this->switcher( 'show_author', __( 'Show Author', 'farrell' ), '' );
@@ -182,10 +184,16 @@ class FC_Topics_Widget extends \Elementor\Widget_Base {
 		$this->number( 'item_title_lh', __( 'List Title Line Height', 'farrell' ), 32, 10, 120 );
 		$this->number( 'text_size', __( 'Text Size', 'farrell' ), 18, 8, 48 );
 		$this->number( 'text_lh', __( 'Text Line Height', 'farrell' ), 30, 8, 80 );
-		$this->number( 'featured_width', __( 'Featured Column Width (%)', 'farrell' ), 48, 20, 80 );
-		$this->number( 'column_gap', __( 'Gap: Featured to List', 'farrell' ), 34, 0, 160 );
-		$this->number( 'row_gap', __( 'Gap Between List Items', 'farrell' ), 34, 0, 160 );
-		$this->number( 'item_media_w', __( 'List Photo Width', 'farrell' ), 196, 60, 500 );
+		$this->number( 'featured_width', __( 'Featured Column Width (%)', 'farrell' ), 50, 20, 80 );
+		$this->number( 'column_gap', __( 'Gap: Featured to List', 'farrell' ), 30, 0, 160 );
+		$this->number( 'row_gap', __( 'Gap Between List Items', 'farrell' ), 30, 0, 160 );
+		$this->number( 'date_size', __( 'Badge Font Size', 'farrell' ), 16, 8, 40 );
+		$this->number( 'date_lh', __( 'Badge Line Height', 'farrell' ), 20, 8, 60 );
+		$this->number( 'date_right', __( 'Badge Inset From Right', 'farrell' ), 20, 0, 120 );
+		$this->number( 'date_bottom', __( 'Badge Inset From Bottom', 'farrell' ), 20, 0, 120 );
+		$this->colour( 'date_color', __( 'Badge Text Color', 'farrell' ), '#162542' );
+		$this->number( 'btn_size', __( 'Button Font Size', 'farrell' ), 18, 8, 40 );
+		$this->number( 'item_media_pct', __( 'List Photo Width (%)', 'farrell' ), 52, 20, 80 );
 
 		$this->end_controls_section();
 	}

@@ -29,9 +29,16 @@ class FC_Render {
 			'heading'       => 'Trending Topics',
 			'heading_tag'   => 'h2',
 
-			'title_words'   => 0,
-			'show_excerpt'  => 'yes',
-			'excerpt_words' => 20,
+			/*
+			 * Word limits, kept separate for the two shapes: the featured
+			 * story has a wide column and can carry more than a list row can.
+			 * 0 means no limit.
+			 */
+			'title_words'        => 0,
+			'item_title_words'   => 0,
+			'show_excerpt'       => 'yes',
+			'excerpt_words'      => 28,
+			'item_excerpt_words' => 18,
 
 			'show_date'     => 'yes',
 			'date_format'   => 'M d, Y',
@@ -137,7 +144,9 @@ class FC_Render {
 		$link = get_permalink( $post->ID );
 
 		if ( ! $img ) {
-			return '';
+			// An empty frame rather than nothing: the photos in the two
+			// columns have to start on the same line.
+			return '<span class="fc-topic-media-empty" aria-hidden="true"></span>';
 		}
 
 		return '<a class="fc-topic-media" href="' . esc_url( $link ) . '" tabindex="-1" aria-hidden="true">'
@@ -164,9 +173,13 @@ class FC_Render {
 	 * One story. $variant is 'featured' or 'item'.
 	 */
 	private static function topic( $post, $args, $variant ) {
-		$link    = get_permalink( $post->ID );
-		$words   = max( 0, min( 100, (int) $args['title_words'] ) );
-		$ewords  = max( 0, min( 200, (int) $args['excerpt_words'] ) );
+		$link = get_permalink( $post->ID );
+
+		$title_key   = ( 'item' === $variant ) ? 'item_title_words' : 'title_words';
+		$excerpt_key = ( 'item' === $variant ) ? 'item_excerpt_words' : 'excerpt_words';
+
+		$words   = max( 0, min( 100, (int) $args[ $title_key ] ) );
+		$ewords  = max( 0, min( 200, (int) $args[ $excerpt_key ] ) );
 		$excerpt = self::to_bool( $args['show_excerpt'] ) ? self::excerpt( $post, $ewords ) : '';
 
 		$out = '<article class="fc-topic fc-topic-' . esc_attr( $variant ) . '">';

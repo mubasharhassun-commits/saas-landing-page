@@ -237,14 +237,18 @@ class FC_Style {
 			'row_gap'           => array( 'var' => '--fc-row-gap', 'type' => 'px', 'max' => 160 ),
 			'featured_width'    => array( 'var' => '--fc-featured-width', 'type' => 'number', 'min' => 20, 'max' => 80 ),
 			'media_ratio'       => array( 'var' => '--fc-media-ratio', 'type' => 'ratio' ),
-			'item_media_w'      => array( 'var' => '--fc-item-media-w', 'type' => 'px', 'min' => 60, 'max' => 500 ),
+			'item_media_ratio'  => array( 'var' => '--fc-item-media-ratio', 'type' => 'ratio' ),
+			'item_media_pct'    => array( 'var' => '--fc-item-media-pct', 'type' => 'number', 'min' => 20, 'max' => 80 ),
 			'item_gap'          => array( 'var' => '--fc-item-gap', 'type' => 'px', 'max' => 100 ),
 			'media_radius'      => array( 'var' => '--fc-media-radius', 'type' => 'px', 'max' => 60 ),
 
 			/* Date badge */
 			'date_bg'           => array( 'var' => '--fc-date-bg', 'type' => 'color' ),
 			'date_color'        => array( 'var' => '--fc-date-color', 'type' => 'color' ),
-			'date_size'         => array( 'var' => '--fc-date-size', 'type' => 'px', 'min' => 8, 'max' => 30 ),
+			'date_size'         => array( 'var' => '--fc-date-size', 'type' => 'px', 'min' => 8, 'max' => 40 ),
+			'date_lh'           => array( 'var' => '--fc-date-lh', 'type' => 'px', 'min' => 8, 'max' => 60 ),
+			'date_right'        => array( 'var' => '--fc-date-right', 'type' => 'px', 'max' => 120 ),
+			'date_bottom'       => array( 'var' => '--fc-date-bottom', 'type' => 'px', 'max' => 120 ),
 			'date_padding'      => array( 'var' => '--fc-date-padding', 'type' => 'spacing' ),
 
 			/* Titles */
