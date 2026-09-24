@@ -4,7 +4,7 @@ Tags: post types, news, wpbakery, elementor
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.5.1
+Stable tag: 1.6.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,15 @@ written at all. Every value that reaches the document is escaped at the point
 of output.
 
 == Changelog ==
+
+= 1.6.0 =
+* Photo Fit and Photo Position controls. The frames have a fixed shape, so a
+  photo that is not that shape has to give something up: Fill crops it, Fit
+  shows all of it with the placeholder colour around the edges. Position
+  decides which part survives a crop - Top keeps the heads in a group
+  photograph, which centre cropping cuts off.
+* A contained photo no longer zooms on hover, which would have pushed it out
+  of its own frame.
 
 = 1.5.1 =
 * Fixed: a post with no featured image lost its date. The badge sat inside

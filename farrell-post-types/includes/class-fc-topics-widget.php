@@ -185,6 +185,41 @@ class FC_Topics_Widget extends \Elementor\Widget_Base {
 		$this->number( 'btn_size', __( 'Button Font Size', 'farrell' ), 18, 8, 40 );
 		$this->number( 'item_media_pct', __( 'List Photo Width (%)', 'farrell' ), 52, 20, 80 );
 
+		$this->add_control(
+			'media_fit',
+			array(
+				'label'       => __( 'Photo Fit', 'farrell' ),
+				'type'        => \Elementor\Controls_Manager::SELECT,
+				'options'     => array(
+					'cover'   => __( 'Fill the frame, crop the rest', 'farrell' ),
+					'contain' => __( 'Fit the whole photo inside', 'farrell' ),
+				),
+				'default'     => 'cover',
+				'description' => __( 'Fit keeps every photo whole and shows the placeholder colour around it.', 'farrell' ),
+			)
+		);
+
+		$this->add_control(
+			'media_position',
+			array(
+				'label'       => __( 'Photo Position', 'farrell' ),
+				'type'        => \Elementor\Controls_Manager::SELECT,
+				'options'     => array(
+					'center'       => __( 'Center', 'farrell' ),
+					'top'          => __( 'Top', 'farrell' ),
+					'bottom'       => __( 'Bottom', 'farrell' ),
+					'left'         => __( 'Left', 'farrell' ),
+					'right'        => __( 'Right', 'farrell' ),
+					'top left'     => __( 'Top left', 'farrell' ),
+					'top right'    => __( 'Top right', 'farrell' ),
+					'bottom left'  => __( 'Bottom left', 'farrell' ),
+					'bottom right' => __( 'Bottom right', 'farrell' ),
+				),
+				'default'     => 'center',
+				'description' => __( 'Which part of the photo survives a crop.', 'farrell' ),
+			)
+		);
+
 		$this->end_controls_section();
 	}
 

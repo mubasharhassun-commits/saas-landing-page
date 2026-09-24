@@ -242,6 +242,26 @@ class FC_Style {
 			'item_gap'          => array( 'var' => '--fc-item-gap', 'type' => 'px', 'max' => 100 ),
 			'media_radius'      => array( 'var' => '--fc-media-radius', 'type' => 'px', 'max' => 60 ),
 			'empty_bg'          => array( 'var' => '--fc-empty-bg', 'type' => 'color' ),
+			'media_fit'         => array(
+				'var'     => '--fc-media-fit',
+				'type'    => 'keyword',
+				'allowed' => array( 'cover', 'contain' ),
+			),
+			'media_position'    => array(
+				'var'     => '--fc-media-position',
+				'type'    => 'keyword',
+				'allowed' => array(
+					'center',
+					'top',
+					'bottom',
+					'left',
+					'right',
+					'top left',
+					'top right',
+					'bottom left',
+					'bottom right',
+				),
+			),
 
 			/* Date badge */
 			'date_bg'           => array( 'var' => '--fc-date-bg', 'type' => 'color' ),

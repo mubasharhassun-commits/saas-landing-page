@@ -41,6 +41,18 @@
 	--fc-media-radius: 0px;
 	--fc-empty-bg: #eef0f3;
 
+	/*
+	 * How a photo meets its frame.
+	 *
+	 * cover fills the frame and crops whatever will not fit - the whole box
+	 * is picture, but a wide photo in a near-square frame loses its sides.
+	 * contain fits the entire photo inside and leaves the placeholder colour
+	 * showing where the shapes differ. Position decides which part survives
+	 * a crop.
+	 */
+	--fc-media-fit: cover;
+	--fc-media-position: center;
+
 	/* Date badge */
 	--fc-date-bg: var(--fc-gold);
 	--fc-date-color: #162542;
@@ -164,10 +176,17 @@
 	display: block;
 	width: 100%;
 	aspect-ratio: var(--fc-media-ratio);
-	background-size: cover;
-	background-position: center;
+	background-size: var(--fc-media-fit);
+	background-position: var(--fc-media-position);
 	background-repeat: no-repeat;
+	/* Shows only where a contained photo does not reach the edges. */
+	background-color: var(--fc-empty-bg);
 	transition: transform 0.45s ease;
+}
+
+/* Zooming a contained photo on hover would push it out of its own frame. */
+.fc-topics[style*="--fc-media-fit:contain"] .fc-topic-media:hover .fc-topic-img {
+	transform: none;
 }
 
 .fc-topic-media:hover .fc-topic-img { transform: scale(1.04); }
